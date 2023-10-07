@@ -6,8 +6,6 @@ package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -15,15 +13,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import model.Account;
 
-/**
- *
- * @author Tran Nhat Sinh
- */
 public class Admin extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Navbar
-     */
     Color DefaultColor, ClickedColor;
     private Account currentAcc;
 
@@ -72,20 +62,22 @@ public class Admin extends javax.swing.JFrame {
     private void initComponents() {
 
         NavbarMenu = new javax.swing.JPanel();
+        pUserInfo = new javax.swing.JPanel();
+        pFullName = new javax.swing.JPanel();
+        NameUser = new javax.swing.JLabel();
+        pRole = new javax.swing.JPanel();
+        lblRole = new javax.swing.JLabel();
+        pMainMenu = new javax.swing.JPanel();
         SanPham = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        NhaCungCap = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
         NhapHang = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         PhieuNhap = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         XuatHang = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        DangXuat = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        NhaCungCap = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        NameUser = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         TonKho = new javax.swing.JPanel();
@@ -94,8 +86,11 @@ public class Admin extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         ThongKe = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
+        pBottom = new javax.swing.JPanel();
         Account = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
+        DangXuat = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
         MainContent = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -106,13 +101,50 @@ public class Admin extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         NavbarMenu.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        NavbarMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        NavbarMenu.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 1, 16, 1));
+        NavbarMenu.setMinimumSize(new java.awt.Dimension(240, 690));
+        NavbarMenu.setPreferredSize(new java.awt.Dimension(240, 730));
+        NavbarMenu.setLayout(new java.awt.BorderLayout(0, 15));
+
+        pUserInfo.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pUserInfo.setLayout(new java.awt.GridLayout(0, 1));
+
+        pFullName.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pFullName.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        pFullName.setLayout(new java.awt.BorderLayout());
+
+        NameUser.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        NameUser.setForeground(new java.awt.Color(255, 255, 255));
+        NameUser.setText("[fullname]");
+        NameUser.setToolTipText("");
+        pFullName.add(NameUser, java.awt.BorderLayout.CENTER);
+
+        pUserInfo.add(pFullName);
+
+        pRole.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pRole.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        pRole.setLayout(new java.awt.BorderLayout());
+
+        lblRole.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        lblRole.setForeground(new java.awt.Color(255, 255, 255));
+        lblRole.setText("[role]");
+        pRole.add(lblRole, java.awt.BorderLayout.PAGE_START);
+
+        pUserInfo.add(pRole);
+
+        NavbarMenu.add(pUserInfo, java.awt.BorderLayout.NORTH);
+
+        pMainMenu.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pMainMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 0, 0));
 
         SanPham.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        SanPham.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         SanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        SanPham.setMinimumSize(new java.awt.Dimension(240, 36));
+        SanPham.setName(""); // NOI18N
+        SanPham.setPreferredSize(new java.awt.Dimension(240, 36));
         SanPham.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 SanPhamMouseClicked(evt);
@@ -121,172 +153,23 @@ public class Admin extends javax.swing.JFrame {
                 SanPhamMousePressed(evt);
             }
         });
+        SanPham.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_product_25px_2.png"))); // NOI18N
-        jLabel1.setText("SẢN PHẨM");
+        jLabel1.setLabelFor(SanPham);
+        jLabel1.setText("Sản phẩm");
+        SanPham.add(jLabel1, java.awt.BorderLayout.LINE_START);
 
-        javax.swing.GroupLayout SanPhamLayout = new javax.swing.GroupLayout(SanPham);
-        SanPham.setLayout(SanPhamLayout);
-        SanPhamLayout.setHorizontalGroup(
-            SanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SanPhamLayout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jLabel1)
-                .addContainerGap(85, Short.MAX_VALUE))
-        );
-        SanPhamLayout.setVerticalGroup(
-            SanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SanPhamLayout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
-        );
-
-        NavbarMenu.add(SanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 240, 40));
-
-        NhapHang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        NhapHang.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        NhapHang.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                NhapHangMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                NhapHangMousePressed(evt);
-            }
-        });
-
-        jLabel2.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_import_25px.png"))); // NOI18N
-        jLabel2.setText("NHẬP HÀNG");
-
-        javax.swing.GroupLayout NhapHangLayout = new javax.swing.GroupLayout(NhapHang);
-        NhapHang.setLayout(NhapHangLayout);
-        NhapHangLayout.setHorizontalGroup(
-            NhapHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NhapHangLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jLabel2)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-        NhapHangLayout.setVerticalGroup(
-            NhapHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NhapHangLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        NavbarMenu.add(NhapHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 240, -1));
-
-        PhieuNhap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        PhieuNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        PhieuNhap.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                PhieuNhapMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                PhieuNhapMousePressed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_file_25px_2.png"))); // NOI18N
-        jLabel3.setText("PHIẾU NHẬP");
-
-        javax.swing.GroupLayout PhieuNhapLayout = new javax.swing.GroupLayout(PhieuNhap);
-        PhieuNhap.setLayout(PhieuNhapLayout);
-        PhieuNhapLayout.setHorizontalGroup(
-            PhieuNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PhieuNhapLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel3)
-                .addContainerGap(76, Short.MAX_VALUE))
-        );
-        PhieuNhapLayout.setVerticalGroup(
-            PhieuNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PhieuNhapLayout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addContainerGap())
-        );
-
-        NavbarMenu.add(PhieuNhap, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 290, 240, 40));
-
-        XuatHang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        XuatHang.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        XuatHang.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                XuatHangMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                XuatHangMousePressed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_export_25px.png"))); // NOI18N
-        jLabel4.setText("XUẤT HÀNG");
-
-        javax.swing.GroupLayout XuatHangLayout = new javax.swing.GroupLayout(XuatHang);
-        XuatHang.setLayout(XuatHangLayout);
-        XuatHangLayout.setHorizontalGroup(
-            XuatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(XuatHangLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jLabel4)
-                .addContainerGap(79, Short.MAX_VALUE))
-        );
-        XuatHangLayout.setVerticalGroup(
-            XuatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, XuatHangLayout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addContainerGap())
-        );
-
-        NavbarMenu.add(XuatHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 240, 40));
-
-        DangXuat.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        DangXuat.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                DangXuatMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                DangXuatMousePressed(evt);
-            }
-        });
-
-        jLabel5.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_shutdown_25px.png"))); // NOI18N
-        jLabel5.setText("ĐĂNG XUẤT");
-
-        javax.swing.GroupLayout DangXuatLayout = new javax.swing.GroupLayout(DangXuat);
-        DangXuat.setLayout(DangXuatLayout);
-        DangXuatLayout.setHorizontalGroup(
-            DangXuatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(DangXuatLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jLabel5)
-                .addContainerGap(79, Short.MAX_VALUE))
-        );
-        DangXuatLayout.setVerticalGroup(
-            DangXuatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(DangXuatLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
-
-        NavbarMenu.add(DangXuat, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 240, -1));
+        pMainMenu.add(SanPham);
+        SanPham.getAccessibleContext().setAccessibleName("");
 
         NhaCungCap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        NhaCungCap.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         NhaCungCap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        NhaCungCap.setMinimumSize(new java.awt.Dimension(240, 36));
+        NhaCungCap.setPreferredSize(new java.awt.Dimension(240, 36));
         NhaCungCap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 NhaCungCapMouseClicked(evt);
@@ -295,45 +178,90 @@ public class Admin extends javax.swing.JFrame {
                 NhaCungCapMousePressed(evt);
             }
         });
+        NhaCungCap.setLayout(new java.awt.BorderLayout());
 
         jLabel6.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_supplier_25px.png"))); // NOI18N
-        jLabel6.setText("NHÀ CUNG CẤP");
+        jLabel6.setText("Nhà cung cấp");
+        NhaCungCap.add(jLabel6, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout NhaCungCapLayout = new javax.swing.GroupLayout(NhaCungCap);
-        NhaCungCap.setLayout(NhaCungCapLayout);
-        NhaCungCapLayout.setHorizontalGroup(
-            NhaCungCapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NhaCungCapLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel6)
-                .addContainerGap(46, Short.MAX_VALUE))
-        );
-        NhaCungCapLayout.setVerticalGroup(
-            NhaCungCapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NhaCungCapLayout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addContainerGap())
-        );
+        pMainMenu.add(NhaCungCap);
 
-        NavbarMenu.add(NhaCungCap, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 240, 40));
+        NhapHang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        NhapHang.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        NhapHang.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        NhapHang.setMinimumSize(new java.awt.Dimension(240, 36));
+        NhapHang.setPreferredSize(new java.awt.Dimension(240, 36));
+        NhapHang.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                NhapHangMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                NhapHangMousePressed(evt);
+            }
+        });
+        NhapHang.setLayout(new java.awt.BorderLayout());
 
-        NameUser.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        NameUser.setForeground(new java.awt.Color(255, 255, 255));
-        NameUser.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        NameUser.setText("ADMIN");
-        NameUser.setToolTipText("");
-        NavbarMenu.add(NameUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 160, -1));
+        jLabel2.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_import_25px.png"))); // NOI18N
+        jLabel2.setText("Nhập hàng");
+        NhapHang.add(jLabel2, java.awt.BorderLayout.CENTER);
 
-        jLabel8.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("HI !");
-        NavbarMenu.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, 40, -1));
+        pMainMenu.add(NhapHang);
+
+        PhieuNhap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        PhieuNhap.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        PhieuNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        PhieuNhap.setMinimumSize(new java.awt.Dimension(240, 36));
+        PhieuNhap.setPreferredSize(new java.awt.Dimension(240, 36));
+        PhieuNhap.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PhieuNhapMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                PhieuNhapMousePressed(evt);
+            }
+        });
+        PhieuNhap.setLayout(new java.awt.BorderLayout());
+
+        jLabel3.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_file_25px_2.png"))); // NOI18N
+        jLabel3.setText("Phiếu nhập");
+        PhieuNhap.add(jLabel3, java.awt.BorderLayout.CENTER);
+
+        pMainMenu.add(PhieuNhap);
+
+        XuatHang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        XuatHang.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        XuatHang.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        XuatHang.setMinimumSize(new java.awt.Dimension(240, 36));
+        XuatHang.setPreferredSize(new java.awt.Dimension(240, 36));
+        XuatHang.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                XuatHangMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                XuatHangMousePressed(evt);
+            }
+        });
+        XuatHang.setLayout(new java.awt.BorderLayout());
+
+        jLabel4.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_export_25px.png"))); // NOI18N
+        jLabel4.setText("Xuất hàng");
+        XuatHang.add(jLabel4, java.awt.BorderLayout.CENTER);
+
+        pMainMenu.add(XuatHang);
 
         PhieuXuat.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        PhieuXuat.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         PhieuXuat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        PhieuXuat.setMinimumSize(new java.awt.Dimension(240, 36));
+        PhieuXuat.setPreferredSize(new java.awt.Dimension(240, 36));
         PhieuXuat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 PhieuXuatMouseClicked(evt);
@@ -342,33 +270,21 @@ public class Admin extends javax.swing.JFrame {
                 PhieuXuatMousePressed(evt);
             }
         });
+        PhieuXuat.setLayout(new java.awt.BorderLayout());
 
         jLabel9.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_database_daily_export_25px.png"))); // NOI18N
-        jLabel9.setText("PHIẾU XUẤT");
+        jLabel9.setText("Phiếu xuất");
+        PhieuXuat.add(jLabel9, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout PhieuXuatLayout = new javax.swing.GroupLayout(PhieuXuat);
-        PhieuXuat.setLayout(PhieuXuatLayout);
-        PhieuXuatLayout.setHorizontalGroup(
-            PhieuXuatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PhieuXuatLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jLabel9)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-        PhieuXuatLayout.setVerticalGroup(
-            PhieuXuatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PhieuXuatLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel9)
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
-
-        NavbarMenu.add(PhieuXuat, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 240, 40));
+        pMainMenu.add(PhieuXuat);
 
         TonKho.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        TonKho.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         TonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TonKho.setMinimumSize(new java.awt.Dimension(240, 36));
+        TonKho.setPreferredSize(new java.awt.Dimension(240, 36));
         TonKho.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TonKhoMouseClicked(evt);
@@ -377,33 +293,21 @@ public class Admin extends javax.swing.JFrame {
                 TonKhoMousePressed(evt);
             }
         });
+        TonKho.setLayout(new java.awt.BorderLayout());
 
         jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
-        jLabel10.setText("TỒN KHO");
+        jLabel10.setText("Tồn kho");
+        TonKho.add(jLabel10, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout TonKhoLayout = new javax.swing.GroupLayout(TonKho);
-        TonKho.setLayout(TonKhoLayout);
-        TonKhoLayout.setHorizontalGroup(
-            TonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TonKhoLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
-        );
-        TonKhoLayout.setVerticalGroup(
-            TonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TonKhoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10)
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
-
-        NavbarMenu.add(TonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 240, -1));
+        pMainMenu.add(TonKho);
 
         TaiKhoan1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        TaiKhoan1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         TaiKhoan1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TaiKhoan1.setMinimumSize(new java.awt.Dimension(240, 36));
+        TaiKhoan1.setPreferredSize(new java.awt.Dimension(240, 36));
         TaiKhoan1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TaiKhoan1MouseClicked(evt);
@@ -412,33 +316,21 @@ public class Admin extends javax.swing.JFrame {
                 TaiKhoan1MousePressed(evt);
             }
         });
+        TaiKhoan1.setLayout(new java.awt.BorderLayout());
 
         jLabel12.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_test_account_25px.png"))); // NOI18N
-        jLabel12.setText("TÀI KHOẢN");
+        jLabel12.setText("Tài khoản");
+        TaiKhoan1.add(jLabel12, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout TaiKhoan1Layout = new javax.swing.GroupLayout(TaiKhoan1);
-        TaiKhoan1.setLayout(TaiKhoan1Layout);
-        TaiKhoan1Layout.setHorizontalGroup(
-            TaiKhoan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TaiKhoan1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel12)
-                .addContainerGap(85, Short.MAX_VALUE))
-        );
-        TaiKhoan1Layout.setVerticalGroup(
-            TaiKhoan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TaiKhoan1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel12)
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
-
-        NavbarMenu.add(TaiKhoan1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 450, 240, -1));
+        pMainMenu.add(TaiKhoan1);
 
         ThongKe.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        ThongKe.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         ThongKe.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ThongKe.setMinimumSize(new java.awt.Dimension(240, 36));
+        ThongKe.setPreferredSize(new java.awt.Dimension(240, 36));
         ThongKe.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ThongKeMouseClicked(evt);
@@ -447,33 +339,26 @@ public class Admin extends javax.swing.JFrame {
                 ThongKeMousePressed(evt);
             }
         });
+        ThongKe.setLayout(new java.awt.BorderLayout());
 
         jLabel13.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/statisticals.png"))); // NOI18N
-        jLabel13.setText("THỐNG KÊ");
+        jLabel13.setText("Thống kê");
+        ThongKe.add(jLabel13, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout ThongKeLayout = new javax.swing.GroupLayout(ThongKe);
-        ThongKe.setLayout(ThongKeLayout);
-        ThongKeLayout.setHorizontalGroup(
-            ThongKeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ThongKeLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel13)
-                .addContainerGap(91, Short.MAX_VALUE))
-        );
-        ThongKeLayout.setVerticalGroup(
-            ThongKeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ThongKeLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel13)
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
+        pMainMenu.add(ThongKe);
 
-        NavbarMenu.add(ThongKe, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 490, 240, -1));
+        NavbarMenu.add(pMainMenu, java.awt.BorderLayout.CENTER);
+
+        pBottom.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pBottom.setLayout(new java.awt.GridLayout(0, 1));
 
         Account.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        Account.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         Account.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Account.setMinimumSize(new java.awt.Dimension(240, 36));
+        Account.setPreferredSize(new java.awt.Dimension(240, 36));
         Account.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 AccountMouseClicked(evt);
@@ -482,47 +367,58 @@ public class Admin extends javax.swing.JFrame {
                 AccountMousePressed(evt);
             }
         });
+        Account.setLayout(new java.awt.BorderLayout());
 
         jLabel14.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-information-25.png"))); // NOI18N
-        jLabel14.setText("ĐỔI THÔNG TIN");
+        jLabel14.setText("Cá nhân");
+        Account.add(jLabel14, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout AccountLayout = new javax.swing.GroupLayout(Account);
-        Account.setLayout(AccountLayout);
-        AccountLayout.setHorizontalGroup(
-            AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(AccountLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
-        );
-        AccountLayout.setVerticalGroup(
-            AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(AccountLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14)
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
+        pBottom.add(Account);
 
-        NavbarMenu.add(Account, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 640, 240, -1));
+        DangXuat.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        DangXuat.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        DangXuat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        DangXuat.setMinimumSize(new java.awt.Dimension(240, 36));
+        DangXuat.setPreferredSize(new java.awt.Dimension(240, 36));
+        DangXuat.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DangXuatMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                DangXuatMousePressed(evt);
+            }
+        });
+        DangXuat.setLayout(new java.awt.BorderLayout());
 
-        getContentPane().add(NavbarMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 750));
+        jLabel5.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_shutdown_25px.png"))); // NOI18N
+        jLabel5.setText("Đăng xuất");
+        DangXuat.add(jLabel5, java.awt.BorderLayout.CENTER);
+
+        pBottom.add(DangXuat);
+
+        NavbarMenu.add(pBottom, java.awt.BorderLayout.SOUTH);
+
+        getContentPane().add(NavbarMenu, java.awt.BorderLayout.WEST);
 
         MainContent.setBackground(new java.awt.Color(255, 255, 255));
+        MainContent.setPreferredSize(new java.awt.Dimension(1180, 750));
 
         javax.swing.GroupLayout MainContentLayout = new javax.swing.GroupLayout(MainContent);
         MainContent.setLayout(MainContentLayout);
         MainContentLayout.setHorizontalGroup(
             MainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1180, Short.MAX_VALUE)
+            .addGap(0, 1177, Short.MAX_VALUE)
         );
         MainContentLayout.setVerticalGroup(
             MainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGap(0, 862, Short.MAX_VALUE)
         );
 
-        getContentPane().add(MainContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 0, 1180, 750));
+        getContentPane().add(MainContent, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -795,7 +691,12 @@ public class Admin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel lblRole;
+    private javax.swing.JPanel pBottom;
+    private javax.swing.JPanel pFullName;
+    private javax.swing.JPanel pMainMenu;
+    private javax.swing.JPanel pRole;
+    private javax.swing.JPanel pUserInfo;
     // End of variables declaration//GEN-END:variables
 }

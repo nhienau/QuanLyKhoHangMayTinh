@@ -10,6 +10,7 @@ import com.sun.jdi.connect.spi.Connection;
 import controller.BCrypt;
 import dao.AccountDAO;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import model.Account;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -39,7 +41,7 @@ public class Login extends javax.swing.JFrame {
         panDefualt = new Color(89, 168, 105);
         panClick = new Color(89, 168, 120);
         panEnter = new Color(89, 168, 120);
-        JPaneLogin.setBackground(panDefualt);
+        btnLogin.setBackground(panDefualt);
         ImageIcon logo = new ImageIcon(getClass().getResource("/icon/logo.png"));
         setIconImage(logo.getImage());
     }
@@ -53,23 +55,24 @@ public class Login extends javax.swing.JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        pContainer = new javax.swing.JPanel();
+        pIcon = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        loginUser = new javax.swing.JTextField();
-        passwordUser = new javax.swing.JPasswordField();
-        JPaneLogin = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        pForm = new javax.swing.JPanel();
+        pLoginForm = new javax.swing.JPanel();
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
+        lblForgotPassword = new javax.swing.JLabel();
+        btnLogin = new javax.swing.JPanel();
+        lblLogin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Đăng nhập vào phần mềm");
+        setPreferredSize(new java.awt.Dimension(800, 600));
         setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -77,179 +80,192 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jPanel1.setBackground(new java.awt.Color(13, 39, 51));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pContainer.setBackground(new java.awt.Color(13, 39, 51));
+        pContainer.setPreferredSize(new java.awt.Dimension(800, 600));
+        pContainer.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pIcon.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pIcon.setPreferredSize(new java.awt.Dimension(400, 600));
+        pIcon.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setFont(new java.awt.Font("Cantarell", 1, 65)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/user.png"))); // NOI18N
         jLabel1.setText("LOGIN");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 290, 250, 70));
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel1.setIconTextGap(0);
+        jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pIcon.add(jLabel1, java.awt.BorderLayout.CENTER);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/user.png"))); // NOI18N
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, -1, -1));
+        pContainer.add(pIcon, java.awt.BorderLayout.WEST);
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 580));
+        pForm.setBackground(new java.awt.Color(13, 39, 51));
+        pForm.setPreferredSize(new java.awt.Dimension(400, 600));
+        pForm.setLayout(new java.awt.GridBagLayout());
 
-        jLabel4.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Username");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 150, 110, 40));
+        pLoginForm.setBackground(new java.awt.Color(13, 39, 51));
+        pLoginForm.setName(""); // NOI18N
+        pLoginForm.setPreferredSize(new java.awt.Dimension(320, 270));
+        pLoginForm.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 320, 260, -1));
+        lblUsername.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        lblUsername.setForeground(new java.awt.Color(255, 255, 255));
+        lblUsername.setText("Username");
+        pLoginForm.add(lblUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        jLabel6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 230, 260, -1));
-
-        loginUser.setBackground(new java.awt.Color(13, 39, 51));
-        loginUser.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        loginUser.setForeground(new java.awt.Color(255, 255, 255));
-        loginUser.setBorder(null);
-        loginUser.addMouseListener(new java.awt.event.MouseAdapter() {
+        txtUsername.setBackground(new java.awt.Color(13, 39, 51));
+        txtUsername.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        txtUsername.setForeground(new java.awt.Color(255, 255, 255));
+        txtUsername.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtUsername.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)), javax.swing.BorderFactory.createEmptyBorder(0, 0, 2, 0)));
+        txtUsername.setCaretColor(new java.awt.Color(255, 255, 255));
+        txtUsername.setPreferredSize(new java.awt.Dimension(300, 26));
+        txtUsername.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                loginUserMouseEntered(evt);
+                txtUsernameMouseEntered(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                loginUserMousePressed(evt);
+                txtUsernameMousePressed(evt);
             }
         });
-        loginUser.addActionListener(new java.awt.event.ActionListener() {
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginUserActionPerformed(evt);
+                txtUsernameActionPerformed(evt);
             }
         });
-        loginUser.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                loginUserKeyPressed(evt);
+                txtUsernameKeyPressed(evt);
             }
         });
-        jPanel1.add(loginUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 200, 260, 30));
+        pLoginForm.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 340, 40));
 
-        passwordUser.setBackground(new java.awt.Color(13, 39, 51));
-        passwordUser.setForeground(new java.awt.Color(255, 255, 255));
-        passwordUser.setBorder(null);
-        passwordUser.addKeyListener(new java.awt.event.KeyAdapter() {
+        lblPassword.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        lblPassword.setForeground(new java.awt.Color(255, 255, 255));
+        lblPassword.setText("Password");
+        pLoginForm.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
+
+        txtPassword.setBackground(new java.awt.Color(13, 39, 51));
+        txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtPassword.setForeground(new java.awt.Color(255, 255, 255));
+        txtPassword.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)), javax.swing.BorderFactory.createEmptyBorder(0, 0, 2, 0)));
+        txtPassword.setCaretColor(new java.awt.Color(255, 255, 255));
+        txtPassword.setPreferredSize(new java.awt.Dimension(300, 27));
+        txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                passwordUserKeyPressed(evt);
+                txtPasswordKeyPressed(evt);
             }
         });
-        jPanel1.add(passwordUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 290, 260, 30));
+        pLoginForm.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 280, 40));
 
-        JPaneLogin.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        JPaneLogin.setToolTipText("");
-        JPaneLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        JPaneLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblForgotPassword.setFont(new java.awt.Font("SF Pro Display", 2, 16)); // NOI18N
+        lblForgotPassword.setForeground(new java.awt.Color(255, 255, 255));
+        lblForgotPassword.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblForgotPassword.setText("Quên mật khẩu?");
+        lblForgotPassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblForgotPassword.setPreferredSize(new java.awt.Dimension(300, 24));
+        lblForgotPassword.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JPaneLoginMouseClicked(evt);
+                lblForgotPasswordMouseClicked(evt);
+            }
+        });
+        pLoginForm.add(lblForgotPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, 280, 30));
+
+        btnLogin.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        btnLogin.setToolTipText("");
+        btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLogin.setPreferredSize(new java.awt.Dimension(300, 40));
+        btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnLoginMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                JPaneLoginMouseEntered(evt);
+                btnLoginMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                JPaneLoginMouseExited(evt);
+                btnLoginMouseExited(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                JPaneLoginMousePressed(evt);
+                btnLoginMousePressed(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                JPaneLoginMouseReleased(evt);
+                btnLoginMouseReleased(evt);
             }
         });
-        JPaneLogin.addKeyListener(new java.awt.event.KeyAdapter() {
+        btnLogin.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                JPaneLoginKeyPressed(evt);
+                btnLoginKeyPressed(evt);
             }
         });
+        btnLogin.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Đăng nhập");
+        lblLogin.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        lblLogin.setForeground(new java.awt.Color(255, 255, 255));
+        lblLogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogin.setText("Đăng nhập");
+        btnLogin.add(lblLogin, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout JPaneLoginLayout = new javax.swing.GroupLayout(JPaneLogin);
-        JPaneLogin.setLayout(JPaneLoginLayout);
-        JPaneLoginLayout.setHorizontalGroup(
-            JPaneLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JPaneLoginLayout.createSequentialGroup()
-                .addContainerGap(88, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(77, 77, 77))
-        );
-        JPaneLoginLayout.setVerticalGroup(
-            JPaneLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JPaneLoginLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        pLoginForm.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 200, 30));
 
-        jPanel1.add(JPaneLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 360, 270, 40));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        pForm.add(pLoginForm, gridBagConstraints);
+        pLoginForm.setLayout(new MigLayout("wrap, fillx", "[]", "[]12[]12[]12[]12[]12[]"));
 
-        jLabel8.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Password");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 250, 130, 40));
-
-        jLabel7.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Quên mật khẩu ?");
-        jLabel7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel7MouseClicked(evt);
-            }
-        });
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 420, -1, -1));
+        pContainer.add(pForm, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 797, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loginUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginUserActionPerformed
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_loginUserActionPerformed
+    }//GEN-LAST:event_txtUsernameActionPerformed
 
-    private void JPaneLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPaneLoginMouseEntered
+    private void btnLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseEntered
         // TODO add your handling code here:
-        JPaneLogin.setBackground(panEnter);
-    }//GEN-LAST:event_JPaneLoginMouseEntered
+        btnLogin.setBackground(panEnter);
+    }//GEN-LAST:event_btnLoginMouseEntered
 
-    private void JPaneLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPaneLoginMouseClicked
+    private void btnLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseClicked
         checkLogin();
 
 
-    }//GEN-LAST:event_JPaneLoginMouseClicked
+    }//GEN-LAST:event_btnLoginMouseClicked
 
-    private void JPaneLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPaneLoginMouseExited
+    private void btnLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseExited
         // TODO add your handling code here:
-        JPaneLogin.setBackground(panClick);
-    }//GEN-LAST:event_JPaneLoginMouseExited
+        btnLogin.setBackground(panClick);
+    }//GEN-LAST:event_btnLoginMouseExited
 
-    private void JPaneLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPaneLoginMousePressed
+    private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
         // TODO add your handling code here:
 
-        JPaneLogin.setBackground(panEnter);
-    }//GEN-LAST:event_JPaneLoginMousePressed
+        btnLogin.setBackground(panEnter);
+    }//GEN-LAST:event_btnLoginMousePressed
 
-    private void JPaneLoginMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JPaneLoginMouseReleased
+    private void btnLoginMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseReleased
         // TODO add your handling code here:
-        JPaneLogin.setBackground(panClick);
-    }//GEN-LAST:event_JPaneLoginMouseReleased
+        btnLogin.setBackground(panClick);
+    }//GEN-LAST:event_btnLoginMouseReleased
 
-    private void loginUserMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginUserMouseEntered
+    private void txtUsernameMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtUsernameMouseEntered
         // TODO add your handling code here:    
-    }//GEN-LAST:event_loginUserMouseEntered
+    }//GEN-LAST:event_txtUsernameMouseEntered
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         // TODO add your handling code here:
@@ -257,36 +273,36 @@ public class Login extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formKeyPressed
 
-    private void JPaneLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JPaneLoginKeyPressed
+    private void btnLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnLoginKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_JPaneLoginKeyPressed
+    }//GEN-LAST:event_btnLoginKeyPressed
 
-    private void loginUserKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginUserKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            // Enter was pressed. Your code goes here.
-            checkLogin();
-        }
-    }//GEN-LAST:event_loginUserKeyPressed
-
-    private void passwordUserKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordUserKeyPressed
+    private void txtUsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // Enter was pressed. Your code goes here.
             checkLogin();
         }
-    }//GEN-LAST:event_passwordUserKeyPressed
+    }//GEN-LAST:event_txtUsernameKeyPressed
 
-    private void loginUserMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginUserMousePressed
+    private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // Enter was pressed. Your code goes here.
+            checkLogin();
+        }
+    }//GEN-LAST:event_txtPasswordKeyPressed
+
+    private void txtUsernameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtUsernameMousePressed
         // TODO add your handling code here:
 
-    }//GEN-LAST:event_loginUserMousePressed
+    }//GEN-LAST:event_txtUsernameMousePressed
 
-    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
+    private void lblForgotPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblForgotPasswordMouseClicked
         // TODO add your handling code here:
         RecoverPassword rcv = new RecoverPassword(this, rootPaneCheckingEnabled);
         rcv.setVisible(true);
-    }//GEN-LAST:event_jLabel7MouseClicked
+    }//GEN-LAST:event_lblForgotPasswordMouseClicked
 
     /**
      * @param args the command line arguments
@@ -303,8 +319,8 @@ public class Login extends javax.swing.JFrame {
     }
 
     public void checkLogin() {
-        String usercheck = loginUser.getText();
-        String passwordcheck = passwordUser.getText();
+        String usercheck = txtUsername.getText();
+        String passwordcheck = txtPassword.getText();
         if (usercheck.equals("") || passwordcheck.equals("")) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
         } else {
@@ -354,18 +370,17 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel JPaneLogin;
+    private javax.swing.JPanel btnLogin;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField loginUser;
-    private javax.swing.JPasswordField passwordUser;
+    private javax.swing.JLabel lblForgotPassword;
+    private javax.swing.JLabel lblLogin;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblUsername;
+    private javax.swing.JPanel pContainer;
+    private javax.swing.JPanel pForm;
+    private javax.swing.JPanel pIcon;
+    private javax.swing.JPanel pLoginForm;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }
