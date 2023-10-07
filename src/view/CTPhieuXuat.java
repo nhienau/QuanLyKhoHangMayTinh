@@ -5,9 +5,9 @@
 package view;
 
 import controller.WritePDF;
-import dao.AccountDAO;
-import dao.ChiTietPhieuXuatDAO;
-import dao.MayTinhDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuXuatDAO;
+import OldDAO.MayTinhDAO;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import model.ChiTietPhieu;

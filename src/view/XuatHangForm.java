@@ -6,10 +6,10 @@ package view;
 
 import controller.SearchProduct;
 import controller.WritePDF;
-import dao.ChiTietPhieuXuatDAO;
-import dao.MayTinhDAO;
-import dao.PhieuNhapDAO;
-import dao.PhieuXuatDAO;
+import OldDAO.ChiTietPhieuXuatDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.PhieuNhapDAO;
+import OldDAO.PhieuXuatDAO;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

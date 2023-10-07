@@ -4,12 +4,12 @@
  */
 package view;
 
-import dao.AccountDAO;
-import dao.ChiTietPhieuNhapDAO;
-import dao.ChiTietPhieuXuatDAO;
-import dao.MayTinhDAO;
-import dao.PhieuNhapDAO;
-import dao.PhieuXuatDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuNhapDAO;
+import OldDAO.ChiTietPhieuXuatDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.PhieuNhapDAO;
+import OldDAO.PhieuXuatDAO;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;

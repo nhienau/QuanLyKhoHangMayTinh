@@ -5,9 +5,9 @@
 package view;
 
 import controller.SearchProduct;
-import dao.LaptopDAO;
-import dao.MayTinhDAO;
-import dao.PCDAO;
+import OldDAO.LaptopDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.PCDAO;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;

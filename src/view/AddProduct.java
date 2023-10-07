@@ -4,9 +4,9 @@
  */
 package view;
 
-import dao.LaptopDAO;
-import dao.MayTinhDAO;
-import dao.PCDAO;
+import OldDAO.LaptopDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.PCDAO;
 import java.awt.CardLayout;
 import java.util.ArrayList;
 import javax.swing.JFrame;

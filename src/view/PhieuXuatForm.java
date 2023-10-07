@@ -4,9 +4,9 @@
  */
 package view;
 
-import dao.AccountDAO;
-import dao.ChiTietPhieuXuatDAO;
-import dao.PhieuXuatDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuXuatDAO;
+import OldDAO.PhieuXuatDAO;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1,6 +1,6 @@
 package controller;
 
-import dao.MayTinhDAO;
+import OldDAO.MayTinhDAO;
 import java.util.ArrayList;
 import model.MayTinh;
 

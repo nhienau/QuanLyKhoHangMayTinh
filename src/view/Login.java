@@ -4,11 +4,14 @@
  */
 package view;
 
+import BUS.NguoiDungBUS;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mysql.cj.protocol.Resultset;
 import com.sun.jdi.connect.spi.Connection;
-import controller.BCrypt;
-import dao.AccountDAO;
+import helper.BCrypt;
+import OldDAO.AccountDAO;
+import DTO.NguoiDungDTO;
+import helper.Validation;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.event.KeyEvent;
@@ -20,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import model.Account;
 import net.miginfocom.swing.MigLayout;
+import java.sql.SQLException;
 
 /**
  *
@@ -33,6 +37,8 @@ public class Login extends javax.swing.JFrame {
     Connection con = null;
     Resultset rs = null;
     Color panDefualt, panEnter, panClick;
+    
+    NguoiDungBUS ndBUS = new NguoiDungBUS();
 
     public Login() {
         initComponents();
@@ -242,9 +248,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginMouseEntered
 
     private void btnLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseClicked
-        checkLogin();
-
-
+        handleLogin();
     }//GEN-LAST:event_btnLoginMouseClicked
 
     private void btnLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseExited
@@ -269,8 +273,6 @@ public class Login extends javax.swing.JFrame {
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         // TODO add your handling code here:
-        System.out.println(evt.getKeyCode());
-
     }//GEN-LAST:event_formKeyPressed
 
     private void btnLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnLoginKeyPressed
@@ -281,7 +283,7 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // Enter was pressed. Your code goes here.
-            checkLogin();
+            handleLogin();
         }
     }//GEN-LAST:event_txtUsernameKeyPressed
 
@@ -289,7 +291,7 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // Enter was pressed. Your code goes here.
-            checkLogin();
+            handleLogin();
         }
     }//GEN-LAST:event_txtPasswordKeyPressed
 
@@ -318,55 +320,105 @@ public class Login extends javax.swing.JFrame {
         });
     }
 
-    public void checkLogin() {
-        String usercheck = txtUsername.getText();
-        String passwordcheck = txtPassword.getText();
-        if (usercheck.equals("") || passwordcheck.equals("")) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-        } else {
-            try {                
-                Account acc = AccountDAO.getInstance().selectById(usercheck);                
-                if (acc == null) {
-                    JOptionPane.showMessageDialog(this, "Tài khoản không tồn tại trên hệ thống !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    if (BCrypt.checkpw(passwordcheck, acc.getPassword())) {
-                        if (acc.getStatus() == 1) {
-                            try {
-                                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-                                this.dispose();
-                                String role = acc.getRole();
-                                if (role.equals("Admin")) {
-                                    Admin ad = new Admin(acc);
-                                    ad.setVisible(true);
-//                                    ad.setCurrentAcc(acc);
-                                    ad.setName(acc.getFullName());
-                                } else if (role.equals("Quản lý kho")) {
-                                    QuanLiKho ql = new QuanLiKho();
-                                    ql.setVisible(true);
-                                    ql.setCurrentAcc(acc);
-                                    ql.setName(acc.getFullName());
-                                } else if (role.equals("Nhân viên nhập")) {
-                                    NhapKho ql = new NhapKho(acc);
-                                    ql.setVisible(true);
-                                    ql.setName(acc.getFullName());
-                                } else if (role.equals("Nhân viên xuất")) {
-                                    XuatKho ql = new XuatKho(acc);
-                                    ql.setVisible(true);
-                                    ql.setName(acc.getFullName());
-                                }
-                            } catch (UnsupportedLookAndFeelException ex) {
-                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Tài khoản của bạn đã bị khóa !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Sai mật khẩu !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-                    }
-                }
-            } catch (Exception e) {
-            }
+    public void handleLogin() {
+//        String usercheck = txtUsername.getText();
+//        String passwordcheck = txtPassword.getText();
+//        if (usercheck.equals("") || passwordcheck.equals("")) {
+//            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
+//        } else {
+//            try {
+//                Account acc = AccountDAO.getInstance().selectById(usercheck);
+//                if (acc == null) {
+//                    JOptionPane.showMessageDialog(this, "Tài khoản không tồn tại trên hệ thống !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
+//                } else {
+//                    if (BCrypt.checkpw(passwordcheck, acc.getPassword())) {
+//                        if (acc.getStatus() == 1) {
+//                            try {
+//                                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+//                                this.dispose();
+//                                String role = acc.getRole();
+//                                if (role.equals("Admin")) {
+//                                    Admin ad = new Admin(acc);
+//                                    ad.setVisible(true);
+////                                    ad.setCurrentAcc(acc);
+//                                    ad.setName(acc.getFullName());
+//                                } else if (role.equals("Quản lý kho")) {
+//                                    QuanLiKho ql = new QuanLiKho();
+//                                    ql.setVisible(true);
+//                                    ql.setCurrentAcc(acc);
+//                                    ql.setName(acc.getFullName());
+//                                } else if (role.equals("Nhân viên nhập")) {
+//                                    NhapKho ql = new NhapKho(acc);
+//                                    ql.setVisible(true);
+//                                    ql.setName(acc.getFullName());
+//                                } else if (role.equals("Nhân viên xuất")) {
+//                                    XuatKho ql = new XuatKho(acc);
+//                                    ql.setVisible(true);
+//                                    ql.setName(acc.getFullName());
+//                                }
+//                            } catch (UnsupportedLookAndFeelException ex) {
+//                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                        } else {
+//                            JOptionPane.showMessageDialog(this, "Tài khoản của bạn đã bị khóa !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
+//                        }
+//                    } else {
+//                        JOptionPane.showMessageDialog(this, "Sai mật khẩu !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
+//                    }
+//                }
+//            } catch (Exception e) {
+//            }
+//        }
+
+        String username = txtUsername.getText();
+        String password = new String(txtPassword.getPassword());
+        
+        if (!checkInput(username, password)) {
+            return;
         }
+        
+        if (!Validation.isValidUsername(username)) {
+            JOptionPane.showMessageDialog(Login.this, "Tài khoản không hợp lệ", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        NguoiDungDTO user = null;
+        try {
+            user = ndBUS.verifyLogin(username);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        if (user == null || !BCrypt.checkpw(password, user.getMatKhau())) {
+            JOptionPane.showMessageDialog(Login.this, "Tên đăng nhập hoặc mật khẩu không hợp lệ!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (user.getTrangThai() == 0) {
+            JOptionPane.showMessageDialog(Login.this, "Tài khoản của bạn đã bị khoá.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // Login successfully, check authorization
+            
+        }
+    }
+    
+    public boolean checkInput(String username, String password) {
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(Login.this, "Bạn chưa nhập tài khoản, mật khẩu", "Error", JOptionPane.ERROR_MESSAGE);
+            if (username.isEmpty()) {
+                txtUsername.requestFocus();
+            } else if (password.isEmpty()) {
+                txtPassword.requestFocus();
+            }
+            return false;
+        }
+        return true;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

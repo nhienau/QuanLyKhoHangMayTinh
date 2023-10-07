@@ -4,8 +4,8 @@
  */
 package view;
 
-import dao.LaptopDAO;
-import dao.PCDAO;
+import OldDAO.LaptopDAO;
+import OldDAO.PCDAO;
 import java.awt.CardLayout;
 import java.text.DecimalFormat;
 import javax.swing.JFrame;

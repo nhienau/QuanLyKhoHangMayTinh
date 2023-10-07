@@ -5,13 +5,13 @@
 package view;
 
 import controller.WritePDF;
-import dao.AccountDAO;
-import dao.ChiTietPhieuNhapDAO;
-import dao.ChiTietPhieuXuatDAO;
-import dao.MayTinhDAO;
-import dao.NhaCungCapDAO;
-import dao.PhieuNhapDAO;
-import dao.PhieuXuatDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuNhapDAO;
+import OldDAO.ChiTietPhieuXuatDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.NhaCungCapDAO;
+import OldDAO.PhieuNhapDAO;
+import OldDAO.PhieuXuatDAO;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

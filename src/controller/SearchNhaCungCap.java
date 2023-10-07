@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.NhaCungCapDAO;
+import OldDAO.NhaCungCapDAO;
 import java.util.ArrayList;
 import model.NhaCungCap;
 

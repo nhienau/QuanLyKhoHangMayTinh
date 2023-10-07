@@ -6,12 +6,12 @@ package view;
 
 import controller.ConvertDate;
 import controller.SearchAccount;
-import dao.AccountDAO;
-import dao.MayTinhDAO;
-import dao.NhaCungCapDAO;
-import dao.PhieuNhapDAO;
-import dao.PhieuXuatDAO;
-import dao.ThongKeDAO;
+import OldDAO.AccountDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.NhaCungCapDAO;
+import OldDAO.PhieuNhapDAO;
+import OldDAO.PhieuXuatDAO;
+import OldDAO.ThongKeDAO;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

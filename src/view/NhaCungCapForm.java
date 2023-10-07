@@ -5,7 +5,7 @@
 package view;
 
 import controller.SearchNhaCungCap;
-import dao.NhaCungCapDAO;
+import OldDAO.NhaCungCapDAO;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
