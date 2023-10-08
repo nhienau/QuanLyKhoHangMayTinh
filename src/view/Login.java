@@ -4,13 +4,18 @@
  */
 package view;
 
+import BUS.ChiTietQuyenBUS;
 import BUS.NguoiDungBUS;
+import BUS.NhomQuyenBUS;
+import DTO.ChiTietQuyenDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mysql.cj.protocol.Resultset;
 import com.sun.jdi.connect.spi.Connection;
 import helper.BCrypt;
 import OldDAO.AccountDAO;
 import DTO.NguoiDungDTO;
+import DTO.NhomQuyenDTO;
+import GUI.MainLayout;
 import helper.Validation;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -24,6 +29,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import model.Account;
 import net.miginfocom.swing.MigLayout;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -39,6 +46,8 @@ public class Login extends javax.swing.JFrame {
     Color panDefualt, panEnter, panClick;
     
     NguoiDungBUS ndBUS = new NguoiDungBUS();
+    NhomQuyenBUS nqBUS = new NhomQuyenBUS();
+    ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
 
     public Login() {
         initComponents();
@@ -77,8 +86,7 @@ public class Login extends javax.swing.JFrame {
         lblLogin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Đăng nhập vào phần mềm");
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setTitle("Quản lý kho hàng máy tính");
         setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -370,9 +378,10 @@ public class Login extends javax.swing.JFrame {
 //            }
 //        }
 
+        // Validate input
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
-        
+
         if (!checkInput(username, password)) {
             return;
         }
@@ -382,6 +391,7 @@ public class Login extends javax.swing.JFrame {
             return;
         }
         
+        // Authentication
         NguoiDungDTO user = null;
         try {
             user = ndBUS.verifyLogin(username);
@@ -396,16 +406,53 @@ public class Login extends javax.swing.JFrame {
         }
         
         if (user == null || !BCrypt.checkpw(password, user.getMatKhau())) {
-            JOptionPane.showMessageDialog(Login.this, "Tên đăng nhập hoặc mật khẩu không hợp lệ!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(Login.this, "Tên đăng nhập hoặc mật khẩu không đúng.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         if (user.getTrangThai() == 0) {
             JOptionPane.showMessageDialog(Login.this, "Tài khoản của bạn đã bị khoá.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Login successfully, check authorization
-            
+            return;
         }
+        
+        NhomQuyenDTO permissionInfo = null;
+        try {
+            permissionInfo = nqBUS.getPermissionById(user.getMaNhomQuyen());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        if (permissionInfo.getTrangThai() == 0) {
+            JOptionPane.showMessageDialog(Login.this, "Đăng nhập thất bại do tài khoản của bạn thuộc vào nhóm quyền không còn hiệu lực.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Authorization
+        List<ChiTietQuyenDTO> permission = new ArrayList<>();
+        try {
+            permission = ctqBUS.getAuthorization(user.getMaNhomQuyen());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        try {
+            MainLayout mainApp = new MainLayout(user, permissionInfo, permission);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
     }
     
     public boolean checkInput(String username, String password) {
