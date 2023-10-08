@@ -7,7 +7,7 @@ package view;
 import com.formdev.flatlaf.FlatLightLaf;
 import controller.BCrypt;
 import controller.SendEmailSMTP;
-import dao.AccountDAO;
+import OldDAO.AccountDAO;
 import java.awt.CardLayout;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;

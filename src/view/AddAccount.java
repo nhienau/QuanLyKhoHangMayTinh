@@ -7,7 +7,7 @@ package view;
 import controller.BCrypt;
 import javax.swing.JOptionPane;
 import model.Account;
-import dao.AccountDAO;
+import OldDAO.AccountDAO;
 
 /**
  *

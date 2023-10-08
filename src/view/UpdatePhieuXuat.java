@@ -6,12 +6,12 @@ package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import controller.SearchProduct;
-import dao.AccountDAO;
-import dao.ChiTietPhieuXuatDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuXuatDAO;
 import java.sql.Timestamp;
-import dao.MayTinhDAO;
-import dao.NhaCungCapDAO;
-import dao.PhieuXuatDAO;
+import OldDAO.MayTinhDAO;
+import OldDAO.NhaCungCapDAO;
+import OldDAO.PhieuXuatDAO;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JFrame;

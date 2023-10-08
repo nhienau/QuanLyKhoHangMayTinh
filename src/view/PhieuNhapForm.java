@@ -4,10 +4,10 @@
  */
 package view;
 
-import dao.AccountDAO;
-import dao.ChiTietPhieuNhapDAO;
-import dao.NhaCungCapDAO;
-import dao.PhieuNhapDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuNhapDAO;
+import OldDAO.NhaCungCapDAO;
+import OldDAO.PhieuNhapDAO;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;

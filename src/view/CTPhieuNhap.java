@@ -5,9 +5,9 @@
 package view;
 
 import controller.WritePDF;
-import dao.AccountDAO;
-import dao.ChiTietPhieuNhapDAO;
-import dao.MayTinhDAO;
+import OldDAO.AccountDAO;
+import OldDAO.ChiTietPhieuNhapDAO;
+import OldDAO.MayTinhDAO;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;

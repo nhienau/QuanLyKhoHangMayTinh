@@ -5,7 +5,7 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import dao.NhaCungCapDAO;
+import OldDAO.NhaCungCapDAO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
