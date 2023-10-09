@@ -4,6 +4,9 @@
  */
 package view;
 
+import BUS.ChiTietQuyenBUS;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import OldDAO.AccountDAO;
 import OldDAO.ChiTietPhieuXuatDAO;
 import OldDAO.PhieuXuatDAO;
@@ -14,12 +17,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -44,7 +49,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author Tran Nhat Sinh
  */
 public class PhieuXuatForm extends javax.swing.JInternalFrame {
-
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private DefaultTableModel tblModel;
     DecimalFormat formatter = new DecimalFormat("###,###,###");
     SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/YYYY HH:mm");
@@ -55,6 +60,24 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
 
     public SimpleDateFormat getFormatDate() {
         return formatDate;
+    }
+    
+    public PhieuXuatForm(NguoiDungDTO user) {
+        initComponents();
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        tblPhieuXuat.setDefaultEditor(Object.class, null);
+        initTable();
+        jDateChooserFrom.setDateFormatString("dd/MM/yyyy");
+        jDateChooserTo.setDateFormatString("dd/MM/yyyy");
+        
+        // Authorization
+        javax.swing.JButton[] buttons = {btnAdd};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+        
+        // loadDataToTable();
+        
     }
 
     public PhieuXuatForm(Account accCur) {
@@ -67,10 +90,39 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
         jDateChooserFrom.setDateFormatString("dd/MM/yyyy");
         jDateChooserTo.setDateFormatString("dd/MM/yyyy");
         if (accCur.getRole().equals("Nhân viên xuất")) {
-            btnDelete.setEnabled(false);
-            btnEdit.setEnabled(false);
+//            btnDelete.setEnabled(false);
+//            btnEdit.setEnabled(false);
             btnImportExcel.setEnabled(false);
             jButton6.setEnabled(false);
+        }
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "phieuxuat");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(PhieuXuatForm.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(PhieuXuatForm.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
         }
     }
 
@@ -106,8 +158,7 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        btnDelete = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         jButton6 = new javax.swing.JButton();
@@ -139,34 +190,19 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
         jToolBar1.setRollover(true);
 
-        btnDelete.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
-        btnDelete.setText("Xoá");
-        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
+        btnAdd.setText("Thêm");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnAdd.setFocusable(false);
+        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnAddActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnDelete);
+        jToolBar1.add(btnAdd);
 
-        btnEdit.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
-        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
-        btnEdit.setText("Sửa");
-        btnEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEdit.setFocusable(false);
-        btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnEdit);
-
-        btnDetail.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
         btnDetail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_eye_40px.png"))); // NOI18N
         btnDetail.setText("Xem chi tiết");
         btnDetail.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -181,7 +217,6 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
         jToolBar1.add(btnDetail);
         jToolBar1.add(jSeparator1);
 
-        jButton6.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
         jButton6.setText("Xuất Excel");
         jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -194,7 +229,6 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(jButton6);
 
-        btnImportExcel.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
         btnImportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
         btnImportExcel.setText("Nhập Excel");
         btnImportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -221,7 +255,7 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
                 jTextFieldSearchKeyReleased(evt);
             }
         });
-        jPanel3.add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 30, 310, 40));
+        jPanel3.add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 30, 310, 40));
 
         jButton7.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
@@ -358,14 +392,14 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1)
                         .addGap(6, 6, 6))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
@@ -389,15 +423,6 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-        if (tblPhieuXuat.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu cần xoá");
-        } else {
-            deletePhieu(getPhieuXuatSelect());
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
     public void deletePhieu(PhieuXuat pn) {
         int result = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xoá " + pn.getMaPhieu(), "Xác nhận xoá phiếu", JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
@@ -410,20 +435,6 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
             loadDataToTable();
         }
     }
-
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
-        if (tblPhieuXuat.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu cần sửa");
-        } else {
-            try {
-                UpdatePhieuXuat a = new UpdatePhieuXuat(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-                a.setVisible(true);
-            } catch (UnsupportedLookAndFeelException ex) {
-                Logger.getLogger(PhieuXuatForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_btnEditActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
@@ -564,6 +575,12 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
         searchAllCheck();
     }//GEN-LAST:event_giaDenKeyReleased
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        AddNhaCungCap a = new AddNhaCungCap(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
+        a.setVisible(true);
+    }//GEN-LAST:event_btnAddActionPerformed
+
     public PhieuXuat getPhieuXuatSelect() {
         int i_row = tblPhieuXuat.getSelectedRow();
         PhieuXuat pn = PhieuXuatDAO.getInstance().selectAll().get(i_row);
@@ -571,9 +588,8 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDetail;
-    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnImportExcel;
     private javax.swing.JTextField giaDen;
     private javax.swing.JTextField giaTu;

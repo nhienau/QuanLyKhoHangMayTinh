@@ -4,6 +4,7 @@
  */
 package view;
 
+import DTO.NguoiDungDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import controller.BCrypt;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ public class ChangePassword extends javax.swing.JDialog {
      * Creates new form AddAccount
      */
     private Account accCur;
+    private NguoiDungDTO user;
 
     public Account getAccCur() {
         return accCur;
@@ -46,6 +48,15 @@ public class ChangePassword extends javax.swing.JDialog {
         this.accCur = t;
         tenTaiKhoan.setText(this.accCur.getFullName());
         email.setText(this.accCur.getEmail());
+    }
+    
+    public ChangePassword(javax.swing.JFrame parent, boolean modal, NguoiDungDTO user) {
+        super(parent, modal);
+        initComponents();
+        setLocationRelativeTo(null);
+        this.user = user;
+        
+        // setText...
     }
 
     ChangePassword() {

@@ -4,6 +4,7 @@
  */
 package view;
 
+import DTO.NguoiDungDTO;
 import controller.SearchProduct;
 import controller.WritePDF;
 import OldDAO.ChiTietPhieuXuatDAO;
@@ -48,6 +49,26 @@ public class XuatHangForm extends javax.swing.JInternalFrame {
     private ArrayList<MayTinh> allProduct;
     private String MaPhieu;
     private ArrayList<ChiTietPhieu> CTPhieu;
+    private NguoiDungDTO user;
+    
+    public XuatHangForm(NguoiDungDTO user) {
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        initComponents();
+//        allProduct = MayTinhDAO.getInstance().selectAllExist();
+        // Định dạng độ rộng
+        initTable();
+//        loadDataToTableProduct(allProduct);
+        tblSanPham.setDefaultEditor(Object.class, null);
+        tblNhapHang.setDefaultEditor(Object.class, null);
+//        MaPhieu = createId(PhieuXuatDAO.getInstance().selectAll());
+//        txtMaPhieu.setText(MaPhieu);
+        CTPhieu = new ArrayList<ChiTietPhieu>();
+        txtNguoiTao.setFocusable(false);
+        
+        this.user = user;
+        txtNguoiTao.setText(user.getHoTen());
+    }
 
     public XuatHangForm() {
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();

@@ -4,6 +4,9 @@
  */
 package view;
 
+import BUS.ChiTietQuyenBUS;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import controller.SearchProduct;
 import OldDAO.LaptopDAO;
 import OldDAO.MayTinhDAO;
@@ -15,8 +18,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -46,6 +51,23 @@ public class ProductForm extends javax.swing.JInternalFrame {
 
     private DefaultTableModel tblModel;
     DecimalFormat formatter = new DecimalFormat("###,###,###");
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
+    
+    public ProductForm(NguoiDungDTO user) {
+        initComponents();
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        tblSanPham.setDefaultEditor(Object.class, null);
+        initTable();
+        changeTextFind();
+        
+        // Authorization
+        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+
+        // loadDataToTable();
+    }
     
     public ProductForm() {
         initComponents();
@@ -55,6 +77,43 @@ public class ProductForm extends javax.swing.JInternalFrame {
         initTable();
         loadDataToTable();
         changeTextFind();
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "sanpham");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(ProductForm.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ProductForm.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("update")) {
+                btnEdit.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("delete")) {
+                btnDelete.setEnabled(true);
+                continue;
+            }
+        }
     }
     
     public void checkRole(Account t) {
@@ -269,8 +328,8 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1168, Short.MAX_VALUE))
                 .addContainerGap())

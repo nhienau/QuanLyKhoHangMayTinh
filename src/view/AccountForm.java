@@ -4,6 +4,9 @@
  */
 package view;
 
+import BUS.ChiTietQuyenBUS;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import controller.BCrypt;
 import controller.SearchAccount;
 import java.util.logging.Level;
@@ -23,6 +26,8 @@ import javax.swing.UIManager;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JFrame;
 import model.NhaCungCap;
 import org.apache.poi.ss.usermodel.Cell;
@@ -42,8 +47,25 @@ public class AccountForm extends javax.swing.JInternalFrame {
     /**
      * Creates new form AccountForm
      */
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private DefaultTableModel tblModel;
     private ArrayList<Account> accounts = AccountDAO.getInstance().selectAll();
+    
+    public AccountForm(NguoiDungDTO user) {
+        initComponents();
+        UIManager.put("Table.showVerticalLines", true);
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        tblAccount.setDefaultEditor(Object.class, null);
+        initTable();
+        
+        // Authorization
+        javax.swing.JButton[] buttons = {btnAdd, btnDeleteAccount, btnEditAccount};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+        
+        // loadDataToTable(accounts);
+    }
 
     public AccountForm() {
         initComponents();
@@ -53,6 +75,43 @@ public class AccountForm extends javax.swing.JInternalFrame {
         tblAccount.setDefaultEditor(Object.class, null);
         initTable();
         loadDataToTable(accounts);
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "taikhoan");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(AccountForm.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(AccountForm.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("update")) {
+                btnEditAccount.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("delete")) {
+                btnDeleteAccount.setEnabled(true);
+                continue;
+            }
+        }
     }
 
     public final void initTable() {
@@ -106,7 +165,7 @@ public class AccountForm extends javax.swing.JInternalFrame {
         btnAdd = new javax.swing.JButton();
         btnDeleteAccount = new javax.swing.JButton();
         btnEditAccount = new javax.swing.JButton();
-        btnEditAccount1 = new javax.swing.JButton();
+        btnResetAccount = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         exportExcel = new javax.swing.JButton();
         importExcel = new javax.swing.JButton();
@@ -245,18 +304,18 @@ public class AccountForm extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnEditAccount);
 
-        btnEditAccount1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-update-left-rotation-40.png"))); // NOI18N
-        btnEditAccount1.setText("Đặt lại");
-        btnEditAccount1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEditAccount1.setFocusable(false);
-        btnEditAccount1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEditAccount1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEditAccount1.addActionListener(new java.awt.event.ActionListener() {
+        btnResetAccount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-update-left-rotation-40.png"))); // NOI18N
+        btnResetAccount.setText("Đặt lại");
+        btnResetAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnResetAccount.setFocusable(false);
+        btnResetAccount.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnResetAccount.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnResetAccount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditAccount1ActionPerformed(evt);
+                btnResetAccountActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnEditAccount1);
+        jToolBar1.add(btnResetAccount);
         jToolBar1.add(jSeparator1);
 
         exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
@@ -522,7 +581,7 @@ public class AccountForm extends javax.swing.JInternalFrame {
         loadDataToTable(result);
     }//GEN-LAST:event_txtSearchKeyReleased
 
-    private void btnEditAccount1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditAccount1ActionPerformed
+    private void btnResetAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetAccountActionPerformed
         // TODO add your handling code here:
         if (tblAccount.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần đặt lại mật khẩu !");
@@ -548,7 +607,7 @@ public class AccountForm extends javax.swing.JInternalFrame {
                 }
             }
         }
-    }//GEN-LAST:event_btnEditAccount1ActionPerformed
+    }//GEN-LAST:event_btnResetAccountActionPerformed
 
     public void openFile(String file) {
         try {
@@ -564,7 +623,7 @@ public class AccountForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDeleteAccount;
     private javax.swing.JButton btnEditAccount;
-    private javax.swing.JButton btnEditAccount1;
+    private javax.swing.JButton btnResetAccount;
     private javax.swing.JButton btnreset;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbxLuachon;

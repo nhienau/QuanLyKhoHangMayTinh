@@ -4,6 +4,9 @@
  */
 package view;
 
+import BUS.ChiTietQuyenBUS;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import OldDAO.AccountDAO;
 import OldDAO.ChiTietPhieuNhapDAO;
 import OldDAO.NhaCungCapDAO;
@@ -15,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,17 +42,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.Iterator;
+import java.util.List;
 import model.Account;
 import model.PhieuNhap;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-/**
- *
- * @author Tran Nhat Sinh Con lon
- */
 public class PhieuNhapForm extends javax.swing.JInternalFrame {
-
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private DefaultTableModel tblModel;
     DecimalFormat formatter = new DecimalFormat("###,###,###");
     SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/YYYY HH:mm");
@@ -59,6 +60,25 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
 
     public SimpleDateFormat getFormatDate() {
         return formatDate;
+    }
+    
+    public PhieuNhapForm(NguoiDungDTO user) {
+        initComponents();
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        tblPhieuNhap.setDefaultEditor(Object.class, null);
+        initTable();
+        jDateChooserFrom.setDateFormatString("dd/MM/yyyy");
+        jDateChooserTo.setDateFormatString("dd/MM/yyyy");
+        
+        // Authorization
+        javax.swing.JButton[] buttons = {btnAdd};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+        
+//        loadDataToTable();
+//        changeTextFind();
+
     }
 
     public PhieuNhapForm(Account accCur) {
@@ -72,10 +92,39 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         jDateChooserFrom.setDateFormatString("dd/MM/yyyy");
         jDateChooserTo.setDateFormatString("dd/MM/yyyy");
         if (accCur.getRole().equals("Nhân viên nhập")) {
-            btnDelete.setEnabled(false);
-            btnEdit.setEnabled(false);
+//            btnDelete.setEnabled(false);
+//            btnEdit.setEnabled(false);
             btnImportExcel.setEnabled(false);
             jButton6.setEnabled(false);
+        }
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "phieunhap");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(PhieuNhapForm.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(PhieuNhapForm.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
         }
     }
 
@@ -218,8 +267,7 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        btnDelete = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         jButton6 = new javax.swing.JButton();
@@ -251,30 +299,18 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
         jToolBar1.setRollover(true);
 
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
-        btnDelete.setText("Xoá");
-        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
+        btnAdd.setText("Thêm");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.setFocusable(false);
+        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnAddActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnDelete);
-
-        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
-        btnEdit.setText("Sửa");
-        btnEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEdit.setFocusable(false);
-        btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnEdit);
+        jToolBar1.add(btnAdd);
 
         btnDetail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_eye_40px.png"))); // NOI18N
         btnDetail.setText("Xem chi tiết");
@@ -460,8 +496,8 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(131, 131, 131)
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -486,15 +522,6 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-        if (tblPhieuNhap.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu cần xoá");
-        } else {
-            deletePhieuNhap(getPhieuNhapSelect());
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
     public void deletePhieuNhap(PhieuNhap pn) {
         int result = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xoá " + pn.getMaPhieu(), "Xác nhận xoá phiếu", JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
@@ -507,20 +534,6 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
             loadDataToTable();
         }
     }
-
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
-        if (tblPhieuNhap.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu cần sửa");
-        } else {
-            try {
-                UpdatePhieuNhap a = new UpdatePhieuNhap(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-                a.setVisible(true);
-            } catch (UnsupportedLookAndFeelException ex) {
-                Logger.getLogger(PhieuNhapForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_btnEditActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
@@ -676,6 +689,10 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         searchAllRepect();
     }//GEN-LAST:event_jDateChooserToPropertyChange
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        
+    }//GEN-LAST:event_btnAddActionPerformed
+
     public PhieuNhap getPhieuNhapSelect() {
         int i_row = tblPhieuNhap.getSelectedRow();
         PhieuNhap pn = PhieuNhapDAO.getInstance().selectById(tblModel.getValueAt(i_row, 1).toString());
@@ -706,9 +723,8 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDetail;
-    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnImportExcel;
     private javax.swing.JTextField giaDen;
     private javax.swing.JTextField giaTu;
