@@ -4,6 +4,9 @@
  */
 package view;
 
+import BUS.ChiTietQuyenBUS;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import controller.SearchNhaCungCap;
 import OldDAO.NhaCungCapDAO;
 import java.awt.Desktop;
@@ -13,7 +16,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -41,6 +46,23 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
      */
     private DefaultTableModel tblModel;
     private static ArrayList<NhaCungCap> armt;
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
+    
+    public NhaCungCapForm(NguoiDungDTO user) {
+        initComponents();
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        tblNCC.setDefaultEditor(Object.class, null);
+        initTable();
+        
+        // Authorization
+        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+        
+//        armt = NhaCungCapDAO.getInstance().selectAll();
+//        loadDataToTable(armt);
+    }
 
     public NhaCungCapForm() {
         initComponents();
@@ -50,6 +72,43 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         initTable();
         armt = NhaCungCapDAO.getInstance().selectAll();
         loadDataToTable(armt);
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "nhacungcap");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(NhaCungCapForm.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(NhaCungCapForm.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("update")) {
+                btnEdit.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("delete")) {
+                btnDelete.setEnabled(true);
+                continue;
+            }
+        }
     }
 
     public final void initTable() {
@@ -105,8 +164,8 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnAdd = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         exportExcel = new javax.swing.JButton();
         importExcel = new javax.swing.JButton();
@@ -219,31 +278,31 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnAdd);
 
-        jButton4.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
-        jButton4.setText("Xoá");
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
+        btnDelete.setText("Xoá");
+        btnDelete.setFocusable(false);
+        btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton4);
+        jToolBar1.add(btnDelete);
 
-        jButton5.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
-        jButton5.setText("Sửa");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnEdit.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
+        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
+        btnEdit.setText("Sửa");
+        btnEdit.setFocusable(false);
+        btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnEditActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton5);
+        jToolBar1.add(btnEdit);
         jToolBar1.add(jSeparator1);
 
         exportExcel.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
@@ -342,16 +401,16 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         a.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         if (tblNCC.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp muốn sửa");
         } else {
             UpdateNhaCungCap up = new UpdateNhaCungCap(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
             up.setVisible(true);
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnEditActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
         if (tblNCC.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm muốn xoá");
@@ -363,7 +422,7 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
                 loadDataToTable(NhaCungCapDAO.getInstance().selectAll());
             }
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void exportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportExcelActionPerformed
         // TODO add your handling code here:
@@ -495,14 +554,14 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnReset;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbxlLuaChon;
     private javax.swing.JButton exportExcel;
     private javax.swing.JButton importExcel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

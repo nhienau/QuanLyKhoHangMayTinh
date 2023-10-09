@@ -68,13 +68,44 @@ public class MainLayout extends javax.swing.JFrame {
     }
     
     private void authorize(javax.swing.JPanel[] panels, List<ChiTietQuyenDTO> permission) {
+        javax.swing.JPanel firstPanelFound = null;
         for (ChiTietQuyenDTO ctq: permission) {
             for (javax.swing.JPanel panel: panels) {
                 if (panel.getName().equalsIgnoreCase(ctq.getMaChucNang())) {
                     panel.setVisible(true);
+                    
+                    if (firstPanelFound == null) {
+                        firstPanelFound = panel;
+                    }
                     break;
                 }
             }
+        }
+        
+        switch (firstPanelFound.getName()) {
+//            case "sanpham":
+//                SanPhamMouseClicked(null);
+//                break;
+//            case "nhacungcap":
+//                NhaCungCapMouseClicked(null);
+//                break;
+//            case "phieunhap":
+//                PhieuNhapMouseClicked(null);
+//                break;
+//            case "phieuxuat":
+//                PhieuXuatMouseClicked(null);
+//                break;
+//            case "tonkho":
+//                TonKhoMouseClicked(null);
+//                break;
+//            case "taikhoan":
+//                TaiKhoanMouseClicked(null);
+//                break;
+//            case "thongke":
+//                ThongKeMouseClicked(null);
+//                break;
+//            default:
+                
         }
     }
 
@@ -120,8 +151,6 @@ public class MainLayout extends javax.swing.JFrame {
         pRole = new javax.swing.JPanel();
         lblRole = new javax.swing.JLabel();
         pNav = new javax.swing.JPanel();
-        SanPham = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         NhaCungCap = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         NhapHang = new javax.swing.JPanel();
@@ -132,10 +161,12 @@ public class MainLayout extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        TonKho = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
+        SanPham = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         TaiKhoan = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
+        TonKho = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
         ThongKe = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         pSettings = new javax.swing.JPanel();
@@ -190,32 +221,6 @@ public class MainLayout extends javax.swing.JFrame {
 
         pNav.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         pNav.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 0, 0));
-
-        SanPham.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        SanPham.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
-        SanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        SanPham.setMinimumSize(new java.awt.Dimension(240, 36));
-        SanPham.setName("sanpham"); // NOI18N
-        SanPham.setPreferredSize(new java.awt.Dimension(240, 36));
-        SanPham.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SanPhamMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                SanPhamMousePressed(evt);
-            }
-        });
-        SanPham.setLayout(new java.awt.BorderLayout());
-
-        jLabel1.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_product_25px_2.png"))); // NOI18N
-        jLabel1.setLabelFor(SanPham);
-        jLabel1.setText("Sản phẩm");
-        SanPham.add(jLabel1, java.awt.BorderLayout.LINE_START);
-
-        pNav.add(SanPham);
-        SanPham.getAccessibleContext().setAccessibleName("");
 
         NhaCungCap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         NhaCungCap.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
@@ -337,29 +342,31 @@ public class MainLayout extends javax.swing.JFrame {
 
         pNav.add(PhieuXuat);
 
-        TonKho.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        TonKho.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
-        TonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        TonKho.setMinimumSize(new java.awt.Dimension(240, 36));
-        TonKho.setName("tonkho"); // NOI18N
-        TonKho.setPreferredSize(new java.awt.Dimension(240, 36));
-        TonKho.addMouseListener(new java.awt.event.MouseAdapter() {
+        SanPham.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        SanPham.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        SanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        SanPham.setMinimumSize(new java.awt.Dimension(240, 36));
+        SanPham.setName("sanpham"); // NOI18N
+        SanPham.setPreferredSize(new java.awt.Dimension(240, 36));
+        SanPham.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TonKhoMouseClicked(evt);
+                SanPhamMouseClicked(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                TonKhoMousePressed(evt);
+                SanPhamMousePressed(evt);
             }
         });
-        TonKho.setLayout(new java.awt.BorderLayout());
+        SanPham.setLayout(new java.awt.BorderLayout());
 
-        jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
-        jLabel10.setText("Tồn kho");
-        TonKho.add(jLabel10, java.awt.BorderLayout.CENTER);
+        jLabel1.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_product_25px_2.png"))); // NOI18N
+        jLabel1.setLabelFor(SanPham);
+        jLabel1.setText("Sản phẩm");
+        SanPham.add(jLabel1, java.awt.BorderLayout.LINE_START);
 
-        pNav.add(TonKho);
+        pNav.add(SanPham);
+        SanPham.getAccessibleContext().setAccessibleName("");
 
         TaiKhoan.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         TaiKhoan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
@@ -384,6 +391,30 @@ public class MainLayout extends javax.swing.JFrame {
         TaiKhoan.add(jLabel12, java.awt.BorderLayout.CENTER);
 
         pNav.add(TaiKhoan);
+
+        TonKho.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        TonKho.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        TonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TonKho.setMinimumSize(new java.awt.Dimension(240, 36));
+        TonKho.setName("tonkho"); // NOI18N
+        TonKho.setPreferredSize(new java.awt.Dimension(240, 36));
+        TonKho.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TonKhoMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TonKhoMousePressed(evt);
+            }
+        });
+        TonKho.setLayout(new java.awt.BorderLayout());
+
+        jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
+        jLabel10.setText("Tồn kho");
+        TonKho.add(jLabel10, java.awt.BorderLayout.CENTER);
+
+        pNav.add(TonKho);
 
         ThongKe.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         ThongKe.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
@@ -494,9 +525,6 @@ public class MainLayout extends javax.swing.JFrame {
         TonKho.setBackground(DefaultColor);
         TaiKhoan.setBackground(DefaultColor);
         ThongKe.setBackground(DefaultColor);
-        pMainContent.removeAll();
-        ProductForm p = new ProductForm();
-        pMainContent.add(p).setVisible(true);
     }//GEN-LAST:event_SanPhamMousePressed
 
     private void NhaCungCapMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhaCungCapMousePressed
@@ -566,7 +594,7 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void SanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SanPhamMouseClicked
         // TODO add your handling code here:
-        ProductForm ac = new ProductForm();
+        ProductForm ac = new ProductForm(user);
         pMainContent.removeAll();
         pMainContent.add(ac).setVisible(true);
     }//GEN-LAST:event_SanPhamMouseClicked
@@ -590,7 +618,7 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void NhaCungCapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhaCungCapMouseClicked
         // TODO add your handling code here:
-        NhaCungCapForm af = new NhaCungCapForm();
+        NhaCungCapForm af = new NhaCungCapForm(user);
         pMainContent.removeAll();
         pMainContent.add(af).setVisible(true);
     }//GEN-LAST:event_NhaCungCapMouseClicked
@@ -605,30 +633,30 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked
         // TODO add your handling code here:
-        NhapHangForm nhaphang = new NhapHangForm();
-        nhaphang.setNguoiNhapHang(this.currentAcc.getUser());
+        NhapHangForm nhaphang = new NhapHangForm(user);
+//        nhaphang.setNguoiNhapHang(this.currentAcc.getUser());
         pMainContent.removeAll();
         pMainContent.add(nhaphang).setVisible(true);
     }//GEN-LAST:event_NhapHangMouseClicked
 
     private void PhieuNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMouseClicked
         // TODO add your handling code here:
-        PhieuNhapForm pn = new PhieuNhapForm(this.getCurrentAcc());
+        PhieuNhapForm pn = new PhieuNhapForm(user);
         pMainContent.removeAll();
         pMainContent.add(pn).setVisible(true);
     }//GEN-LAST:event_PhieuNhapMouseClicked
 
     private void XuatHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XuatHangMouseClicked
         // TODO add your handling code here:
-        XuatHangForm xh = new XuatHangForm();
-        xh.setNguoiTao(this.currentAcc.getFullName());
+        XuatHangForm xh = new XuatHangForm(user);
+//        xh.setNguoiTao(this.currentAcc.getFullName());
         pMainContent.removeAll();
         pMainContent.add(xh).setVisible(true);
     }//GEN-LAST:event_XuatHangMouseClicked
 
     private void PhieuXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMouseClicked
         // TODO add your handling code here:
-        PhieuXuatForm px = new PhieuXuatForm(this.getCurrentAcc());
+        PhieuXuatForm px = new PhieuXuatForm(user);
         pMainContent.removeAll();
         pMainContent.add(px).setVisible(true);
     }//GEN-LAST:event_PhieuXuatMouseClicked
@@ -641,6 +669,9 @@ public class MainLayout extends javax.swing.JFrame {
                 "Đăng xuất",
                 JOptionPane.YES_NO_OPTION);
         if (relly == JOptionPane.YES_OPTION) {
+            setUser(null);
+            setPermissionInfo(null);
+            setPermission(null);
             this.dispose();
             Login a = new Login();
             a.setVisible(true);
@@ -651,7 +682,7 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TaiKhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaiKhoanMouseClicked
         // TODO add your handling code here:
-        AccountForm ac = new AccountForm();
+        AccountForm ac = new AccountForm(user);
         pMainContent.removeAll();
         pMainContent.add(ac).setVisible(true);
     }//GEN-LAST:event_TaiKhoanMouseClicked
@@ -691,7 +722,7 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void AccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AccountMouseClicked
         // TODO add your handling code here:
-        ChangePassword cp = new ChangePassword(this, rootPaneCheckingEnabled, getCurrentAcc());
+        ChangePassword cp = new ChangePassword(this, rootPaneCheckingEnabled, user);
         cp.setVisible(true);
     }//GEN-LAST:event_AccountMouseClicked
 
@@ -708,6 +739,30 @@ public class MainLayout extends javax.swing.JFrame {
             this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         }
     }//GEN-LAST:event_formWindowClosing
+
+    public NguoiDungDTO getUser() {
+        return user;
+    }
+
+    public void setUser(NguoiDungDTO user) {
+        this.user = user;
+    }
+
+    public NhomQuyenDTO getPermissionInfo() {
+        return permissionInfo;
+    }
+
+    public void setPermissionInfo(NhomQuyenDTO permissionInfo) {
+        this.permissionInfo = permissionInfo;
+    }
+
+    public List<ChiTietQuyenDTO> getPermission() {
+        return permission;
+    }
+
+    public void setPermission(List<ChiTietQuyenDTO> permission) {
+        this.permission = permission;
+    }
 
     /**
      * @param args the command line arguments

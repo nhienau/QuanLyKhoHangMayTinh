@@ -14,4 +14,8 @@ public class ChiTietQuyenBUS {
     public List<ChiTietQuyenDTO> getAuthorization(int maNhomQuyen) throws SQLException {
         return ctqDAO.getAuthorization(maNhomQuyen);
     }
+    
+    public List<ChiTietQuyenDTO> getAllowedActions(int maNhomQuyen, String maChucNang) throws SQLException {
+        return ctqDAO.getAllowedActions(maNhomQuyen, maChucNang);
+    }
 }

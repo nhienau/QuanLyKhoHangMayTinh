@@ -4,6 +4,7 @@
  */
 package view;
 
+import DTO.NguoiDungDTO;
 import controller.SearchProduct;
 import controller.WritePDF;
 import OldDAO.AccountDAO;
@@ -54,6 +55,25 @@ public class NhapHangForm extends javax.swing.JInternalFrame {
     private String MaPhieu;
     private ArrayList<ChiTietPhieu> CTPhieu;
     private static final ArrayList<NhaCungCap> arrNcc = NhaCungCapDAO.getInstance().selectAll();
+    private NguoiDungDTO user;
+    
+    public NhapHangForm(NguoiDungDTO user) {
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        initComponents();
+//        allProduct = MayTinhDAO.getInstance().selectAllExist();
+        initTable();
+//        loadDataToTableProduct(allProduct);
+//        loadNccToComboBox();
+        tblSanPham.setDefaultEditor(Object.class, null);
+        tblNhapHang.setDefaultEditor(Object.class, null);
+//        MaPhieu = createId(PhieuNhapDAO.getInstance().selectAll());
+//        txtMaPhieu.setText(MaPhieu);
+        CTPhieu = new ArrayList<ChiTietPhieu>();
+        
+        this.user = user;
+        txtNguoiTao.setText(user.getHoTen());
+    }
 
     public NhapHangForm() {
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
