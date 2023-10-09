@@ -38,18 +38,8 @@ public class MainLayout extends javax.swing.JFrame {
         UIManager.put("Table.showHorizontalLines", true);
         initComponents();
         setLocationRelativeTo(null);
-//        DefaultColor = new Color(89, 168, 105);
-//        ClickedColor = new Color(26, 188, 156);
-//        pSidebar.setBackground(DefaultColor);
-//        SanPham.setBackground(ClickedColor);
-//        PhieuNhap.setBackground(DefaultColor);
-//        NhapHang.setBackground(DefaultColor);
-//        XuatHang.setBackground(DefaultColor);
-//        PhieuXuat.setBackground(DefaultColor);
-//        NhaCungCap.setBackground(DefaultColor);
-//        TonKho.setBackground(DefaultColor);
-//        TaiKhoan.setBackground(DefaultColor);
-//        ThongKe.setBackground(DefaultColor);
+        DefaultColor = new Color(89, 168, 105);
+        ClickedColor = new Color(26, 188, 156);
         this.user = user;
         this.permission = permission;
         this.permissionInfo = permissionInfo;
@@ -83,29 +73,43 @@ public class MainLayout extends javax.swing.JFrame {
         }
         
         switch (firstPanelFound.getName()) {
-//            case "sanpham":
-//                SanPhamMouseClicked(null);
-//                break;
-//            case "nhacungcap":
-//                NhaCungCapMouseClicked(null);
-//                break;
-//            case "phieunhap":
-//                PhieuNhapMouseClicked(null);
-//                break;
-//            case "phieuxuat":
-//                PhieuXuatMouseClicked(null);
-//                break;
-//            case "tonkho":
-//                TonKhoMouseClicked(null);
-//                break;
-//            case "taikhoan":
-//                TaiKhoanMouseClicked(null);
-//                break;
-//            case "thongke":
-//                ThongKeMouseClicked(null);
-//                break;
-//            default:
+            case "sanpham":
+                SanPhamMouseClicked(null);
+                SanPhamMousePressed(null);
+                break;
+            case "nhacungcap":
+                NhaCungCapMouseClicked(null);
+                NhaCungCapMousePressed(null);
+                break;
+            case "phieunhap":
+                PhieuNhapMouseClicked(null);
+                PhieuNhapMousePressed(null);
+                break;
+            case "phieuxuat":
+                PhieuXuatMouseClicked(null);
+                PhieuXuatMousePressed(null);
+                break;
+            case "tonkho":
+                TonKhoMouseClicked(null);
+                TonKhoMousePressed(null);
+                break;
+            case "taikhoan":
+                TaiKhoanMouseClicked(null);
+                TaiKhoanMousePressed(null);
+                break;
+            case "thongke":
+                ThongKeMouseClicked(null);
+                ThongKeMousePressed(null);
+                break;
+            default:
                 
+        }
+    }
+    
+    private void resetBackgroundAllPanels() {
+        javax.swing.JPanel[] panels = {NhaCungCap, NhapHang, PhieuNhap, XuatHang, PhieuXuat, SanPham, TaiKhoan, ThongKe, TonKho};
+        for (javax.swing.JPanel panel : panels) {
+            panel.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         }
     }
 
@@ -516,149 +520,101 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void SanPhamMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SanPhamMousePressed
         // TODO add your handling code here:
+        resetBackgroundAllPanels();
         SanPham.setBackground(ClickedColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_SanPhamMousePressed
 
     private void NhaCungCapMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhaCungCapMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         NhaCungCap.setBackground(ClickedColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_NhaCungCapMousePressed
 
     private void NhapHangMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         NhapHang.setBackground(ClickedColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_NhapHangMousePressed
 
     private void PhieuNhapMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         PhieuNhap.setBackground(ClickedColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_PhieuNhapMousePressed
 
     private void XuatHangMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XuatHangMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         XuatHang.setBackground(ClickedColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_XuatHangMousePressed
 
     private void PhieuXuatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         PhieuXuat.setBackground(ClickedColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_PhieuXuatMousePressed
 
     private void SanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SanPhamMouseClicked
         // TODO add your handling code here:
-        ProductForm ac = new ProductForm(user);
+        ProductForm productForm = new ProductForm(user);
         pMainContent.removeAll();
-        pMainContent.add(ac).setVisible(true);
+        pMainContent.add(productForm).setVisible(true);
     }//GEN-LAST:event_SanPhamMouseClicked
 
     private void TonKhoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         TonKho.setBackground(ClickedColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_TonKhoMousePressed
 
     private void DangXuatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DangXuatMousePressed
         // TODO add your handling code here:
+        DangXuat.setBackground(ClickedColor);
     }//GEN-LAST:event_DangXuatMousePressed
 
     private void NhaCungCapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhaCungCapMouseClicked
         // TODO add your handling code here:
-        NhaCungCapForm af = new NhaCungCapForm(user);
+        NhaCungCapForm nhaCungCapForm = new NhaCungCapForm(user);
         pMainContent.removeAll();
-        pMainContent.add(af).setVisible(true);
+        pMainContent.add(nhaCungCapForm).setVisible(true);
     }//GEN-LAST:event_NhaCungCapMouseClicked
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
         // TODO add your handling code here:
-        TonKhoForm px = new TonKhoForm();
+        TonKhoForm tonKhoForm = new TonKhoForm();
         pMainContent.removeAll();
-        pMainContent.add(px).setVisible(true);
+        pMainContent.add(tonKhoForm).setVisible(true);
 
     }//GEN-LAST:event_TonKhoMouseClicked
 
     private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked
         // TODO add your handling code here:
-        NhapHangForm nhaphang = new NhapHangForm(user);
+        NhapHangForm nhapHangForm = new NhapHangForm(user);
 //        nhaphang.setNguoiNhapHang(this.currentAcc.getUser());
         pMainContent.removeAll();
-        pMainContent.add(nhaphang).setVisible(true);
+        pMainContent.add(nhapHangForm).setVisible(true);
     }//GEN-LAST:event_NhapHangMouseClicked
 
     private void PhieuNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMouseClicked
         // TODO add your handling code here:
-        PhieuNhapForm pn = new PhieuNhapForm(user);
+        PhieuNhapForm phieuNhapForm = new PhieuNhapForm(user);
         pMainContent.removeAll();
-        pMainContent.add(pn).setVisible(true);
+        pMainContent.add(phieuNhapForm).setVisible(true);
     }//GEN-LAST:event_PhieuNhapMouseClicked
 
     private void XuatHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XuatHangMouseClicked
         // TODO add your handling code here:
-        XuatHangForm xh = new XuatHangForm(user);
+        XuatHangForm xuatHangForm = new XuatHangForm(user);
 //        xh.setNguoiTao(this.currentAcc.getFullName());
         pMainContent.removeAll();
-        pMainContent.add(xh).setVisible(true);
+        pMainContent.add(xuatHangForm).setVisible(true);
     }//GEN-LAST:event_XuatHangMouseClicked
 
     private void PhieuXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMouseClicked
         // TODO add your handling code here:
-        PhieuXuatForm px = new PhieuXuatForm(user);
+        PhieuXuatForm phieuXuatForm = new PhieuXuatForm(user);
         pMainContent.removeAll();
-        pMainContent.add(px).setVisible(true);
+        pMainContent.add(phieuXuatForm).setVisible(true);
     }//GEN-LAST:event_PhieuXuatMouseClicked
 
     private void DangXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DangXuatMouseClicked
@@ -682,42 +638,28 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TaiKhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaiKhoanMouseClicked
         // TODO add your handling code here:
-        AccountForm ac = new AccountForm(user);
+        AccountForm accountForm = new AccountForm(user);
         pMainContent.removeAll();
-        pMainContent.add(ac).setVisible(true);
+        pMainContent.add(accountForm).setVisible(true);
     }//GEN-LAST:event_TaiKhoanMouseClicked
 
     private void TaiKhoanMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaiKhoanMousePressed
         // TODO add your handling code here:
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
+        resetBackgroundAllPanels();
         TaiKhoan.setBackground(ClickedColor);
-        ThongKe.setBackground(DefaultColor);
     }//GEN-LAST:event_TaiKhoanMousePressed
 
     private void ThongKeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongKeMouseClicked
         // TODO add your handling code here:
-        ThongKeForm tk = new ThongKeForm();
+        ThongKeForm thongKeForm = new ThongKeForm();
         pMainContent.removeAll();
-        pMainContent.add(tk).setVisible(true);
+        pMainContent.add(thongKeForm).setVisible(true);
     }//GEN-LAST:event_ThongKeMouseClicked
 
     private void ThongKeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongKeMousePressed
         // TODO add your handling code here:
+        resetBackgroundAllPanels();
         ThongKe.setBackground(ClickedColor);
-        SanPham.setBackground(DefaultColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
     }//GEN-LAST:event_ThongKeMousePressed
 
     private void AccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AccountMouseClicked
