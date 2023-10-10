@@ -7,18 +7,14 @@ package view;
 import BUS.ChiTietQuyenBUS;
 import BUS.NguoiDungBUS;
 import BUS.NhomQuyenBUS;
-import DTO.ChiTietQuyenDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mysql.cj.protocol.Resultset;
 import com.sun.jdi.connect.spi.Connection;
-import helper.BCrypt;
-import OldDAO.AccountDAO;
-import DTO.NguoiDungDTO;
-import DTO.NhomQuyenDTO;
+import DTO.UserInfoDTO;
 import GUI.MainLayout;
-import helper.Validation;
+import helper.Exception.AuthenticationException;
+import helper.Exception.EmptyFieldException;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,11 +22,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import model.Account;
 import net.miginfocom.swing.MigLayout;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -381,93 +374,39 @@ public class Login extends javax.swing.JFrame {
         // Validate input
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
+        
+        UserInfoDTO userInfo = null;
+        try {
+            userInfo = ndBUS.verifyLogin(username, password);
+        } catch (EmptyFieldException e) {
+            JOptionPane.showMessageDialog(Login.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            if (e.getFieldName().equalsIgnoreCase("username")) {
+                txtUsername.requestFocus();
+            } else if (e.getFieldName().equalsIgnoreCase("password")) {
+                txtPassword.requestFocus();
+            }
+            return;
+        } catch (IllegalArgumentException | AuthenticationException e) {
+            JOptionPane.showMessageDialog(Login.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
 
-        if (!checkInput(username, password)) {
-            return;
-        }
-        
-        if (!Validation.isValidUsername(username)) {
-            JOptionPane.showMessageDialog(Login.this, "Tài khoản không hợp lệ", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // Authentication
-        NguoiDungDTO user = null;
         try {
-            user = ndBUS.verifyLogin(username);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        }
-        
-        if (user == null || !BCrypt.checkpw(password, user.getMatKhau())) {
-            JOptionPane.showMessageDialog(Login.this, "Tên đăng nhập hoặc mật khẩu không đúng.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (user.getTrangThai() == 0) {
-            JOptionPane.showMessageDialog(Login.this, "Tài khoản của bạn đã bị khoá.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        NhomQuyenDTO permissionInfo = null;
-        try {
-            permissionInfo = nqBUS.getPermissionById(user.getMaNhomQuyen());
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        }
-        
-        if (permissionInfo.getTrangThai() == 0) {
-            JOptionPane.showMessageDialog(Login.this, "Đăng nhập thất bại do tài khoản của bạn thuộc vào nhóm quyền không còn hiệu lực.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // Authorization
-        List<ChiTietQuyenDTO> permission = new ArrayList<>();
-        try {
-            permission = ctqBUS.getAuthorization(user.getMaNhomQuyen());
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(Login.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(Login.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        }
-        
-        try {
-            MainLayout mainApp = new MainLayout(user, permissionInfo, permission);
+            MainLayout mainApp = new MainLayout(userInfo.getUser(), userInfo.getPermissionInfo(), userInfo.getViewPermission());
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.dispose();
     }
     
-    public boolean checkInput(String username, String password) {
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(Login.this, "Bạn chưa nhập tài khoản, mật khẩu", "Error", JOptionPane.ERROR_MESSAGE);
-            if (username.isEmpty()) {
-                txtUsername.requestFocus();
-            } else if (password.isEmpty()) {
-                txtPassword.requestFocus();
-            }
-            return false;
-        }
-        return true;
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnLogin;
     private javax.swing.JLabel jLabel1;
