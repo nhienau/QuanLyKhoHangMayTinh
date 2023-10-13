@@ -17,10 +17,10 @@ public class ChiTietQuyenDAO {
         List<ChiTietQuyenDTO> list = new ArrayList<>();
         try {
             Connection conn = JDBCUtil.getConnection();
-            String query = "SELECT * FROM chitietquyen WHERE manhomquyen = ? AND hanhdong = ?";
+            String query = "SELECT * FROM chitietquyen WHERE manhomquyen = ? AND hanhdong LIKE ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, maNhomQuyen);
-            ps.setString(2, "view");
+            ps.setString(2, "%view%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String maChucNang = rs.getString("machucnang");

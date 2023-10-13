@@ -10,10 +10,13 @@ import DTO.UserInfoDTO;
 import helper.BCrypt;
 import helper.Exception.AuthenticationException;
 import helper.Exception.EmptyFieldException;
+import helper.OTP;
+import helper.SendEmailSMTP;
 import helper.Validation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.mail.MessagingException;
 
 public class NguoiDungBUS {
     private final NguoiDungDAO ndDAO = new NguoiDungDAO();
@@ -77,5 +80,77 @@ public class NguoiDungBUS {
         }
         
         return new UserInfoDTO(user, permissionInfo, viewPermission);
+    }
+    
+    public NguoiDungDTO verifyEmail(String email) throws Exception {
+        // Input validation
+        if (email.isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập địa chỉ email", null);
+        }
+        if (!Validation.isValidEmail(email)) {
+            throw new IllegalArgumentException("Email không hợp lệ");
+        }
+        
+        // Authentication
+        NguoiDungDTO user = null;
+        try {
+            user = ndDAO.getInfoByEmail(email);
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        if (user == null) {
+            throw new AuthenticationException("Không tìm thấy tài khoản nào được liên kết với địa chỉ email bạn đã nhập. Vui lòng thử lại.");
+        }
+        
+        if (user.getTrangThai() == 0) {
+            throw new AuthenticationException("Tài khoản liên kết với địa chỉ email này đã bị khoá.");
+        }
+        
+        return user;
+    }
+    
+    public String sendEmailOTP(String username, String email) throws MessagingException {
+        // Send email
+        String otp = OTP.generateOTP();
+        try {
+            SendEmailSMTP.sendOTP(email, username, otp);
+        } catch (MessagingException e) {
+            throw e;
+        }
+        
+        return otp;
+    }
+    
+    public boolean handleConfirmOTP(String inputOtp, String otp) throws EmptyFieldException, IllegalArgumentException {
+        if (inputOtp.isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập mã xác nhận", null);
+        }
+        if (!Validation.isValidOTP(inputOtp)) {
+            throw new IllegalArgumentException("Mã xác nhận không hợp lệ");
+        }
+        return otp.equals(inputOtp);
+    }
+    
+    public boolean handleRecoverPassword(NguoiDungDTO user, String newPassword, String confirmNewPassword) throws Exception {
+        if (newPassword.isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập mật khẩu mới", "newPassword");
+        }
+        if (confirmNewPassword.isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập xác nhận mật khẩu mới", "confirmNewPassword");
+        }
+        if (!newPassword.equals(confirmNewPassword)) {
+            throw new IllegalArgumentException("Mật khẩu không chính xác, vui lòng thử lại");
+        }
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
+        int result;
+        try {
+            result = ndDAO.changePassword(user, hashedPassword);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result > 0;
     }
 }
