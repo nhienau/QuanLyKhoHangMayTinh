@@ -4,16 +4,21 @@
  */
 package view;
 
+import BUS.NguoiDungBUS;
+import DTO.NguoiDungDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import controller.BCrypt;
-import controller.SendEmailSMTP;
 import OldDAO.AccountDAO;
+import helper.Exception.AuthenticationException;
+import helper.Exception.EmptyFieldException;
 import java.awt.CardLayout;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import model.Account;
+import java.sql.SQLException;
+import javax.mail.MessagingException;
 
 /**
  *
@@ -24,12 +29,30 @@ public class RecoverPassword extends javax.swing.JDialog {
     /**
      * Creates new form RecoverPassword
      */
-    private String otpNumber;
+    private final NguoiDungBUS ndBUS = new NguoiDungBUS();
+    private String otp;
+    private NguoiDungDTO user;
 
     public RecoverPassword(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public NguoiDungDTO getUser() {
+        return user;
+    }
+
+    public void setUser(NguoiDungDTO user) {
+        this.user = user;
     }
 
     /**
@@ -41,245 +64,288 @@ public class RecoverPassword extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        pHeader = new javax.swing.JPanel();
+        lblRecoverPassword = new javax.swing.JLabel();
+        pMain = new javax.swing.JPanel();
+        pEmailVerification = new javax.swing.JPanel();
+        lblEnterEmail = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        btnSendCode = new javax.swing.JButton();
+        pCodeVerification = new javax.swing.JPanel();
+        lblCodeSent = new javax.swing.JLabel();
+        lblEnterCode = new javax.swing.JLabel();
         txtOtp = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JPasswordField();
-        jButton3 = new javax.swing.JButton();
+        btnConfirmCode = new javax.swing.JButton();
+        pNewPassword = new javax.swing.JPanel();
+        lblSetNewPassword = new javax.swing.JLabel();
+        lblNewPassword = new javax.swing.JLabel();
+        txtNewPassword = new javax.swing.JPasswordField();
+        lblConfirmNewPassword = new javax.swing.JLabel();
+        txtConfirmNewPassword = new javax.swing.JPasswordField();
+        btnChangePassword = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Khôi phục mật khẩu");
         setResizable(false);
 
-        jPanel2.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pHeader.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        pHeader.setPreferredSize(new java.awt.Dimension(540, 70));
+        pHeader.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setFont(new java.awt.Font("SF Pro Display", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("KHÔI PHỤC MẬT KHẨU");
+        lblRecoverPassword.setFont(new java.awt.Font("SF Pro Display", 1, 24)); // NOI18N
+        lblRecoverPassword.setForeground(new java.awt.Color(255, 255, 255));
+        lblRecoverPassword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblRecoverPassword.setText("KHÔI PHỤC MẬT KHẨU");
+        lblRecoverPassword.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pHeader.add(lblRecoverPassword, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
-        );
+        getContentPane().add(pHeader, java.awt.BorderLayout.NORTH);
 
-        jPanel3.setLayout(new java.awt.CardLayout());
+        pMain.setPreferredSize(new java.awt.Dimension(540, 250));
+        pMain.setLayout(new java.awt.CardLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        pEmailVerification.setBackground(new java.awt.Color(255, 255, 255));
+        pEmailVerification.setPreferredSize(new java.awt.Dimension(540, 250));
+        pEmailVerification.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel2.setText("Nhập địa chỉ email tài khoản");
+        lblEnterEmail.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblEnterEmail.setForeground(new java.awt.Color(0, 0, 0));
+        lblEnterEmail.setText("Nhập địa chỉ email tài khoản");
+        pEmailVerification.add(lblEnterEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 70, -1, -1));
 
-        jButton1.setText("Gửi mã xác nhận");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        txtEmail.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtEmail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                txtEmailActionPerformed(evt);
             }
         });
+        pEmailVerification.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 251, 41));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 43, Short.MAX_VALUE))
-        );
-
-        jPanel3.add(jPanel1, "card2");
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel3.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel3.setText("Mã xác nhận gồm 6 chữ số đã được gửi vào địa chỉ email của bạn");
-
-        jButton2.setText("Xác nhận");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnSendCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        btnSendCode.setForeground(new java.awt.Color(0, 0, 0));
+        btnSendCode.setText("Gửi mã xác nhận");
+        btnSendCode.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSendCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnSendCodeActionPerformed(evt);
             }
         });
+        pEmailVerification.add(btnSendCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 100, 158, 41));
 
-        jLabel4.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel4.setText("Nhập mã xác nhận:");
+        pMain.add(pEmailVerification, "card2");
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel3)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(txtOtp, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(27, 27, 27)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtOtp, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
-        );
+        pCodeVerification.setBackground(new java.awt.Color(255, 255, 255));
+        pCodeVerification.setPreferredSize(new java.awt.Dimension(540, 250));
+        pCodeVerification.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel3.add(jPanel5, "card3");
+        lblCodeSent.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblCodeSent.setForeground(new java.awt.Color(0, 0, 0));
+        lblCodeSent.setText("Mã xác nhận gồm 6 chữ số đã được gửi vào địa chỉ email của bạn.");
+        pCodeVerification.add(lblCodeSent, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 63, -1, -1));
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        lblEnterCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblEnterCode.setForeground(new java.awt.Color(0, 0, 0));
+        lblEnterCode.setText("Nhập mã xác nhận:");
+        pCodeVerification.add(lblEnterCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 90, 138, -1));
 
-        jLabel5.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel5.setText("Nhập mật khẩu mới");
+        txtOtp.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        pCodeVerification.add(txtOtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 117, 273, 41));
 
-        jButton3.setText("Đổi mật khẩu");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnConfirmCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        btnConfirmCode.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirmCode.setText("Xác nhận");
+        btnConfirmCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnConfirmCodeActionPerformed(evt);
             }
         });
+        pCodeVerification.add(btnConfirmCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 117, 179, 41));
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addComponent(txtPassword))
-                .addContainerGap(42, Short.MAX_VALUE))
-        );
+        pMain.add(pCodeVerification, "card3");
 
-        jPanel3.add(jPanel4, "card4");
+        pNewPassword.setBackground(new java.awt.Color(255, 255, 255));
+        pNewPassword.setPreferredSize(new java.awt.Dimension(540, 250));
+        pNewPassword.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(75, 75, 75)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        lblSetNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblSetNewPassword.setForeground(new java.awt.Color(0, 0, 0));
+        lblSetNewPassword.setText("Hãy đặt một mật khẩu mới.");
+        pNewPassword.add(lblSetNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, -1, -1));
+
+        lblNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblNewPassword.setForeground(new java.awt.Color(0, 0, 0));
+        lblNewPassword.setText("Mật khẩu mới");
+        pNewPassword.add(lblNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
+
+        txtNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        pNewPassword.add(txtNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, 259, 42));
+
+        lblConfirmNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblConfirmNewPassword.setForeground(new java.awt.Color(0, 0, 0));
+        lblConfirmNewPassword.setText("Xác nhận mật khẩu mới");
+        pNewPassword.add(lblConfirmNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, -1, -1));
+
+        txtConfirmNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtConfirmNewPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtConfirmNewPasswordActionPerformed(evt);
+            }
+        });
+        pNewPassword.add(txtConfirmNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 120, 259, 42));
+
+        btnChangePassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        btnChangePassword.setForeground(new java.awt.Color(0, 0, 0));
+        btnChangePassword.setText("Đổi mật khẩu");
+        btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangePasswordActionPerformed(evt);
+            }
+        });
+        pNewPassword.add(btnChangePassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 180, 147, 42));
+
+        pMain.add(pNewPassword, "card4");
+
+        getContentPane().add(pMain, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSendCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendCodeActionPerformed
         // TODO add your handling code here:
         String email = txtEmail.getText();
-        if (email.equals("")) {
-            JOptionPane.showMessageDialog(this, "Email không được để trống !");
-        } else {
-            if (isValid(email)) {
-                if (checkEmail(email)) {
-                    otpNumber = getOTP();
-                    SendEmailSMTP.sendOTP(email, otpNumber);
-                    CardLayout forgotPassword = (CardLayout) jPanel3.getLayout();
-                    forgotPassword.next(jPanel3);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Email không tồn tại trên hệ thống !");
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng email !");
-            }
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+//        if (email.equals("")) {
+//            JOptionPane.showMessageDialog(this, "Email không được để trống !");
+//        } else {
+//            if (isValid(email)) {
+//                if (checkEmail(email)) {
+//                    otp = getOTP();
+//                    SendEmailSMTP.sendOTP(email, otp);
+//                    CardLayout forgotPassword = (CardLayout) pMain.getLayout();
+//                    forgotPassword.next(pMain);
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Email không tồn tại trên hệ thống !");
+//                }
+//            } else {
+//                JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng email !");
+//            }
+//        }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        String otp = txtOtp.getText();
-        if (otp.equals("")) {
-            JOptionPane.showMessageDialog(this, "Không được để trống !");
-        } else {
-            if (otp.length() < 6 || otp.length() > 6) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng 6 chữ số !");
-            } else {
-                if (otp.equals(otpNumber)) {
-                    CardLayout forgotPassword = (CardLayout) jPanel3.getLayout();
-                    forgotPassword.next(jPanel3);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Mã xác nhận không chính xác !");
-                }
-            }
+        NguoiDungDTO user = null;
+        try {
+            user = ndBUS.verifyEmail(email);
+        } catch (EmptyFieldException | IllegalArgumentException | AuthenticationException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            txtEmail.requestFocus();
+            return;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+        
+        setUser(user);
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String otpCode = null;
+        try {
+            otpCode = ndBUS.sendEmailOTP(user.getTaiKhoan(), email);
+        } catch (MessagingException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Có lỗi xảy ra trong quá trình gửi email.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        setOtp(otpCode);
+        CardLayout forgotPassword = (CardLayout) pMain.getLayout();
+        forgotPassword.next(pMain);
+    }//GEN-LAST:event_btnSendCodeActionPerformed
+
+    private void btnConfirmCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmCodeActionPerformed
         // TODO add your handling code here:
-        String password = txtPassword.getText();
-        AccountDAO.getInstance().updatePassword(txtEmail.getText(),BCrypt.hashpw(password,BCrypt.gensalt(12)));
-        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công !");
+        String inputOtp = txtOtp.getText();
+//        if (otp.equals("")) {
+//            JOptionPane.showMessageDialog(this, "Không được để trống !");
+//        } else {
+//            if (otp.length() < 6 || otp.length() > 6) {
+//                JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng 6 chữ số !");
+//            } else {
+//                if (otp.equals(this.otp)) {
+//                    CardLayout forgotPassword = (CardLayout) pMain.getLayout();
+//                    forgotPassword.next(pMain);
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Mã xác nhận không chính xác !");
+//                }
+//            }
+//        }
+        boolean check = false;
+        try {
+            check = ndBUS.handleConfirmOTP(inputOtp, otp);
+        } catch (EmptyFieldException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            txtOtp.requestFocus();
+            return;
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (check) {
+            CardLayout forgotPassword = (CardLayout) pMain.getLayout();
+            forgotPassword.next(pMain);
+        } else {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Mã xác nhận không chính xác");
+        }
+    }//GEN-LAST:event_btnConfirmCodeActionPerformed
+
+    private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
+        // TODO add your handling code here:
+//        String password = txtPassword.getText();
+//        AccountDAO.getInstance().updatePassword(txtEmail.getText(),BCrypt.hashpw(password,BCrypt.gensalt(12)));
+//        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công !");
+
+        String newPassword = new String(txtNewPassword.getPassword());
+        String confirmNewPassword = new String(txtConfirmNewPassword.getPassword());
+        boolean check = false;
+        
+        try {
+            check = ndBUS.handleRecoverPassword(user, newPassword, confirmNewPassword);
+        } catch (EmptyFieldException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            if (e.getFieldName().equalsIgnoreCase("newPassword")) {
+                txtNewPassword.requestFocus();
+            } else if (e.getFieldName().equalsIgnoreCase("confirmNewPassword")) {
+                txtConfirmNewPassword.requestFocus();
+            }
+            return;
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        if (check) {
+            JOptionPane.showMessageDialog(RecoverPassword.this, "Thay đổi mật khẩu thành công");
+        }
         this.dispose();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnChangePasswordActionPerformed
+
+    private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmailActionPerformed
+
+    private void txtConfirmNewPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtConfirmNewPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtConfirmNewPasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,21 +389,24 @@ public class RecoverPassword extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
+    private javax.swing.JButton btnChangePassword;
+    private javax.swing.JButton btnConfirmCode;
+    private javax.swing.JButton btnSendCode;
+    private javax.swing.JLabel lblCodeSent;
+    private javax.swing.JLabel lblConfirmNewPassword;
+    private javax.swing.JLabel lblEnterCode;
+    private javax.swing.JLabel lblEnterEmail;
+    private javax.swing.JLabel lblNewPassword;
+    private javax.swing.JLabel lblRecoverPassword;
+    private javax.swing.JLabel lblSetNewPassword;
+    private javax.swing.JPanel pCodeVerification;
+    private javax.swing.JPanel pEmailVerification;
+    private javax.swing.JPanel pHeader;
+    private javax.swing.JPanel pMain;
+    private javax.swing.JPanel pNewPassword;
+    private javax.swing.JPasswordField txtConfirmNewPassword;
     private javax.swing.JTextField txtEmail;
+    private javax.swing.JPasswordField txtNewPassword;
     private javax.swing.JTextField txtOtp;
-    private javax.swing.JPasswordField txtPassword;
     // End of variables declaration//GEN-END:variables
 }
