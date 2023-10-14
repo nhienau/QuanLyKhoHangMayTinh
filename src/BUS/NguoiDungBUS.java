@@ -12,6 +12,7 @@ import helper.Exception.AuthenticationException;
 import helper.Exception.EmptyFieldException;
 import helper.OTP;
 import helper.SendEmailSMTP;
+import helper.SendEmailSMTP.EmailSentListener;
 import helper.Validation;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -112,16 +113,9 @@ public class NguoiDungBUS {
         return user;
     }
     
-    public String sendEmailOTP(String username, String email) throws MessagingException {
-        // Send email
+    public void sendEmailOTP(String username, String email, EmailSentListener listener) throws Exception {
         String otp = OTP.generateOTP();
-        try {
-            SendEmailSMTP.sendOTP(email, username, otp);
-        } catch (MessagingException e) {
-            throw e;
-        }
-        
-        return otp;
+        SendEmailSMTP.sendOTPAsync(email, username, otp, listener);
     }
     
     public boolean handleConfirmOTP(String inputOtp, String otp) throws EmptyFieldException, IllegalArgumentException {
