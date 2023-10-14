@@ -7,28 +7,17 @@ package view;
 import BUS.NguoiDungBUS;
 import DTO.NguoiDungDTO;
 import com.formdev.flatlaf.FlatLightLaf;
-import controller.BCrypt;
-import OldDAO.AccountDAO;
 import helper.Exception.AuthenticationException;
 import helper.Exception.EmptyFieldException;
+import helper.SendEmailSMTP.EmailSentListener;
 import java.awt.CardLayout;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import model.Account;
 import java.sql.SQLException;
-import javax.mail.MessagingException;
+import java.awt.event.KeyEvent;
 
-/**
- *
- * @author sinh
- */
-public class RecoverPassword extends javax.swing.JDialog {
-
-    /**
-     * Creates new form RecoverPassword
-     */
+public class RecoverPassword extends javax.swing.JDialog implements EmailSentListener {
     private final NguoiDungBUS ndBUS = new NguoiDungBUS();
     private String otp;
     private NguoiDungDTO user;
@@ -71,6 +60,8 @@ public class RecoverPassword extends javax.swing.JDialog {
         lblEnterEmail = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         btnSendCode = new javax.swing.JButton();
+        spSendingMessage = new javax.swing.JScrollPane();
+        taSendingMessage = new javax.swing.JTextArea();
         pCodeVerification = new javax.swing.JPanel();
         lblCodeSent = new javax.swing.JLabel();
         lblEnterCode = new javax.swing.JLabel();
@@ -110,8 +101,8 @@ public class RecoverPassword extends javax.swing.JDialog {
 
         lblEnterEmail.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         lblEnterEmail.setForeground(new java.awt.Color(0, 0, 0));
-        lblEnterEmail.setText("Nhập địa chỉ email tài khoản");
-        pEmailVerification.add(lblEnterEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 70, -1, -1));
+        lblEnterEmail.setText("Nhập địa chỉ email");
+        pEmailVerification.add(lblEnterEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, -1, -1));
 
         txtEmail.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         txtEmail.addActionListener(new java.awt.event.ActionListener() {
@@ -119,7 +110,12 @@ public class RecoverPassword extends javax.swing.JDialog {
                 txtEmailActionPerformed(evt);
             }
         });
-        pEmailVerification.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 251, 41));
+        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtEmailKeyPressed(evt);
+            }
+        });
+        pEmailVerification.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 90, 251, 41));
 
         btnSendCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         btnSendCode.setForeground(new java.awt.Color(0, 0, 0));
@@ -130,7 +126,33 @@ public class RecoverPassword extends javax.swing.JDialog {
                 btnSendCodeActionPerformed(evt);
             }
         });
-        pEmailVerification.add(btnSendCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 100, 158, 41));
+        pEmailVerification.add(btnSendCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 90, 158, 41));
+
+        spSendingMessage.setBackground(new java.awt.Color(255, 255, 255));
+        spSendingMessage.setBorder(null);
+        spSendingMessage.setForeground(new java.awt.Color(255, 255, 255));
+        spSendingMessage.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        spSendingMessage.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        spSendingMessage.setOpaque(false);
+        spSendingMessage.setViewportView(taSendingMessage);
+
+        taSendingMessage.setEditable(false);
+        taSendingMessage.setBackground(new java.awt.Color(255, 255, 255));
+        taSendingMessage.setColumns(20);
+        taSendingMessage.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        taSendingMessage.setForeground(new java.awt.Color(0, 0, 0));
+        taSendingMessage.setLineWrap(true);
+        taSendingMessage.setRows(5);
+        taSendingMessage.setText("Mã xác nhận đang được gửi đến email của bạn. Vui lòng chờ trong giây lát.");
+        taSendingMessage.setWrapStyleWord(true);
+        taSendingMessage.setFocusable(false);
+        taSendingMessage.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        taSendingMessage.setOpaque(false);
+        spSendingMessage.setViewportView(taSendingMessage);
+
+        pEmailVerification.add(spSendingMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 140, 420, 50));
+        spSendingMessage.getViewport().setOpaque(false);
+        spSendingMessage.setVisible(false);
 
         pMain.add(pEmailVerification, "card2");
 
@@ -149,6 +171,11 @@ public class RecoverPassword extends javax.swing.JDialog {
         pCodeVerification.add(lblEnterCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 90, 138, -1));
 
         txtOtp.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtOtp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtOtpKeyPressed(evt);
+            }
+        });
         pCodeVerification.add(txtOtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 117, 273, 41));
 
         btnConfirmCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -178,6 +205,11 @@ public class RecoverPassword extends javax.swing.JDialog {
         pNewPassword.add(lblNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
 
         txtNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtNewPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNewPasswordKeyPressed(evt);
+            }
+        });
         pNewPassword.add(txtNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, 259, 42));
 
         lblConfirmNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -189,6 +221,11 @@ public class RecoverPassword extends javax.swing.JDialog {
         txtConfirmNewPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtConfirmNewPasswordActionPerformed(evt);
+            }
+        });
+        txtConfirmNewPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtConfirmNewPasswordKeyPressed(evt);
             }
         });
         pNewPassword.add(txtConfirmNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 120, 259, 42));
@@ -213,22 +250,6 @@ public class RecoverPassword extends javax.swing.JDialog {
     private void btnSendCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendCodeActionPerformed
         // TODO add your handling code here:
         String email = txtEmail.getText();
-//        if (email.equals("")) {
-//            JOptionPane.showMessageDialog(this, "Email không được để trống !");
-//        } else {
-//            if (isValid(email)) {
-//                if (checkEmail(email)) {
-//                    otp = getOTP();
-//                    SendEmailSMTP.sendOTP(email, otp);
-//                    CardLayout forgotPassword = (CardLayout) pMain.getLayout();
-//                    forgotPassword.next(pMain);
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Email không tồn tại trên hệ thống !");
-//                }
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng email !");
-//            }
-//        }
 
         NguoiDungDTO user = null;
         try {
@@ -248,38 +269,22 @@ public class RecoverPassword extends javax.swing.JDialog {
         }
         
         setUser(user);
-
-        String otpCode = null;
+        
+        btnSendCode.setEnabled(false);
+        txtEmail.setEnabled(false);
+        spSendingMessage.setVisible(true);
+        
         try {
-            otpCode = ndBUS.sendEmailOTP(user.getTaiKhoan(), email);
-        } catch (MessagingException e) {
-            JOptionPane.showMessageDialog(RecoverPassword.this, "Có lỗi xảy ra trong quá trình gửi email.", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
+            ndBUS.sendEmailOTP(user.getTaiKhoan(), email, this);
+        } catch (Exception ex) {
+//            Logger.getLogger(RecoverPassword.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        setOtp(otpCode);
-        CardLayout forgotPassword = (CardLayout) pMain.getLayout();
-        forgotPassword.next(pMain);
     }//GEN-LAST:event_btnSendCodeActionPerformed
 
     private void btnConfirmCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmCodeActionPerformed
         // TODO add your handling code here:
         String inputOtp = txtOtp.getText();
-//        if (otp.equals("")) {
-//            JOptionPane.showMessageDialog(this, "Không được để trống !");
-//        } else {
-//            if (otp.length() < 6 || otp.length() > 6) {
-//                JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng 6 chữ số !");
-//            } else {
-//                if (otp.equals(this.otp)) {
-//                    CardLayout forgotPassword = (CardLayout) pMain.getLayout();
-//                    forgotPassword.next(pMain);
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Mã xác nhận không chính xác !");
-//                }
-//            }
-//        }
         boolean check = false;
         try {
             check = ndBUS.handleConfirmOTP(inputOtp, otp);
@@ -302,10 +307,6 @@ public class RecoverPassword extends javax.swing.JDialog {
 
     private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
         // TODO add your handling code here:
-//        String password = txtPassword.getText();
-//        AccountDAO.getInstance().updatePassword(txtEmail.getText(),BCrypt.hashpw(password,BCrypt.gensalt(12)));
-//        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công !");
-
         String newPassword = new String(txtNewPassword.getPassword());
         String confirmNewPassword = new String(txtConfirmNewPassword.getPassword());
         boolean check = false;
@@ -347,6 +348,34 @@ public class RecoverPassword extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtConfirmNewPasswordActionPerformed
 
+    private void txtNewPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNewPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnChangePasswordActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtNewPasswordKeyPressed
+
+    private void txtConfirmNewPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtConfirmNewPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnChangePasswordActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtConfirmNewPasswordKeyPressed
+
+    private void txtEmailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnSendCodeActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtEmailKeyPressed
+
+    private void txtOtpKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtOtpKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnConfirmCodeActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtOtpKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -367,27 +396,6 @@ public class RecoverPassword extends javax.swing.JDialog {
         });
     }
 
-    static boolean isValid(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-        return email.matches(regex);
-    }
-
-    private boolean checkEmail(String email) {
-        ArrayList<Account> acc = AccountDAO.getInstance().selectAll();
-        for (Account i : acc) {
-            if (i.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String getOTP() {
-        int min = 100000;
-        int max = 999999;
-        return Integer.toString((int) ((Math.random() * (max - min)) + min));
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChangePassword;
     private javax.swing.JButton btnConfirmCode;
@@ -404,9 +412,27 @@ public class RecoverPassword extends javax.swing.JDialog {
     private javax.swing.JPanel pHeader;
     private javax.swing.JPanel pMain;
     private javax.swing.JPanel pNewPassword;
+    private javax.swing.JScrollPane spSendingMessage;
+    private javax.swing.JTextArea taSendingMessage;
     private javax.swing.JPasswordField txtConfirmNewPassword;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JPasswordField txtNewPassword;
     private javax.swing.JTextField txtOtp;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onEmailSent(String otp) {
+        setOtp(otp);
+        CardLayout forgotPassword = (CardLayout) pMain.getLayout();
+        forgotPassword.next(pMain);
+    }
+
+    @Override
+    public void onEmailSendError(Exception e) {
+        e.printStackTrace();
+        btnSendCode.setEnabled(true);
+        txtEmail.setEnabled(true);
+        spSendingMessage.setVisible(false);
+        JOptionPane.showMessageDialog(RecoverPassword.this, "Có lỗi xảy ra trong quá trình gửi email.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
 }
