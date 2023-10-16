@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import model.Phieu;
+import org.apache.poi.hwmf.record.HwmfTernaryRasterOp;
 
 /**
  *
@@ -29,12 +30,11 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
         int ketQua = 0;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
-            String sql = "INSERT INTO NhaCungCap (maNhaCungCap, tenNhaCungCap, Sdt, diaChi) VALUES (?,?,?,?)";
+            String sql = "INSERT INTO nhacungcap ( `tennhacungcap`, `sdt`, `diachi`)  VALUES (?,?,?)";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, t.getMaNhaCungCap());
-            pst.setString(2, t.getTenNhaCungCap());
-            pst.setString(3, t.getSdt());
-            pst.setString(4, t.getDiaChi());
+              pst.setString(1, t.getTenNhaCungCap());
+              pst.setString(2, t.getSdt());
+              pst.setString(3, t.getDiaChi());
             ketQua = pst.executeUpdate();
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
@@ -43,6 +43,7 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
             e.printStackTrace();
         }
         return ketQua;
+
     }
 
     @Override
@@ -72,7 +73,7 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
         int ketQua = 0;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
-            String sql = "DELETE FROM NhaCungCap WHERE maNhaCungCap=?";
+            String sql = "UPDATE NhaCungCap SET trangthai = 0 WHERE maNhaCungCap=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, t.getMaNhaCungCap());
             ketQua = pst.executeUpdate();
@@ -89,7 +90,7 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
         ArrayList<NhaCungCap> ketQua = new ArrayList<NhaCungCap>();
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM NhaCungCap";
+            String sql = "SELECT * FROM NhaCungCap WHERE trangthai = 1";
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -97,7 +98,7 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
                 String tenNhaCungCap = rs.getString("tenNhaCungCap");
                 String sdt = rs.getString("Sdt");
                 String diaChi = rs.getString("diaChi");
-                NhaCungCap ncc = new NhaCungCap(maNhaCungCap, tenNhaCungCap, sdt, diaChi);
+                NhaCungCap ncc = new NhaCungCap (maNhaCungCap, tenNhaCungCap, sdt, diaChi);
                 ketQua.add(ncc);
             }
         } catch (Exception e) {
