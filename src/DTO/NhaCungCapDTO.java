@@ -36,7 +36,10 @@ public class NhaCungCapDTO {
     }
 
     public void setSdt(String sdt) {
-        this.sdt = sdt;
+            if (sdt.matches("\\d{10}")){
+                this.sdt = sdt;
+            }
+        
     }
 
     public String getDiaChi() {
