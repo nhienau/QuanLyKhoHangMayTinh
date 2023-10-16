@@ -41,10 +41,10 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
     
     private void displayInfo() {
         NhaCungCap a = parent.getNhaCungCapSelect();
-        txtMaNhaCungCap.setText(a.getMaNhaCungCap());
+        txtMaNCC.setText(a.getMaNhaCungCap());
         txtDiaChi.setText(a.getDiaChi());
-        txtTenNhaCungCap.setText(a.getTenNhaCungCap());
-        txtphone1.setText(a.getSdt());
+        txtTenNCC.setText(a.getTenNhaCungCap());
+        txtSDT.setText(a.getSdt());
     }
 
     /**
@@ -57,18 +57,18 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        txtMaNhaCungCap = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        txtTenNhaCungCap = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        lbMaNCC = new javax.swing.JLabel();
+        txtMaNCC = new javax.swing.JTextField();
+        lbTenNCC = new javax.swing.JLabel();
+        txtTenNCC = new javax.swing.JTextField();
+        lbSDT = new javax.swing.JLabel();
         txtDiaChi = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        lbDiaChi = new javax.swing.JLabel();
+        btnLuu = new javax.swing.JButton();
+        btnHuy = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtphone1 = new javax.swing.JTextField();
+        txtSDT = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cập nhật thông tin");
@@ -76,46 +76,46 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setText("Mã nhà cung cấp");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 120, -1));
+        lbMaNCC.setText("Mã nhà cung cấp");
+        jPanel1.add(lbMaNCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 120, -1));
 
-        txtMaNhaCungCap.setEnabled(false);
-        jPanel1.add(txtMaNhaCungCap, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 298, 38));
+        txtMaNCC.setEnabled(false);
+        jPanel1.add(txtMaNCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 298, 38));
 
-        jLabel3.setText("Tên nhà cung cấp");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, -1, 24));
-        jPanel1.add(txtTenNhaCungCap, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 298, 38));
+        lbTenNCC.setText("Tên nhà cung cấp");
+        jPanel1.add(lbTenNCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, -1, 24));
+        jPanel1.add(txtTenNCC, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 298, 38));
 
-        jLabel4.setText("Số điện thoại");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, 100, -1));
+        lbSDT.setText("Số điện thoại");
+        jPanel1.add(lbSDT, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, 100, -1));
         jPanel1.add(txtDiaChi, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 370, 298, 38));
 
-        jLabel5.setText("Địa chỉ");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 50, -1));
+        lbDiaChi.setText("Địa chỉ");
+        jPanel1.add(lbDiaChi, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 50, -1));
 
-        jButton1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Lưu");
-        jButton1.setBorder(null);
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLuu.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        btnLuu.setForeground(new java.awt.Color(255, 255, 255));
+        btnLuu.setText("Lưu");
+        btnLuu.setBorder(null);
+        btnLuu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLuu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnLuuActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 430, 140, 38));
+        jPanel1.add(btnLuu, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 430, 140, 38));
 
-        jButton2.setBackground(new java.awt.Color(255, 0, 51));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Huỷ");
-        jButton2.setBorder(null);
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnHuy.setBackground(new java.awt.Color(255, 0, 51));
+        btnHuy.setForeground(new java.awt.Color(255, 255, 255));
+        btnHuy.setText("Huỷ");
+        btnHuy.setBorder(null);
+        btnHuy.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHuy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnHuyActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 430, 140, 38));
+        jPanel1.add(btnHuy, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 430, 140, 38));
 
         jPanel2.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
 
@@ -141,7 +141,7 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 390, 70));
-        jPanel1.add(txtphone1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 298, 38));
+        jPanel1.add(txtSDT, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 298, 38));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -159,29 +159,42 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
         // TODO add your handling code here:
         try {
+            String tenNcc = txtTenNCC.getText().trim();
+            String sdtNcc = txtSDT.getText().trim();
+            String diachiNcc = txtDiaChi.getText().trim();
+            if (tenNcc.equals("") || sdtNcc.equals("") || diachiNcc.equals("")) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }
+            else if(!sdtNcc.matches("\\d{10}") ){
+                JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }
+            else if(sdtNcc.contains(sdtNcc)){
+                JOptionPane.showMessageDialog(this, "Số điện thoại bị trùng ! Nhập lại !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }else{
             // TODO add your handling code here:
             NhaCungCap ncc = new NhaCungCap();
-            ncc.setMaNhaCungCap(txtMaNhaCungCap.getText());
-            ncc.setTenNhaCungCap(txtTenNhaCungCap.getText());
-            ncc.setSdt(txtphone1.getText());
+            ncc.setMaNhaCungCap(txtMaNCC.getText());
+            ncc.setTenNhaCungCap(txtTenNCC.getText());
+            ncc.setSdt(txtSDT.getText());
             ncc.setDiaChi(txtDiaChi.getText());
             NhaCungCapDAO nccDao = new NhaCungCapDAO();
             nccDao.update(ncc);
             this.dispose();
             JOptionPane.showMessageDialog(this, "Sửa thành công !");    
             parent.loadDataToTable(NhaCungCapDAO.getInstance().selectAll());
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Thất bại !");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnLuuActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
         // TODO add your handling code here:
         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnHuyActionPerformed
 
     /**
      * @param args the command line arguments
@@ -204,18 +217,18 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnHuy;
+    private javax.swing.JButton btnLuu;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lbDiaChi;
+    private javax.swing.JLabel lbMaNCC;
+    private javax.swing.JLabel lbSDT;
+    private javax.swing.JLabel lbTenNCC;
     private javax.swing.JTextField txtDiaChi;
-    private javax.swing.JTextField txtMaNhaCungCap;
-    private javax.swing.JTextField txtTenNhaCungCap;
-    private javax.swing.JTextField txtphone1;
+    private javax.swing.JTextField txtMaNCC;
+    private javax.swing.JTextField txtSDT;
+    private javax.swing.JTextField txtTenNCC;
     // End of variables declaration//GEN-END:variables
 }
