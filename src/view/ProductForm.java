@@ -5,13 +5,19 @@
 package view;
 
 import BUS.ChiTietQuyenBUS;
+import BUS.SanPhamBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
+import DTO.SanPhamDTO;
+import DAO.SanPhamDAO;
 import controller.SearchProduct;
 import OldDAO.LaptopDAO;
 import OldDAO.MayTinhDAO;
 import OldDAO.PCDAO;
 import java.awt.Desktop;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,14 +28,18 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.Account;
 import model.Laptop;
@@ -48,9 +58,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author Robot
  */
 public class ProductForm extends javax.swing.JInternalFrame {
-
+    SanPhamBUS spBUS = new SanPhamBUS();
     private DefaultTableModel tblModel;
-    DecimalFormat formatter = new DecimalFormat("###,###,###");
+    DefaultTableCellRenderer renderer;
+    DecimalFormat formatter = new DecimalFormat("###, ###, ###");
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     
     public ProductForm(NguoiDungDTO user) {
@@ -59,6 +70,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         ui.setNorthPane(null);
         tblSanPham.setDefaultEditor(Object.class, null);
         initTable();
+        loadDataToTable();
         changeTextFind();
         
         // Authorization
@@ -121,47 +133,66 @@ public class ProductForm extends javax.swing.JInternalFrame {
             btnAdd.setEnabled(false);
             btnDelete.setEnabled(false);
             btnEdit.setEnabled(false);
-            jButton6.setEnabled(false);
-            jButton2.setEnabled(false);
+            btnXuatExcel.setEnabled(false);
+            btnNhapExcel.setEnabled(false);
         } else {
             System.out.println("abcdjad");
         }
     }
 
     public final void initTable() {
-        tblModel = new DefaultTableModel();
-        String[] headerTbl = new String[]{"Mã máy", "Tên máy", "Số lượng", "Đơn giá", "Bộ xử lí", "RAM", "Bộ nhớ", "Loại máy"};
+        tblModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        String[] headerTbl = new String[]{"Mã máy", "Tên máy", "Số lượng", "Đơn giá"};
         tblModel.setColumnIdentifiers(headerTbl);
         tblSanPham.setModel(tblModel);
         tblSanPham.getColumnModel().getColumn(0).setPreferredWidth(5);
         tblSanPham.getColumnModel().getColumn(1).setPreferredWidth(200);
         tblSanPham.getColumnModel().getColumn(2).setPreferredWidth(5);
-        tblSanPham.getColumnModel().getColumn(5).setPreferredWidth(5);
-        tblSanPham.getColumnModel().getColumn(6).setPreferredWidth(5);
+
+        
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tblSanPham.setDefaultRenderer(String.class, renderer);
+        tblSanPham.addMouseListener(new MouseAdapter(){
+            public void mousePressed(MouseEvent mouseEvent){
+                JTable table = (JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if(mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 ){
+                    
+                }
+            }
+        });
+        
     }
 
     public void loadDataToTable() {
-        try {
-            MayTinhDAO mtdao = new MayTinhDAO();
-            ArrayList<MayTinh> armt = mtdao.selectAll();
-            tblModel.setRowCount(0);
-            for (MayTinh i : armt) {
-                if (i.getTrangThai() == 1) {
-                    String loaimay;
-                    if (LaptopDAO.getInstance().isLaptop(i.getMaMay()) == true) {
-                        loaimay = "Laptop";
-                    } else {
-                        loaimay = "PC/Case";
-                    }
-                    tblModel.addRow(new Object[]{
-                        i.getMaMay(), i.getTenMay(), i.getSoLuong(), formatter.format(i.getGia()) + "đ", i.getTenCpu(), i.getRam(), i.getRom(), loaimay
-                    });
-                }
-            }
-        } catch (Exception e) {
+        ArrayList<SanPhamDTO> arr = new ArrayList<SanPhamDTO>();
+        arr = spBUS.getlistProducts();
+        tblModel.setRowCount(0);
+        
+        for(int i = 0; i< arr.size() ; i++){
+            SanPhamDTO spDTO = arr.get(i);
+            int maSP = spDTO.getMaSanPham();
+            String tenSP = spDTO.getTenSanPham();
+            int soluong = spDTO.getSoLuong();
+            int giaBan = spDTO.getGiaXuat();
+            Object [] row = {maSP, tenSP, soluong, formatter.format( giaBan) + " đ"  };
+            tblModel.addRow(row);
+        }
+        
+        for(int i = 0; i < tblSanPham.getColumnCount(); i++){
+            tblSanPham.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }
     }
 
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -178,12 +209,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
         btnEdit = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton6 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnXuatExcel = new javax.swing.JButton();
+        btnNhapExcel = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
-        jButton7 = new javax.swing.JButton();
+        btnLamMoi = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSanPham = new javax.swing.JTable();
 
@@ -248,30 +279,30 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jToolBar1.add(btnDetail);
         jToolBar1.add(jSeparator1);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        jButton6.setText("Xuất Excel");
-        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
+        btnXuatExcel.setText("Xuất Excel");
+        btnXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnXuatExcelActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton6);
+        jToolBar1.add(btnXuatExcel);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        jButton2.setText("Nhập Excel");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnNhapExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
+        btnNhapExcel.setText("Nhập Excel");
+        btnNhapExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNhapExcel.setFocusable(false);
+        btnNhapExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNhapExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNhapExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnNhapExcelActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
+        jToolBar1.add(btnNhapExcel);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -300,15 +331,15 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jPanel3.add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 30, 360, 40));
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
-        jButton7.setText("Làm mới");
-        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
+        btnLamMoi.setText("Làm mới");
+        btnLamMoi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnLamMoiActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 40));
+        jPanel3.add(btnLamMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 40));
 
         tblSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -324,14 +355,14 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1168, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -372,12 +403,14 @@ public class ProductForm extends javax.swing.JInternalFrame {
         if (tblSanPham.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa");
         } else {
+
             UpdateProduct a = new UpdateProduct(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
             a.setVisible(true);
+            loadDataToTable();
         }
     }//GEN-LAST:event_btnEditActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
         // TODO add your handling code here:
         try {
             JFileChooser jFileChooser = new JFileChooser();
@@ -413,9 +446,9 @@ public class ProductForm extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnXuatExcelActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
         // TODO add your handling code here:
         File excelFile;
         FileInputStream excelFIS = null;
@@ -473,13 +506,13 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Mã máy " + mayTinh.getMaMay() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnNhapExcelActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         // TODO add your handling code here:
         jComboBoxLuaChon.setSelectedIndex(0);
         loadDataToTable();
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         // TODO add your handling code here:
@@ -517,7 +550,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
         ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTableSearch(result);
+        loadDataToTable();
     }//GEN-LAST:event_jComboBoxLuaChonPropertyChange
 
     public ArrayList<MayTinh> searchFn(String luaChon, String content) {
@@ -568,9 +601,11 @@ public class ProductForm extends javax.swing.JInternalFrame {
         }
     }
 
-    public Laptop getDetailLapTop() {
-        Laptop a = LaptopDAO.getInstance().selectById(getMayTinhSelect().getMaMay());
-        return a;
+    public SanPhamDTO getDetailSanPham() {
+        int row = tblSanPham.getSelectedRow();
+        int id = Integer.parseInt(tblModel.getValueAt(row, 0).toString());
+        SanPhamDTO spDTO = SanPhamDAO.getInstance().selectProductByID(id);
+        return spDTO;
     }
 
     public PC getDetailPC() {
@@ -580,12 +615,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
 
     public void xoaMayTinhSelect() {
         DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
-        int i_row = tblSanPham.getSelectedRow();
+        int row = tblSanPham.getSelectedRow();
         int luaChon = JOptionPane.showConfirmDialog(this, "Bạn có muốn xoá sản phẩm này?", "Xoá sản phẩm",
                 JOptionPane.YES_NO_OPTION);
         if (luaChon == JOptionPane.YES_OPTION) {
-            MayTinh remove = getMayTinhSelect();
-            MayTinhDAO.getInstance().deleteTrangThai(remove.getMaMay());
+            SanPhamDTO remove = getSanPhamSelect();
+            SanPhamDAO.getInstance().deleteProduct(remove.getMaSanPham());
         }
         loadDataToTable();
     }
@@ -596,6 +631,13 @@ public class ProductForm extends javax.swing.JInternalFrame {
         return acc;
     }
 
+    public SanPhamDTO getSanPhamSelect(){
+        int row = tblSanPham.getSelectedRow();
+        int id = Integer.parseInt(tblModel.getValueAt(row, 0).toString());
+        SanPhamDTO spDTO = SanPhamDAO.getInstance().selectProductByID(id);
+        return spDTO;
+    }
+    
     public void loadDataToTableSearch(ArrayList<MayTinh> result) {
         try {
             tblModel.setRowCount(0);
@@ -636,15 +678,17 @@ public class ProductForm extends javax.swing.JInternalFrame {
             }
         });
     }
+    
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
+    private javax.swing.JButton btnLamMoi;
+    private javax.swing.JButton btnNhapExcel;
+    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
