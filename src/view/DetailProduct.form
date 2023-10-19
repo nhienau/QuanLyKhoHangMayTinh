@@ -57,10 +57,10 @@
                           </Group>
                           <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtROM" alignment="0" min="-2" pref="189" max="-2" attributes="0"/>
+                              <Component id="txtTrongLuong" alignment="0" min="-2" pref="189" max="-2" attributes="0"/>
                               <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                                   <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtGPU" min="-2" pref="189" max="-2" attributes="0"/>
+                                  <Component id="txtMauSac" min="-2" pref="189" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -95,7 +95,7 @@
                                   <Component id="jLabel15" min="-2" pref="56" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="txtXuatXu" max="32767" attributes="0"/>
+                              <Component id="txtOS" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                       </Group>
@@ -142,7 +142,7 @@
                           <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="txtDonGia" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
-                              <Component id="txtROM" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
+                              <Component id="txtTrongLuong" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
@@ -162,8 +162,8 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="txtSoLuong" alignment="0" min="-2" pref="33" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="txtGPU" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
-                                  <Component id="txtXuatXu" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
+                                  <Component id="txtMauSac" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
+                                  <Component id="txtOS" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -227,23 +227,23 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Dung l&#x1b0;&#x1ee3;ng l&#x1b0;u tr&#x1eef;"/>
+            <Property name="text" type="java.lang.String" value="Tr&#x1ecd;ng l&#x1b0;&#x1ee3;ng"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtROM">
+        <Component class="javax.swing.JTextField" name="txtTrongLuong">
           <Properties>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtROMActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtTrongLuongActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Card &#x111;&#x1ed3; ho&#x1ea1;"/>
+            <Property name="text" type="java.lang.String" value="M&#xe0;u s&#x1eaf;c"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtGPU">
+        <Component class="javax.swing.JTextField" name="txtMauSac">
           <Properties>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
@@ -414,10 +414,10 @@
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel15">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Xu&#x1ea5;t x&#x1ee9;"/>
+            <Property name="text" type="java.lang.String" value="OS"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtXuatXu">
+        <Component class="javax.swing.JTextField" name="txtOS">
           <Properties>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>

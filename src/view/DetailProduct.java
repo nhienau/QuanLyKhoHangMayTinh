@@ -4,6 +4,7 @@
  */
 package view;
 
+import DTO.SanPhamDTO;
 import OldDAO.LaptopDAO;
 import OldDAO.PCDAO;
 import java.awt.CardLayout;
@@ -11,6 +12,7 @@ import java.text.DecimalFormat;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import model.Laptop;
+import model.MayTinh;
 import model.PC;
 
 /**
@@ -24,40 +26,28 @@ public class DetailProduct extends javax.swing.JDialog {
      */
     private ProductForm owner;
     DecimalFormat formatter = new DecimalFormat("###,###,###");
+    
+    
     public DetailProduct(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
         super(owner, modal);       
         initComponents();
         setLocationRelativeTo(null);
         this.owner = (ProductForm) parent;
-        if (this.owner.checklap()) {
-            Laptop a = this.owner.getDetailLapTop();
-            txtMaSanPham.setText(a.getMaMay());
-            txtTenSanPham.setText(a.getTenMay());
-            txtDonGia.setText(formatter.format(a.getGia())+"đ");
-            txtCPU.setText(a.getTenCpu());
-            txtRAM.setText(a.getRam());
-            txtROM.setText(a.getRom());
-            txtGPU.setText(a.getCardManHinh());
-            txtXuatXu.setText(a.getXuatXu());
+            SanPhamDTO mt = this.owner.getDetailSanPham();
+            txtMaSanPham.setText(String.valueOf(mt.getMaSanPham()));
+            txtTenSanPham.setText(mt.getTenSanPham());
+            txtDonGia.setText(formatter.format(mt.getGiaXuat())+"đ");
+            txtCPU.setText(mt.getCpu());
+            txtRAM.setText(mt.getRam());
+            txtTrongLuong.setText(String.valueOf(mt.getTrongLuong()));
+            txtMauSac.setText(mt.getMauSac());
+            txtOS.setText(mt.getOs());
             cbxloaisp.setSelectedIndex(0);
-            txtKichThuocMan.setText(Double.toString(a.getkichThuocMan()));
-            txtDungLuongPin.setText(a.getDungLuongPin());
-            txtSoLuong.setText(Integer.toString(a.getSoLuong()));
-        } else {
-            PC a = this.owner.getDetailPC();
-            txtMaSanPham.setText(a.getMaMay());
-            txtTenSanPham.setText(a.getTenMay());
-            txtDonGia.setText(formatter.format(a.getGia())+"đ");
-            txtCPU.setText(a.getTenCpu());
-            txtRAM.setText(a.getRam());
-            txtROM.setText(a.getRom());
-            txtGPU.setText(a.getCardManHinh());
-            txtXuatXu.setText(a.getXuatXu());
-            cbxloaisp.setSelectedIndex(1);
-            txtMainBoard.setText(a.getMainBoard());
-            txtCongsuatNguon.setText(Integer.toString(a.getCongSuatNguon()) + "W");
-            txtSoLuong.setText(Integer.toString(a.getSoLuong()));
-        }
+            txtKichThuocMan.setText(String.valueOf(mt.getManHinh()));
+            txtDungLuongPin.setText(mt.getPin());
+            txtSoLuong.setText(String.valueOf(mt.getSoLuong()));
+            
+            System.out.println(mt.getMaSanPham() + " " +  mt.getTenSanPham());
     }
     
 
@@ -86,9 +76,9 @@ public class DetailProduct extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         txtRAM = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        txtROM = new javax.swing.JTextField();
+        txtTrongLuong = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        txtGPU = new javax.swing.JTextField();
+        txtMauSac = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         cbxloaisp = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
@@ -103,7 +93,7 @@ public class DetailProduct extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         txtCongsuatNguon = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        txtXuatXu = new javax.swing.JTextField();
+        txtOS = new javax.swing.JTextField();
         txtSoLuong = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -135,18 +125,18 @@ public class DetailProduct extends javax.swing.JDialog {
 
         txtRAM.setEnabled(false);
 
-        jLabel8.setText("Dung lượng lưu trữ");
+        jLabel8.setText("Trọng lượng");
 
-        txtROM.setEnabled(false);
-        txtROM.addActionListener(new java.awt.event.ActionListener() {
+        txtTrongLuong.setEnabled(false);
+        txtTrongLuong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtROMActionPerformed(evt);
+                txtTrongLuongActionPerformed(evt);
             }
         });
 
-        jLabel9.setText("Card đồ hoạ");
+        jLabel9.setText("Màu sắc");
 
-        txtGPU.setEnabled(false);
+        txtMauSac.setEnabled(false);
 
         jLabel10.setText("Loại sản phẩm");
 
@@ -244,9 +234,9 @@ public class DetailProduct extends javax.swing.JDialog {
 
         jPanel3.add(pc, "card2");
 
-        jLabel15.setText("Xuất xứ");
+        jLabel15.setText("OS");
 
-        txtXuatXu.setEnabled(false);
+        txtOS.setEnabled(false);
 
         txtSoLuong.setEnabled(false);
 
@@ -270,10 +260,10 @@ public class DetailProduct extends javax.swing.JDialog {
                             .addComponent(txtSoLuong))
                         .addGap(91, 91, 91)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtROM, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTrongLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel9)
-                                .addComponent(txtGPU, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtTenSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -298,7 +288,7 @@ public class DetailProduct extends javax.swing.JDialog {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(txtXuatXu))
+                            .addComponent(txtOS))
                         .addGap(43, 43, 43))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
@@ -334,7 +324,7 @@ public class DetailProduct extends javax.swing.JDialog {
                         .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDonGia, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtROM, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtTrongLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(9, 9, 9)
@@ -349,8 +339,8 @@ public class DetailProduct extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtGPU, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtXuatXu, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtOS, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
@@ -403,9 +393,9 @@ public class DetailProduct extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxloaispActionPerformed
 
-    private void txtROMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtROMActionPerformed
+    private void txtTrongLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTrongLuongActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtROMActionPerformed
+    }//GEN-LAST:event_txtTrongLuongActionPerformed
 
     private void txtMainBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMainBoardActionPerformed
         // TODO add your handling code here:
@@ -486,14 +476,14 @@ public class DetailProduct extends javax.swing.JDialog {
     private javax.swing.JTextField txtCongsuatNguon;
     private javax.swing.JTextField txtDonGia;
     private javax.swing.JTextField txtDungLuongPin;
-    private javax.swing.JTextField txtGPU;
     private javax.swing.JTextField txtKichThuocMan;
     private javax.swing.JTextField txtMaSanPham;
     private javax.swing.JTextField txtMainBoard;
+    private javax.swing.JTextField txtMauSac;
+    private javax.swing.JTextField txtOS;
     private javax.swing.JTextField txtRAM;
-    private javax.swing.JTextField txtROM;
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTenSanPham;
-    private javax.swing.JTextField txtXuatXu;
+    private javax.swing.JTextField txtTrongLuong;
     // End of variables declaration//GEN-END:variables
 }
