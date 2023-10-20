@@ -24,7 +24,8 @@ public class ChiTietQuyenDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String maChucNang = rs.getString("machucnang");
-                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, "view"));
+                String hanChe = rs.getString("hanche");
+                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, "view", hanChe));
             }
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
@@ -44,7 +45,8 @@ public class ChiTietQuyenDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String hanhDong = rs.getString("hanhdong");
-                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, hanhDong));
+                String hanChe = rs.getString("hanche");
+                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, hanhDong, hanChe));
             }
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
