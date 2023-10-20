@@ -4,6 +4,8 @@
  */
 package view;
 
+import DAO.SanPhamDAO;
+import DTO.SanPhamDTO;
 import OldDAO.LaptopDAO;
 import OldDAO.PCDAO;
 import java.awt.CardLayout;
@@ -24,41 +26,29 @@ public class UpdateProduct extends javax.swing.JDialog {
      */
     private ProductForm owner;
     DecimalFormat formatterE = new DecimalFormat("0");
+    int idProduct;
     
     public UpdateProduct(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
         super(owner, modal);
         this.owner = (ProductForm) parent;
         initComponents();
         setLocationRelativeTo(null);
-        if (this.owner.checklap()) {
-            Laptop a = this.owner.getDetailLapTop();
-            txtMaSanPham.setText(a.getMaMay());
-            txtTenSanPham.setText(a.getTenMay());
-            txtDonGia.setText(formatterE.format(a.getGia()));
-            txtCPU.setText(a.getTenCpu());
-            txtRAM.setText(a.getRam());
-            txtROM.setText(a.getRom());
-            txtGPU.setText(a.getCardManHinh());
-            txtXuatXu.setText(a.getXuatXu());
+        
+            SanPhamDTO sp = this.owner.getDetailSanPham();
+            idProduct = sp.getMaSanPham();
+            txtTenSanPham.setText(sp.getTenSanPham());
+            txtOcung.setText(formatterE.format(sp.getGiaXuat()));
+            txtCPU.setText(sp.getCpu());
+            txtDonGia.setText(String.valueOf(sp.getGiaXuat()));
+            txtRAM.setText(sp.getRam());
+            txtTrongLuong.setText(String.valueOf(sp.getTrongLuong()));
+            txtMauSac.setText(sp.getMauSac());
+            txtOS.setText(sp.getOs());
             cbxloaisp.setSelectedIndex(0);
-            txtKichThuocMan.setText(Double.toString(a.getkichThuocMan()));
-            txtDungLuongPin.setText(a.getDungLuongPin());
-            txtSoLuong.setText(a.getSoLuong() + "");
-        } else {
-            PC a = this.owner.getDetailPC();
-            txtMaSanPham.setText(a.getMaMay());
-            txtTenSanPham.setText(a.getTenMay());
-            txtDonGia.setText(Double.toString(a.getGia()));
-            txtCPU.setText(a.getTenCpu());
-            txtRAM.setText(a.getRam());
-            txtROM.setText(a.getRom());
-            txtGPU.setText(a.getCardManHinh());
-            txtXuatXu.setText(a.getXuatXu());
-            cbxloaisp.setSelectedIndex(1);
-            txtMainBoard.setText(a.getMainBoard());
-            txtCongsuatNguon.setText(Integer.toString(a.getCongSuatNguon()));
-            txtSoLuong.setText(Integer.toString(a.getSoLuong()));
-        }
+            txtKichThuocMan.setText(String.valueOf(sp.getManHinh()));
+            txtDungLuongPin.setText(sp.getPin());
+            txtSoLuong.setText(String.valueOf(sp.getSoLuong()));
+        
     }
     
     private UpdateProduct(JFrame jFrame, boolean b) {
@@ -75,23 +65,21 @@ public class UpdateProduct extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        txtMaSanPham = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtTenSanPham = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtDonGia = new javax.swing.JTextField();
+        txtOcung = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txtCPU = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtRAM = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        txtROM = new javax.swing.JTextField();
+        txtTrongLuong = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        txtGPU = new javax.swing.JTextField();
+        txtMauSac = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         cbxloaisp = new javax.swing.JComboBox<>();
-        btnAddProduct = new javax.swing.JButton();
+        btnSaveChanged = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         laptop = new javax.swing.JPanel();
@@ -105,9 +93,11 @@ public class UpdateProduct extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         txtCongsuatNguon = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        txtXuatXu = new javax.swing.JTextField();
+        txtOS = new javax.swing.JTextField();
         txtSoLuong = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
+        txtDonGia = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -117,13 +107,6 @@ public class UpdateProduct extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel2.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel2.setText("Mã sản phẩm");
-
-        txtMaSanPham.setEditable(false);
-        txtMaSanPham.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        txtMaSanPham.setRequestFocusEnabled(false);
-
         jLabel3.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
         jLabel3.setText("Tên sản phẩm");
 
@@ -132,7 +115,7 @@ public class UpdateProduct extends javax.swing.JDialog {
         jLabel4.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
         jLabel4.setText("Số lượng");
 
-        txtDonGia.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+        txtOcung.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
         jLabel6.setText("CPU");
@@ -145,19 +128,19 @@ public class UpdateProduct extends javax.swing.JDialog {
         txtRAM.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel8.setText("Dung lượng lưu trữ");
+        jLabel8.setText("Trọng lượng");
 
-        txtROM.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        txtROM.addActionListener(new java.awt.event.ActionListener() {
+        txtTrongLuong.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+        txtTrongLuong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtROMActionPerformed(evt);
+                txtTrongLuongActionPerformed(evt);
             }
         });
 
         jLabel9.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel9.setText("Card đồ hoạ");
+        jLabel9.setText("Màu sắc");
 
-        txtGPU.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+        txtMauSac.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
 
         jLabel10.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
         jLabel10.setText("Loại sản phẩm");
@@ -176,15 +159,15 @@ public class UpdateProduct extends javax.swing.JDialog {
             }
         });
 
-        btnAddProduct.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        btnAddProduct.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        btnAddProduct.setForeground(new java.awt.Color(255, 255, 255));
-        btnAddProduct.setText("Lưu thay đổi");
-        btnAddProduct.setBorder(null);
-        btnAddProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveChanged.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        btnSaveChanged.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+        btnSaveChanged.setForeground(new java.awt.Color(255, 255, 255));
+        btnSaveChanged.setText("Lưu thay đổi");
+        btnSaveChanged.setBorder(null);
+        btnSaveChanged.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSaveChanged.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddProductActionPerformed(evt);
+                btnSaveChangedActionPerformed(evt);
             }
         });
 
@@ -219,12 +202,12 @@ public class UpdateProduct extends javax.swing.JDialog {
         laptopLayout.setHorizontalGroup(
             laptopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(txtKichThuocMan)
+            .addComponent(txtDungLuongPin)
             .addGroup(laptopLayout.createSequentialGroup()
                 .addGroup(laptopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 92, Short.MAX_VALUE))
-            .addComponent(txtDungLuongPin)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 27, Short.MAX_VALUE))
         );
         laptopLayout.setVerticalGroup(
             laptopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,57 +258,67 @@ public class UpdateProduct extends javax.swing.JDialog {
         jPanel3.add(pc, "card2");
 
         jLabel15.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
-        jLabel15.setText("Xuất xứ");
+        jLabel15.setText("OS");
 
-        txtXuatXu.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+        txtOS.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
 
         txtSoLuong.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
 
         jLabel16.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
         jLabel16.setText("Đơn giá");
 
+        txtDonGia.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+
+        jLabel17.setFont(new java.awt.Font("SF Pro Display", 0, 16)); // NOI18N
+        jLabel17.setText("Ổ cứng");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(198, 198, 198)
-                        .addComponent(jLabel8))
+                        .addGap(58, 58, 58)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(280, 280, 280)
+                                .addComponent(jLabel8))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(280, 280, 280)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTrongLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(198, 198, 198)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtDonGia, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
-                                .addComponent(txtSoLuong))
-                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(91, 91, 91)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtGPU, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtROM, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTenSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(91, 91, 91)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(91, 91, 91)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(58, 58, 58)
+                                .addComponent(jLabel3))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(49, 49, 49)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTenSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtOcung, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtDonGia, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(100, 100, 100)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCPU, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel2))
+                            .addComponent(txtCPU, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(124, 124, 124)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbxloaisp, 0, 186, Short.MAX_VALUE)
-                    .addComponent(txtXuatXu)
+                    .addComponent(cbxloaisp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtOS)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
@@ -334,7 +327,7 @@ public class UpdateProduct extends javax.swing.JDialog {
                 .addGap(43, 43, 43))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(242, 242, 242)
-                .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSaveChanged, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(85, 85, 85)
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -344,13 +337,14 @@ public class UpdateProduct extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel10))
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel3))
                 .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCPU, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtCPU, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtTenSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(cbxloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,45 +353,44 @@ public class UpdateProduct extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtXuatXu, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtOS, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel7))
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTenSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel16))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addComponent(jLabel8))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel4)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtROM, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel16)
+                                .addComponent(txtTrongLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtDonGia, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtGPU, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                                .addComponent(txtDonGia, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel17))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtOcung, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSaveChanged, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(29, 29, 29))))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 880, 400));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 880, 400));
 
         jPanel2.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
 
@@ -444,41 +437,48 @@ public class UpdateProduct extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxloaispActionPerformed
 
-    private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
+    private void btnSaveChangedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangedActionPerformed
         // TODO add your handling code here:
-        String maMay = txtMaSanPham.getText();
-        String tenMay = txtTenSanPham.getText();
-        int soluong = 0;
-        double dongia = 0;
+       String tenMay = txtTenSanPham.getText();
+        int dongia = 0;
+        
         try {
-            soluong = Integer.parseInt(txtSoLuong.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng ở dạng số !");
-        }
-        try {
-            dongia = Double.parseDouble(txtDonGia.getText());
+            dongia = Integer.parseInt(txtDonGia.getText());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn giá ở dạng số !");
         }
+        String manhinh = txtOcung.getText();
         String cpu = txtCPU.getText();
         String ram = txtRAM.getText();
-        String rom = txtROM.getText();
-        String gpu = txtGPU.getText();
-        String xuatxu = txtXuatXu.getText();
+        String vga = txtOS.getText();
+        float trongluong = Float.parseFloat(txtTrongLuong.getText());
+        String mausac = txtMauSac.getText();
+        String os = txtOS.getText();
+        String ocung = txtOcung.getText();
+        int trangThai = 1;
         if (cbxloaisp.getSelectedItem().equals("Laptop")) {
-            double kichthuocman = 0;
-            try {
-                kichthuocman = Double.parseDouble(txtKichThuocMan.getText());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập kích thước màn ở dạng số !");
-            }
+ 
             String dungluongpin = txtDungLuongPin.getText();
-            if (maMay.equals("") || tenMay.equals("") || cpu.equals("") || ram.equals("") || rom.equals("") || gpu.equals("") || xuatxu.equals("") || dungluongpin.equals("")) {
+            if ( tenMay.equals("") && cpu.equals("") && ram.equals("") && vga.equals("") && mausac.equals("") && ocung.equals("") && dungluongpin.equals("") && os.equals("") && manhinh.equals("")) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
             } else {
-                Laptop lp = new Laptop(kichthuocman, dungluongpin, maMay, tenMay, soluong, dongia, cpu, ram, xuatxu, gpu, rom,1);
+                SanPhamDTO spDTO = new SanPhamDTO();
+                spDTO.setMaSanPham(idProduct);
+                spDTO.setTenSanPham(tenMay);
+                spDTO.setGiaXuat(dongia);
+                spDTO.setSoLuong(0);
+                spDTO.setNhaCungCap(1);
+                spDTO.setManHinh(manhinh);
+                spDTO.setOs(os);
+                spDTO.setPin(dungluongpin);
+                spDTO.setoCung(ocung);
+                spDTO.setMauSac(mausac);
+                spDTO.setRam(ram);
+                spDTO.setVga(vga);
+                spDTO.setTrongLuong(trongluong);
+                
                 try {
-                    LaptopDAO.getInstance().update(lp);
+                    SanPhamDAO.getInstance().updateProduct(spDTO);
                     this.dispose();
                     JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công !");
                     owner.loadDataToTable();
@@ -487,35 +487,17 @@ public class UpdateProduct extends javax.swing.JDialog {
                 }
             }
         }
-        if (cbxloaisp.getSelectedItem().equals("PC - Lắp ráp")) {
-            String mainboard = txtMainBoard.getText();
-            int congsuatnguon = 0;
-            try {
-                congsuatnguon = Integer.parseInt(txtCongsuatNguon.getText());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập công suất nguồn ở dạng số !");
-            }
-            if (maMay.equals("") || tenMay.equals("") || cpu.equals("") || ram.equals("") || rom.equals("") || gpu.equals("") || xuatxu.equals("") || mainboard.equals("")) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
-            } else {
-                PC pc = new PC(mainboard, congsuatnguon, maMay, tenMay, soluong, dongia, cpu, ram, xuatxu, gpu, rom,1);
-                System.out.println(pc);
-                PCDAO.getInstance().update(pc);
-                this.dispose();
-                JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công !");
-                owner.loadDataToTable();
-            }
-        }
-    }//GEN-LAST:event_btnAddProductActionPerformed
+        
+    }//GEN-LAST:event_btnSaveChangedActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void txtROMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtROMActionPerformed
+    private void txtTrongLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTrongLuongActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtROMActionPerformed
+    }//GEN-LAST:event_txtTrongLuongActionPerformed
 
     /**
      * @param args the command line arguments
@@ -563,8 +545,8 @@ public class UpdateProduct extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSaveChanged;
     private javax.swing.JComboBox<String> cbxloaisp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -574,7 +556,7 @@ public class UpdateProduct extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
@@ -590,14 +572,14 @@ public class UpdateProduct extends javax.swing.JDialog {
     private javax.swing.JTextField txtCongsuatNguon;
     private javax.swing.JTextField txtDonGia;
     private javax.swing.JTextField txtDungLuongPin;
-    private javax.swing.JTextField txtGPU;
     private javax.swing.JTextField txtKichThuocMan;
-    private javax.swing.JTextField txtMaSanPham;
     private javax.swing.JTextField txtMainBoard;
+    private javax.swing.JTextField txtMauSac;
+    private javax.swing.JTextField txtOS;
+    private javax.swing.JTextField txtOcung;
     private javax.swing.JTextField txtRAM;
-    private javax.swing.JTextField txtROM;
     private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTenSanPham;
-    private javax.swing.JTextField txtXuatXu;
+    private javax.swing.JTextField txtTrongLuong;
     // End of variables declaration//GEN-END:variables
 }

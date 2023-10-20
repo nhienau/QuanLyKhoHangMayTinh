@@ -5,7 +5,7 @@ public class SanPhamDTO {
     private int maLoaiSanPham;
     private String tenSanPham;
     private int soLuong;
-    private int giaNhap;
+    private int nhaCungCap;
     private int giaXuat;
     private String cpu;
     private String ram;
@@ -13,16 +13,20 @@ public class SanPhamDTO {
     private String oCung;
     private String manHinh;
     private String pin;
-    private String trongLuong;
+    private float trongLuong;
     private String mauSac;
     private String os;
     private String trangThai;
 
-    public SanPhamDTO(int maSanPham, String tenSanPham, int soLuong, int giaNhap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, String trongLuong, String mauSac, String os, String trangThai) {
+    public SanPhamDTO() {
+    }
+
+    
+    public SanPhamDTO(int maSanPham, String tenSanPham, int soLuong, int nhaCungCap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, float trongLuong, String mauSac, String os) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.soLuong = soLuong;
-        this.giaNhap = giaNhap;
+        this.nhaCungCap = nhaCungCap;
         this.giaXuat = giaXuat;
         this.cpu = cpu;
         this.ram = ram;
@@ -33,7 +37,6 @@ public class SanPhamDTO {
         this.trongLuong = trongLuong;
         this.mauSac = mauSac;
         this.os = os;
-        this.trangThai = trangThai;
     }
 
     public SanPhamDTO(int maSanPham, int maLoaiSanPham, String tenSanPham, int soLuong, int giaNhap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, String trongLuong, String mauSac, String os, String trangThai) {
@@ -87,12 +90,12 @@ public class SanPhamDTO {
         this.soLuong = soLuong;
     }
 
-    public int getGiaNhap() {
-        return giaNhap;
+    public int getNhaCungCap() {
+        return nhaCungCap;
     }
 
-    public void setGiaNhap(int giaNhap) {
-        this.giaNhap = giaNhap;
+    public void setNhaCungCap(int nhaCungCap) {
+        this.nhaCungCap = nhaCungCap;
     }
 
     public int getGiaXuat() {
@@ -151,11 +154,11 @@ public class SanPhamDTO {
         this.pin = pin;
     }
 
-    public String getTrongLuong() {
+    public float getTrongLuong() {
         return trongLuong;
     }
 
-    public void setTrongLuong(String trongLuong) {
+    public void setTrongLuong(float trongLuong) {
         this.trongLuong = trongLuong;
     }
 

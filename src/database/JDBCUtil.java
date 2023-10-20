@@ -11,11 +11,11 @@ public class JDBCUtil {
 	public static Connection getConnection() {
 		Connection c = null;
 		try {
-			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+			DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
 //			String url = "jdbc:mySQL://localhost:3306/quanlimaytinh";
                         String url = "jdbc:mySQL://localhost:3306/khomaytinh";
 			String userName = "root";
-			String password = "";
+			String password = "khomaytinh123456";
 			c = DriverManager.getConnection(url, userName, password);
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -4,6 +4,7 @@
  */
 package view;
 
+import GUI.TonKhoGUI;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.util.logging.Level;
@@ -85,7 +86,7 @@ public class QuanLiKho extends javax.swing.JFrame {
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         TonKho = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
+        labelTonKho = new javax.swing.JLabel();
         ThongKe = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         Account = new javax.swing.JPanel();
@@ -372,10 +373,24 @@ public class QuanLiKho extends javax.swing.JFrame {
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
-        jLabel10.setText("TỒN KHO");
+        labelTonKho.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        labelTonKho.setForeground(new java.awt.Color(255, 255, 255));
+        labelTonKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
+        labelTonKho.setText("TỒN KHO");
+        labelTonKho.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                labelTonKhoAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        labelTonKho.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                labelTonKhoMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout TonKhoLayout = new javax.swing.GroupLayout(TonKho);
         TonKho.setLayout(TonKhoLayout);
@@ -383,14 +398,14 @@ public class QuanLiKho extends javax.swing.JFrame {
             TonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TonKhoLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelTonKho, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(60, Short.MAX_VALUE))
         );
         TonKhoLayout.setVerticalGroup(
             TonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TonKhoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel10)
+                .addComponent(labelTonKho)
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
@@ -683,6 +698,16 @@ public class QuanLiKho extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void labelTonKhoAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_labelTonKhoAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_labelTonKhoAncestorAdded
+
+    private void labelTonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelTonKhoMouseClicked
+        TonKhoGUI kho = new TonKhoGUI();
+        MainContent.removeAll();
+        MainContent.add(kho).setVisible(true);
+    }//GEN-LAST:event_labelTonKhoMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -718,7 +743,6 @@ public class QuanLiKho extends javax.swing.JFrame {
     private javax.swing.JPanel TonKho;
     private javax.swing.JPanel XuatHang;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
@@ -728,5 +752,6 @@ public class QuanLiKho extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel labelTonKho;
     // End of variables declaration//GEN-END:variables
 }
