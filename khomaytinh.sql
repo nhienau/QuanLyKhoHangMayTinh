@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 20, 2023 at 03:01 PM
+-- Generation Time: Oct 20, 2023 at 03:19 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -177,13 +177,6 @@ CREATE TABLE `kho` (
   `diachi` varchar(255) NOT NULL,
   `trangthai` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `kho`
---
-
-INSERT INTO `kho` (`makho`, `tenkho`, `diachi`, `trangthai`) VALUES
-(1, 'asdf', 'sadf', 1);
 
 -- --------------------------------------------------------
 
@@ -491,7 +484,7 @@ ALTER TABLE `trangthaiphieunhap`
 -- AUTO_INCREMENT for table `kho`
 --
 ALTER TABLE `kho`
-  MODIFY `makho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `makho` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `loaisanpham`
