@@ -2,6 +2,7 @@ package DTO;
 
 public class SanPhamDTO {
     private int maSanPham;
+    private int maLoaiSanPham;
     private String tenSanPham;
     private int soLuong;
     private int giaNhap;
@@ -35,12 +36,39 @@ public class SanPhamDTO {
         this.trangThai = trangThai;
     }
 
+    public SanPhamDTO(int maSanPham, int maLoaiSanPham, String tenSanPham, int soLuong, int giaNhap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, String trongLuong, String mauSac, String os, String trangThai) {
+        this.maSanPham = maSanPham;
+        this.maLoaiSanPham = maLoaiSanPham;
+        this.tenSanPham = tenSanPham;
+        this.soLuong = soLuong;
+        this.giaNhap = giaNhap;
+        this.giaXuat = giaXuat;
+        this.cpu = cpu;
+        this.ram = ram;
+        this.vga = vga;
+        this.oCung = oCung;
+        this.manHinh = manHinh;
+        this.pin = pin;
+        this.trongLuong = trongLuong;
+        this.mauSac = mauSac;
+        this.os = os;
+        this.trangThai = trangThai;
+    }
+    
     public int getMaSanPham() {
         return maSanPham;
     }
 
     public void setMaSanPham(int maSanPham) {
         this.maSanPham = maSanPham;
+    }
+
+    public int getMaLoaiSanPham() {
+        return maLoaiSanPham;
+    }
+
+    public void setMaLoaiSanPham(int maLoaiSanPham) {
+        this.maLoaiSanPham = maLoaiSanPham;
     }
 
     public String getTenSanPham() {
