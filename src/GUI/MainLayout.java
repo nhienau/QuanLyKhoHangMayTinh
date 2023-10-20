@@ -581,9 +581,10 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
         // TODO add your handling code here:
-        TonKhoForm tonKhoForm = new TonKhoForm(user);
+//        TonKhoForm tonKhoForm = new TonKhoForm(user);
+        KhoGUI khoGUI = new KhoGUI(user);
         pMainContent.removeAll();
-        pMainContent.add(tonKhoForm).setVisible(true);
+        pMainContent.add(khoGUI).setVisible(true);
     }//GEN-LAST:event_TonKhoMouseClicked
 
     private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked

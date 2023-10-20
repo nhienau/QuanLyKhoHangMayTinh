@@ -132,7 +132,7 @@
                                       <Component id="txtKichThuocMan1" alignment="1" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jPanel3" pref="12" max="32767" attributes="0"/>
+                                  <Component id="jPanel3" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>

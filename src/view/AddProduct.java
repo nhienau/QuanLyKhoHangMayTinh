@@ -1,28 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package view;
 
 import DAO.SanPhamDAO;
 import DTO.SanPhamDTO;
-import OldDAO.LaptopDAO;
-import OldDAO.MayTinhDAO;
-import OldDAO.PCDAO;
 import java.awt.CardLayout;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import model.Laptop;
-import model.MayTinh;
-import model.PC;
 
-/**
- *
- * @author Tran Nhat Sinh
- */
 public class AddProduct extends javax.swing.JDialog {
-
     /**
      * Creates new form ThemSP
      */
@@ -33,7 +17,6 @@ public class AddProduct extends javax.swing.JDialog {
         this.owner = (ProductForm) parent;
         initComponents();
         setLocationRelativeTo(null);
-
     }
 
     private AddProduct(JFrame jFrame, boolean b) {
@@ -386,10 +369,7 @@ public class AddProduct extends javax.swing.JDialog {
         if (cbxloaisp.getSelectedItem().equals("Laptop")) {
             CardLayout productCategory = (CardLayout) jPanel3.getLayout();
             productCategory.first(jPanel3);
-
         }
-
-        
     }//GEN-LAST:event_cbxloaispItemStateChanged
 
     private void cbxloaispActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxloaispActionPerformed
@@ -426,7 +406,6 @@ public class AddProduct extends javax.swing.JDialog {
                 spDTO.setTenSanPham(tenMay);
                 spDTO.setGiaXuat(dongia);
                 spDTO.setSoLuong(0);
-                spDTO.setNhaCungCap(1);
                 spDTO.setManHinh(manhinh);
                 spDTO.setOs(os);
                 spDTO.setPin(dungluongpin);
