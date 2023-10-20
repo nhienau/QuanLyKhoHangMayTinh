@@ -1,24 +1,32 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package view;
+package GUI.Dialog;
 
 import DAO.KhoDAO;
 import DTO.KhoDTO;
-import GUI.KhoGUI0;
+import GUI.KhoGUI;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author trant
+ * @author HP
  */
-public class addKho extends javax.swing.JFrame {
-
+public class AddKhoDialog extends javax.swing.JDialog {
+    private KhoGUI owner;
+    
     /**
-     * Creates new form addKho
+     * Creates new form AddKhoDialog
      */
-    public addKho() {
+    public AddKhoDialog(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+    }
+    
+    public AddKhoDialog(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
+        super(owner, modal);
+        this.owner = (KhoGUI) parent;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -39,8 +47,8 @@ public class addKho extends javax.swing.JFrame {
         txtDiaDiem = new javax.swing.JTextField();
         btnThem = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -115,6 +123,10 @@ public class addKho extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtTenKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTenKhoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTenKhoActionPerformed
+
     private void txtDiaDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiaDiemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDiaDiemActionPerformed
@@ -132,18 +144,13 @@ public class addKho extends javax.swing.JFrame {
             try {
                 KhoDAO.getInstance().addWareHouse(kho);
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
-                
+                this.dispose();
+                owner.loadDataWareHouse();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thất bại");
             }
         }
-        
-        
     }//GEN-LAST:event_btnThemActionPerformed
-
-    private void txtTenKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTenKhoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTenKhoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -162,20 +169,27 @@ public class addKho extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(addKho.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddKhoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(addKho.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddKhoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(addKho.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddKhoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(addKho.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddKhoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new addKho().setVisible(true);
+                AddKhoDialog dialog = new AddKhoDialog(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }

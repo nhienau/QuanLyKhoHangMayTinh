@@ -5,10 +5,10 @@
 package GUI;
 
 import DAO.SanPhamDAO;
-import DAO.khoDAO;
+import DAO.KhoDAO;
 import DAO.tonKhoDAO;
 import DTO.SanPhamDTO;
-import DTO.khoDTO;
+import DTO.KhoDTO;
 import DTO.tonKhoDTO;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -97,12 +97,12 @@ public class TonKhoGUI extends javax.swing.JFrame {
   
         cbbKho.addActionListener (new ActionListener () {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<khoDTO> kho = khoDAO.getInstance().getListWareHouse();
+                ArrayList<KhoDTO> kho = KhoDAO.getInstance().getListWareHouse();
                 int index = cbbKho.getSelectedIndex();
                 if(index != -1 ){
-                   khoDTO item = kho.get(index); 
+                   KhoDTO item = kho.get(index); 
                    txtMaKho.setText(String.valueOf(item.getMaKho()));
-                   txtDiaDiem.setText(item.getDiaDiem());
+                   txtDiaDiem.setText(item.getDiaChi());
                 }
                 loadDataOfWareHouse();
             }
@@ -174,9 +174,9 @@ public class TonKhoGUI extends javax.swing.JFrame {
     
     public void addComboboxWareHouse(){
         
-        ArrayList<khoDTO> listKho = khoDAO.getInstance().getListWareHouse();
+        ArrayList<KhoDTO> listKho = KhoDAO.getInstance().getListWareHouse();
         DefaultComboBoxModel modalCbbKho = new DefaultComboBoxModel();
-        for( khoDTO i : listKho){
+        for( KhoDTO i : listKho){
            String name = i.getTenKho();
            modalCbbKho.addElement(name);
            
@@ -211,7 +211,7 @@ public class TonKhoGUI extends javax.swing.JFrame {
         
     }
     public void btnInforKhoActionPerformed(){
-        khoGUI kho = new khoGUI();
+        KhoGUI0 kho = new KhoGUI0();
         kho.setVisible(true);
     }
     

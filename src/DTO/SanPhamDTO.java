@@ -5,7 +5,6 @@ public class SanPhamDTO {
     private int maLoaiSanPham;
     private String tenSanPham;
     private int soLuong;
-    private int nhaCungCap;
     private int giaXuat;
     private String cpu;
     private String ram;
@@ -16,35 +15,16 @@ public class SanPhamDTO {
     private float trongLuong;
     private String mauSac;
     private String os;
-    private String trangThai;
-
+    private int trangThai;
+    
     public SanPhamDTO() {
     }
 
-    
-    public SanPhamDTO(int maSanPham, String tenSanPham, int soLuong, int nhaCungCap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, float trongLuong, String mauSac, String os) {
-        this.maSanPham = maSanPham;
-        this.tenSanPham = tenSanPham;
-        this.soLuong = soLuong;
-        this.nhaCungCap = nhaCungCap;
-        this.giaXuat = giaXuat;
-        this.cpu = cpu;
-        this.ram = ram;
-        this.vga = vga;
-        this.oCung = oCung;
-        this.manHinh = manHinh;
-        this.pin = pin;
-        this.trongLuong = trongLuong;
-        this.mauSac = mauSac;
-        this.os = os;
-    }
-
-    public SanPhamDTO(int maSanPham, int maLoaiSanPham, String tenSanPham, int soLuong, int giaNhap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, String trongLuong, String mauSac, String os, String trangThai) {
+    public SanPhamDTO(int maSanPham, int maLoaiSanPham, String tenSanPham, int soLuong, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, float trongLuong, String mauSac, String os, int trangThai) {
         this.maSanPham = maSanPham;
         this.maLoaiSanPham = maLoaiSanPham;
         this.tenSanPham = tenSanPham;
         this.soLuong = soLuong;
-        this.giaNhap = giaNhap;
         this.giaXuat = giaXuat;
         this.cpu = cpu;
         this.ram = ram;
@@ -88,14 +68,6 @@ public class SanPhamDTO {
 
     public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
-    }
-
-    public int getNhaCungCap() {
-        return nhaCungCap;
-    }
-
-    public void setNhaCungCap(int nhaCungCap) {
-        this.nhaCungCap = nhaCungCap;
     }
 
     public int getGiaXuat() {
@@ -178,11 +150,11 @@ public class SanPhamDTO {
         this.os = os;
     }
 
-    public String getTrangThai() {
+    public int getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(String trangThai) {
+    public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
     }
 }
