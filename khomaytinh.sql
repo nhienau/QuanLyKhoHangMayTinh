@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 20, 2023 at 11:21 AM
+-- Generation Time: Oct 20, 2023 at 03:01 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -110,6 +110,9 @@ INSERT INTO `chitietquyen` (`manhomquyen`, `machucnang`, `hanhdong`, `hanche`) V
 (2, 'taikhoan', 'delete', NULL),
 (2, 'taikhoan', 'view', NULL),
 (2, 'thongke', 'view', NULL),
+(2, 'tonkho', 'create', NULL),
+(2, 'tonkho', 'delete', NULL),
+(2, 'tonkho', 'update', NULL),
 (2, 'tonkho', 'view', NULL),
 (3, 'loaisanpham', 'view', NULL),
 (3, 'nhacungcap', 'view', NULL),
@@ -174,6 +177,13 @@ CREATE TABLE `kho` (
   `diachi` varchar(255) NOT NULL,
   `trangthai` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `kho`
+--
+
+INSERT INTO `kho` (`makho`, `tenkho`, `diachi`, `trangthai`) VALUES
+(1, 'asdf', 'sadf', 1);
 
 -- --------------------------------------------------------
 
@@ -340,10 +350,10 @@ CREATE TABLE `sanpham` (
 --
 
 INSERT INTO `sanpham` (`masanpham`, `maloaisanpham`, `tensanpham`, `soluong`, `gianhap`, `giaxuat`, `cpu`, `ram`, `vga`, `ocung`, `manhinh`, `pin`, `trongluong`, `mausac`, `os`, `trangthai`) VALUES
-(1, 1, 'Lenovo Ideapad Slim 5 Light 14ABR8 82XS002JVN', 19, 15150000, 16890000, 'AMD Ryzen™ 7 7730U (8 Cores / 16 Threads, 2.0 to 4.5GHz, 4MB L2 / 16MB L3)', '16GB Onboard DDR4 3200MHz', 'AMD Radeon™ Graphics', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 100% sRGB', 'Integrated 47Wh', 1.17, 'Cloud Grey', 'Windows 11 Home', 1),
+(1, 1, 'Lenovo Ideapad Slim 5 Light 14ABR8 82XS002JVN', 0, 15150000, 16890000, 'AMD Ryzen™ 7 7730U (8 Cores / 16 Threads, 2.0 to 4.5GHz, 4MB L2 / 16MB L3)', '16GB Onboard DDR4 3200MHz', 'AMD Radeon™ Graphics', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 100% sRGB', 'Integrated 47Wh', 1.17, 'Cloud Grey', 'Windows 11 Home', 1),
 (2, 2, 'MSI Modern 14 C11M 011VN', 0, 8750000, 9990000, 'Intel Core i3-1115G4 (up to 4.1Ghz, 6MB)', '8GB DDR4 3200Mhz Onboard (Không nâng cấp)', 'Intel® UHD Graphics', '512GB NVMe PCIe Gen 3x4 SSD (1 Slot)', '14.0\" FHD (1920x1080), IPS-Level , 45% NTSC', '3 cell, 39Whr', 1.3, 'Đen', 'Windows 11 Home', 1),
 (3, 3, 'Asus Vivobook Pro 15 OLED M6500QC MA002W', 0, 19290000, 21490000, 'AMD Ryzen 5-5600H up to 4.2GHz 19MB, 6 nhân, 12 luồng', '16GB (Onboard) DDR4 3200MHz (không nâng cấp)', 'NVIDIA GeForce RTX 3050 4GB GDDR6', '512GB SSD M.2 PCIE G3X2', '15.6-inch 2.8K (2880 x 1620) OLED 16:9 aspect ratio, 120Hz refresh rate, 600nits peak brightness, 100% DCI-P3 color gamut, VESA CERTIFIED Display HDR True Black 600, PANTONE Validated, Glossy display, 70% less harmful blue light', '70WHrs, 3S1P, 3-cell Li-ion', 1.8, 'Bạc', 'Windows 11 Home', 1),
-(4, 2, 'MSI Katana 15 B13VEK 1205VN', 10, 21990000, 24490000, 'Intel Core i5-13420H (3.40GHz~4.60GHz) 8 Cores 12 Threads, 12 MB Intel® Smart Cache', '8GB (1 x 8GB) DDR5 5200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 4050 Laptop GPU 6GB GDDR6 + MUX Switch', '512GB NVMe PCIe Gen 4 SSD (2 slots)', '15.6\" FHD (1920x1080), 144Hz, IPS-Level, 45% NSTC', '3 cell, 53.5Whr', 2.25, 'Đen', 'Windows 11 Home', 1),
+(4, 2, 'MSI Katana 15 B13VEK 1205VN', 0, 21990000, 24490000, 'Intel Core i5-13420H (3.40GHz~4.60GHz) 8 Cores 12 Threads, 12 MB Intel® Smart Cache', '8GB (1 x 8GB) DDR5 5200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 4050 Laptop GPU 6GB GDDR6 + MUX Switch', '512GB NVMe PCIe Gen 4 SSD (2 slots)', '15.6\" FHD (1920x1080), 144Hz, IPS-Level, 45% NSTC', '3 cell, 53.5Whr', 2.25, 'Đen', 'Windows 11 Home', 1),
 (5, 4, 'Acer Predator Helios 300 PH315 55 76KG', 0, 29990000, 33990000, 'Intel® Core™ i7-12700H (up to 4.7Ghz, 24MB cache)', '16GB DDR5 4800Mhz (2x8GB) (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '512GB NVMe PCIe Gen3x4 SSD (2 slot)', '15.6 inch QHD (2560 x1440) IPS 165Hz, DCI-P3 100%, 5ms, 300nits, SlimBezel', '4 cell, 90Whr', 2.4, 'Đen', 'Windows 11 Home', 1);
 
 -- --------------------------------------------------------
@@ -481,7 +491,7 @@ ALTER TABLE `trangthaiphieunhap`
 -- AUTO_INCREMENT for table `kho`
 --
 ALTER TABLE `kho`
-  MODIFY `makho` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `makho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `loaisanpham`
