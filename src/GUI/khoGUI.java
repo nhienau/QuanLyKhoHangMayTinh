@@ -70,6 +70,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     
     public void loadDataWareHouse() {
         ArrayList<KhoDTO> arr = KhoDAO.getInstance().getListWareHouse();
+        dtm.setRowCount(0);
         for(int i = 0 ; i< arr.size() ; i++){
             KhoDTO item = arr.get(i);
             int stt = i+1;
