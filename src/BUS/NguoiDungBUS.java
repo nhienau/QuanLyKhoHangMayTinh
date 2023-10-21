@@ -106,10 +106,6 @@ public class NguoiDungBUS {
             throw new AuthenticationException("Không tìm thấy tài khoản nào được liên kết với địa chỉ email bạn đã nhập. Vui lòng thử lại.");
         }
         
-        if (user.getTrangThai() == 0) {
-            throw new AuthenticationException("Tài khoản liên kết với địa chỉ email này đã bị khoá.");
-        }
-        
         return user;
     }
     
