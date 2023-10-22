@@ -4,6 +4,7 @@
  */
 package view;
 
+import DTO.NhaCungCapDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import OldDAO.NhaCungCapDAO;
 import javax.swing.JFrame;
@@ -165,10 +166,11 @@ public class AddNhaCungCap extends javax.swing.JDialog {
             else if(!sdtNcc.matches("\\d{10}")){
                 JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
-            else if(sdtNcc.contains(sdtNcc)){
-                JOptionPane.showMessageDialog(this, "Số điện thoại bị trùng ! Nhập lại !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            }else {
-                    NhaCungCap ncc = new NhaCungCap();
+            else if(NhaCungCapDAO.getInstance().hasSDT(sdtNcc)){
+                JOptionPane.showMessageDialog(this, "Số điện thoại bị trùng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }
+           else {
+                    NhaCungCapDTO ncc = new NhaCungCapDTO();
                     ncc.setTenNhaCungCap(tenNcc);
                     ncc.setSdt(sdtNcc);
                     ncc.setDiaChi(diachiNcc);
