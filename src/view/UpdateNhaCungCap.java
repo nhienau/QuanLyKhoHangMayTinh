@@ -172,9 +172,7 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
             else if(!sdtNcc.matches("\\d{10}") ){
                 JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
-            else if(NhaCungCapDAO.getInstance().hasSDT(sdtNcc)){
-                JOptionPane.showMessageDialog(this, "Số điện thoại bị trùng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            }
+        
             else{
             // TODO add your handling code here:
             NhaCungCapDTO ncc = new NhaCungCapDTO();
