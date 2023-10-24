@@ -5,6 +5,13 @@ public class ChiTietCungCapDTO {
     private int maSanPham;
     private int giaNhap;
     private int trangThai;
+  
+    public ChiTietCungCapDTO(int maNhaCungCap, int maSanPham, int giaNhap) {
+        this.maNhaCungCap = maNhaCungCap;
+        this.maSanPham = maSanPham;
+        this.giaNhap = giaNhap;
+        this.trangThai = 1;
+    }
 
     public ChiTietCungCapDTO(int maNhaCungCap, int maSanPham, int giaNhap, int trangThai) {
         this.maNhaCungCap = maNhaCungCap;

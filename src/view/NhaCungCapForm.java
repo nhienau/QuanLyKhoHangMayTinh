@@ -7,9 +7,11 @@ package view;
 import BUS.ChiTietQuyenBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
+import DTO.NhaCungCapDTO;
 import controller.SearchNhaCungCap;
 import OldDAO.NhaCungCapDAO;
 import java.awt.Desktop;
+import java.awt.Point;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +26,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 import model.NhaCungCap;
@@ -45,7 +48,7 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
      * Creates new form NhaCungCapForm
      */
     private DefaultTableModel tblModel;
-    private static ArrayList<NhaCungCap> armt;
+    private static ArrayList<NhaCungCapDTO> armt;
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     
     public NhaCungCapForm(NguoiDungDTO user) {
@@ -122,10 +125,10 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         tblNCC.getColumnModel().getColumn(3).setPreferredWidth(350);
     }
 
-    public void loadDataToTable(ArrayList<NhaCungCap> ncc) {
+    public void loadDataToTable(ArrayList<NhaCungCapDTO> ncc) {
         try {
             tblModel.setRowCount(0);
-            for (NhaCungCap i : ncc) {
+            for (NhaCungCapDTO i : ncc) {
                 tblModel.addRow(new Object[]{
                     i.getMaNhaCungCap(), i.getTenNhaCungCap(), i.getSdt(), i.getDiaChi()
                 });
@@ -134,9 +137,9 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         }
     }
 
-    public NhaCungCap getNhaCungCapSelect() {
+    public NhaCungCapDTO getNhaCungCapSelect() {
         int i_row = tblNCC.getSelectedRow();
-        NhaCungCap ncc = NhaCungCapDAO.getInstance().selectAll().get(i_row);
+        NhaCungCapDTO ncc = NhaCungCapDAO.getInstance().selectAll().get(i_row);
         return ncc;
     }
 
@@ -382,6 +385,11 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
                 "Mã NCC", "Tên nhà cung cấp", "Số điện thoại", "Địa chỉ"
             }
         ));
+        tblNCC.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tblNCCMousePressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblNCC);
 
         jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 1160, 620));
@@ -465,50 +473,50 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
     private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExcelActionPerformed
         // TODO add your handling code here:
         //Import excel
-        File excelFile;
-        FileInputStream excelFIS = null;
-        BufferedInputStream excelBIS = null;
-        XSSFWorkbook excelJTableImport = null;
-        ArrayList<NhaCungCap> listAccExcel = new ArrayList<NhaCungCap>();
-        JFileChooser jf = new JFileChooser();
-        int result = jf.showOpenDialog(null);
-        jf.setDialogTitle("Open file");
-        Workbook workbook = null;
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                excelFile = jf.getSelectedFile();
-                excelFIS = new FileInputStream(excelFile);
-                excelBIS = new BufferedInputStream(excelFIS);
-                excelJTableImport = new XSSFWorkbook(excelBIS);
-                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
-                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
-                    XSSFRow excelRow = excelSheet.getRow(row);
-                    String maNhaCungCap = excelRow.getCell(0).getStringCellValue();
-                    String tenNhaCungCap = excelRow.getCell(1).getStringCellValue();
-                    String sdt = excelRow.getCell(2).getStringCellValue();
-                    String diaChi = excelRow.getCell(3).getStringCellValue();
-                    NhaCungCap acc = new NhaCungCap(maNhaCungCap, tenNhaCungCap, sdt, diaChi);
-                    listAccExcel.add(acc);
-                    DefaultTableModel table_acc = (DefaultTableModel) tblNCC.getModel();
-                    table_acc.setRowCount(0);
-                    loadDataToTable(listAccExcel);
-                }
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(NhaCungCapForm.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(NhaCungCapForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        try {
-            int k = 0;
-            for (NhaCungCap nhaCungCap : listAccExcel) {
-                k = NhaCungCapDAO.getInstance().insert(nhaCungCap);
-            }
-            if(k!=0) {
-                JOptionPane.showMessageDialog(this, "Import thành công !");
-            }
-        } catch (Exception e) {
-        }
+//        File excelFile;
+//        FileInputStream excelFIS = null;
+//        BufferedInputStream excelBIS = null;
+//        XSSFWorkbook excelJTableImport = null;
+//        ArrayList<NhaCungCap> listAccExcel = new ArrayList<NhaCungCap>();
+//        JFileChooser jf = new JFileChooser();
+//        int result = jf.showOpenDialog(null);
+//        jf.setDialogTitle("Open file");
+//        Workbook workbook = null;
+//        if (result == JFileChooser.APPROVE_OPTION) {
+//            try {
+//                excelFile = jf.getSelectedFile();
+//                excelFIS = new FileInputStream(excelFile);
+//                excelBIS = new BufferedInputStream(excelFIS);
+//                excelJTableImport = new XSSFWorkbook(excelBIS);
+//                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
+//                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
+//                    XSSFRow excelRow = excelSheet.getRow(row);
+//                    String maNhaCungCap = excelRow.getCell(0).getStringCellValue();
+//                    String tenNhaCungCap = excelRow.getCell(1).getStringCellValue();
+//                    String sdt = excelRow.getCell(2).getStringCellValue();
+//                    String diaChi = excelRow.getCell(3).getStringCellValue();
+//                    NhaCungCap acc = new NhaCungCap(maNhaCungCap, tenNhaCungCap, sdt, diaChi);
+//                    listAccExcel.add(acc);
+//                    DefaultTableModel table_acc = (DefaultTableModel) tblNCC.getModel();
+//                    table_acc.setRowCount(0);
+//                    loadDataToTable(listAccExcel);
+//                }
+//            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(NhaCungCapForm.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (IOException ex) {
+//                Logger.getLogger(NhaCungCapForm.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        try {
+//            int k = 0;
+//            for (NhaCungCap nhaCungCap : listAccExcel) {
+//                k = NhaCungCapDAO.getInstance().insert(nhaCungCap);
+//            }
+//            if(k!=0) {
+//                JOptionPane.showMessageDialog(this, "Import thành công !");
+//            }
+//        } catch (Exception e) {
+//        }
     }//GEN-LAST:event_importExcelActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -530,7 +538,7 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luachon = (String) cbxlLuaChon.getSelectedItem();
         String searchContent = txtSearchForm.getText();
-        ArrayList<NhaCungCap> result = new ArrayList<>();
+        ArrayList<NhaCungCapDTO> result = new ArrayList<>();
         switch (luachon) {
             case "Tất cả":
                 result = SearchNhaCungCap.getInstance().searchTatCa(searchContent);
@@ -550,6 +558,20 @@ public class NhaCungCapForm extends javax.swing.JInternalFrame {
         }
         loadDataToTable(result);
     }//GEN-LAST:event_txtSearchFormKeyReleased
+
+    private void tblNCCMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNCCMousePressed
+        // TODO add your handling code here:
+        JTable table = (JTable) evt.getSource();
+                Point point = evt.getPoint();
+                int row = table.rowAtPoint(point);
+                int row_i = table.getSelectedRow();
+                
+                NhaCungCapDTO ncc = getNhaCungCapSelect();
+                if(evt.getClickCount() == 2 && table.getSelectedRow() != -1 ){
+                          ChiTietCungCap ql = new ChiTietCungCap(ncc );
+                          ql.setVisible(true);
+                }
+    }//GEN-LAST:event_tblNCCMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
