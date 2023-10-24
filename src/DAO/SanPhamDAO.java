@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import org.apache.poi.poifs.crypt.CipherAlgorithm;
 
 /**
  *
@@ -26,15 +25,15 @@ public class SanPhamDAO {
         ArrayList<SanPhamDTO> list = new ArrayList<SanPhamDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM sanpham WHERE  trangthai = 1";
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 1";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 SanPhamDTO sp = new SanPhamDTO();
                 sp.setMaSanPham( rs.getInt("masanpham"));
+                sp.setMaLoaiSanPham(rs.getInt("maloaisanpham"));
                 sp.setTenSanPham(rs.getString("tensanpham"));
                 sp.setSoLuong( rs.getInt("soluong"));
-                sp.setNhaCungCap( rs.getInt("nhacungcap"));
                 sp.setGiaXuat(rs.getInt("giaxuat"));
                 sp.setCpu(rs.getString("cpu"));
                 sp.setRam( rs.getString("ram"));
@@ -56,32 +55,31 @@ public class SanPhamDAO {
     }
     
     public SanPhamDTO selectProductByID(int id){
-        SanPhamDTO spDTO = null ;
+        SanPhamDTO spDTO = null;
         
         try{
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and  masanpham = " + id  ;
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and masanpham = " + id  ;
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
 
-                int maMay = id;
-                String tenMay = rs.getString("tensanpham");
+                int maSanPham = id;
+                int maLoaiSanPham = rs.getInt("maloaisanpham");
+                String tenSanPham = rs.getString("tensanpham");
                 int soLuong = rs.getInt("soluong");
-                String tenCpu = rs.getString("cpu");
+                String cpu = rs.getString("cpu");
                 String ram = rs.getString("ram");
                 String vga = rs.getString("vga");
-                int gia = rs.getInt("giaxuat");
-                String kichThuocMan = rs.getString("manhinh");
-                String dungLuongPin = rs.getString("pin");
-                String mausac = rs.getString("mausac");
+                int giaXuat = rs.getInt("giaxuat");
+                String manHinh = rs.getString("manhinh");
+                String pin = rs.getString("pin");
+                String mauSac = rs.getString("mausac");
                 String os = rs.getString("os");
-                String ocung = rs.getString("ocung");
+                String oCung = rs.getString("ocung");
                 Float trongLuong = rs.getFloat("trongluong");
-                int nhacungcap = 1;
                 
-                spDTO = new SanPhamDTO(maMay, tenMay, soLuong, nhacungcap, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
-
+                spDTO = new SanPhamDTO(maSanPham, maLoaiSanPham, tenSanPham, soLuong, giaXuat, cpu, ram, vga, oCung, manHinh, pin, trongLuong, mauSac, os, 1);
             }
             JDBCUtil.closeConnection(con);
         } catch(Exception e) {
@@ -99,9 +97,9 @@ public class SanPhamDAO {
             String sql = "INSERT INTO sanpham VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)";
             PreparedStatement presttm = con.prepareStatement(sql);
             presttm.setInt(1, sp.getMaSanPham());
-            presttm.setString(2, sp.getTenSanPham());
-            presttm.setInt(3, sp.getSoLuong());
-            presttm.setInt(4, sp.getNhaCungCap());
+            presttm.setInt(2, sp.getMaLoaiSanPham());
+            presttm.setString(3, sp.getTenSanPham());
+            presttm.setInt(4, sp.getSoLuong());
             presttm.setInt(5, sp.getGiaXuat());
             presttm.setString(6, sp.getCpu());
             presttm.setString(7, sp.getRam());
@@ -128,7 +126,7 @@ public class SanPhamDAO {
         int ketQua = 0;
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE sanpham SET trangthai = 0  WHERE masanpham = ? ";
+            String sql = "UPDATE sanpham SET trangthai = 0 WHERE masanpham = ? ";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
             ketQua = pst.executeUpdate();

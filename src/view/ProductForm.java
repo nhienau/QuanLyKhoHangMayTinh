@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -70,15 +69,14 @@ public class ProductForm extends javax.swing.JInternalFrame {
         ui.setNorthPane(null);
         tblSanPham.setDefaultEditor(Object.class, null);
         initTable();
-        loadDataToTable();
-        changeTextFind();
         
         // Authorization
         javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
         disableAllButtons(buttons);
         authorizeAction(user);
-
-        // loadDataToTable();
+        
+        loadDataToTable();
+        changeTextFind();
     }
     
     public ProductForm() {
@@ -147,16 +145,18 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 return false;
             }
         };
-        String[] headerTbl = new String[]{"Mã máy", "Tên máy", "Số lượng", "Đơn giá"};
+        String[] headerTbl = new String[]{"Mã sản phẩm", "Loại sản phẩm", "Tên sản phẩm", "Số lượng", "Giá bán"};
         tblModel.setColumnIdentifiers(headerTbl);
         tblSanPham.setModel(tblModel);
-        tblSanPham.getColumnModel().getColumn(0).setPreferredWidth(5);
-        tblSanPham.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tblSanPham.getColumnModel().getColumn(2).setPreferredWidth(5);
-
+//        tblSanPham.getColumnModel().getColumn(0).setPreferredWidth(40);
+        tblSanPham.getColumnModel().getColumn(1).setPreferredWidth(120);
+        tblSanPham.getColumnModel().getColumn(2).setPreferredWidth(400);
+//        tblSanPham.getColumnModel().getColumn(3).setPreferredWidth(40);
+        tblSanPham.getColumnModel().getColumn(4).setPreferredWidth(120);
         
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tblSanPham.setRowHeight(24);
         tblSanPham.setDefaultRenderer(String.class, renderer);
         tblSanPham.addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent mouseEvent){
@@ -179,10 +179,11 @@ public class ProductForm extends javax.swing.JInternalFrame {
         for(int i = 0; i< arr.size() ; i++){
             SanPhamDTO spDTO = arr.get(i);
             int maSP = spDTO.getMaSanPham();
+            int maLoaiSanPham = spDTO.getMaLoaiSanPham();
             String tenSP = spDTO.getTenSanPham();
             int soluong = spDTO.getSoLuong();
             int giaBan = spDTO.getGiaXuat();
-            Object [] row = {maSP, tenSP, soluong, formatter.format( giaBan) + " đ"  };
+            Object [] row = {maSP, maLoaiSanPham, tenSP, soluong, formatter.format( giaBan) + " đ"  };
             tblModel.addRow(row);
         }
         
@@ -341,6 +342,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jPanel3.add(btnLamMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 40));
 
+        tblSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         tblSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -528,16 +530,16 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTableSearch(result);
+//        ArrayList<MayTinh> result = searchFn(luaChon, content);
+//        loadDataToTableSearch(result);
     }//GEN-LAST:event_jTextFieldSearchKeyReleased
 
     private void jComboBoxLuaChonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChonActionPerformed
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTableSearch(result);
+//        ArrayList<MayTinh> result = searchFn(luaChon, content);
+//        loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonActionPerformed
 
     private void jTextFieldSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearchKeyPressed
@@ -549,8 +551,8 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTable();
+//        ArrayList<MayTinh> result = searchFn(luaChon, content);
+//        loadDataToTable();
     }//GEN-LAST:event_jComboBoxLuaChonPropertyChange
 
     public ArrayList<MayTinh> searchFn(String luaChon, String content) {

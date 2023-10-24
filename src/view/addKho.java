@@ -4,9 +4,9 @@
  */
 package view;
 
-import DAO.khoDAO;
-import DTO.khoDTO;
-import GUI.khoGUI;
+import DAO.KhoDAO;
+import DTO.KhoDTO;
+import GUI.KhoGUI0;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,6 +20,7 @@ public class addKho extends javax.swing.JFrame {
      */
     public addKho() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -121,15 +122,15 @@ public class addKho extends javax.swing.JFrame {
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
         String ten = txtTenKho.getText();
-        String diadiem = txtDiaDiem.getText();
+        String diaChi = txtDiaDiem.getText();
         if(ten.trim().equals("") || ten.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");
         } else {
-            khoDTO kho = new khoDTO();
+            KhoDTO kho = new KhoDTO();
             kho.setTenKho(ten);
-            kho.setDiaDiem(diadiem);
+            kho.setDiaChi(diaChi);
             try {
-                khoDAO.getInstance().addWareHouse(kho);
+                KhoDAO.getInstance().addWareHouse(kho);
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
                 
             } catch (Exception e) {

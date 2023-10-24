@@ -467,7 +467,6 @@ public class UpdateProduct extends javax.swing.JDialog {
                 spDTO.setTenSanPham(tenMay);
                 spDTO.setGiaXuat(dongia);
                 spDTO.setSoLuong(0);
-                spDTO.setNhaCungCap(1);
                 spDTO.setManHinh(manhinh);
                 spDTO.setOs(os);
                 spDTO.setPin(dungluongpin);
