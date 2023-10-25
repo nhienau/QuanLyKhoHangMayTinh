@@ -5,7 +5,6 @@
 package view;
 
 
-import DTO.NhaCungCapDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import OldDAO.NhaCungCapDAO;
 import javax.swing.JFrame;
@@ -41,8 +40,8 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
     }
     
     private void displayInfo() {
-        NhaCungCapDTO a = parent.getNhaCungCapSelect();
-        txtMaNCC.setText(String.valueOf(a.getMaNhaCungCap()));
+        NhaCungCap a = parent.getNhaCungCapSelect();
+        txtMaNCC.setText(a.getMaNhaCungCap());
         txtDiaChi.setText(a.getDiaChi());
         txtTenNCC.setText(a.getTenNhaCungCap());
         txtSDT.setText(a.getSdt());
@@ -172,11 +171,12 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
             else if(!sdtNcc.matches("\\d{10}") ){
                 JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
-        
-            else{
+            else if(sdtNcc.contains(sdtNcc)){
+                JOptionPane.showMessageDialog(this, "Số điện thoại bị trùng ! Nhập lại !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }else{
             // TODO add your handling code here:
-            NhaCungCapDTO ncc = new NhaCungCapDTO();
-            ncc.setMaNhaCungCap(Integer.parseInt(txtMaNCC.getText()));
+            NhaCungCap ncc = new NhaCungCap();
+            ncc.setMaNhaCungCap(txtMaNCC.getText());
             ncc.setTenNhaCungCap(txtTenNCC.getText());
             ncc.setSdt(txtSDT.getText());
             ncc.setDiaChi(txtDiaChi.getText());
