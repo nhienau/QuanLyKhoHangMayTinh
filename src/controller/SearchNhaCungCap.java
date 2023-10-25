@@ -4,7 +4,6 @@
  */
 package controller;
 
-import DTO.NhaCungCapDTO;
 import OldDAO.NhaCungCapDAO;
 import java.util.ArrayList;
 import model.NhaCungCap;
@@ -19,11 +18,11 @@ public class SearchNhaCungCap {
         return new SearchNhaCungCap();
     }
 
-    public ArrayList<NhaCungCapDTO> searchTatCa(String text) {
-        ArrayList<NhaCungCapDTO> result = new ArrayList<>();
-        ArrayList<NhaCungCapDTO> armt = NhaCungCapDAO.getInstance().selectAll();
+    public ArrayList<NhaCungCap> searchTatCa(String text) {
+        ArrayList<NhaCungCap> result = new ArrayList<>();
+        ArrayList<NhaCungCap> armt = NhaCungCapDAO.getInstance().selectAll();
         for (var ncc : armt) {
-            if (String.valueOf(ncc.getMaNhaCungCap()).toLowerCase().contains(text.toLowerCase())
+            if (ncc.getMaNhaCungCap().toLowerCase().contains(text.toLowerCase())
                     || ncc.getTenNhaCungCap().toLowerCase().contains(text.toLowerCase())
                     || ncc.getSdt().toLowerCase().contains(text.toLowerCase())
                     || ncc.getDiaChi().toLowerCase().contains(text.toLowerCase())) {
@@ -33,9 +32,9 @@ public class SearchNhaCungCap {
         return result;
     }
 
-    public ArrayList<NhaCungCapDTO> searchTenNCC(String text) {
-        ArrayList<NhaCungCapDTO> result = new ArrayList<>();
-        ArrayList<NhaCungCapDTO> armt = NhaCungCapDAO.getInstance().selectAll();
+    public ArrayList<NhaCungCap> searchTenNCC(String text) {
+        ArrayList<NhaCungCap> result = new ArrayList<>();
+        ArrayList<NhaCungCap> armt = NhaCungCapDAO.getInstance().selectAll();
         for (var ncc : armt) {
             if (ncc.getTenNhaCungCap().toLowerCase().contains(text.toLowerCase())) {
                 result.add(ncc);
@@ -44,20 +43,20 @@ public class SearchNhaCungCap {
         return result;
     }
 
-    public ArrayList<NhaCungCapDTO> searchMaNCC(String text) {
-        ArrayList<NhaCungCapDTO> result = new ArrayList<>();
-        ArrayList<NhaCungCapDTO> armt = NhaCungCapDAO.getInstance().selectAll();
+    public ArrayList<NhaCungCap> searchMaNCC(String text) {
+        ArrayList<NhaCungCap> result = new ArrayList<>();
+        ArrayList<NhaCungCap> armt = NhaCungCapDAO.getInstance().selectAll();
         for (var ncc : armt) {
-            if (String.valueOf(ncc.getMaNhaCungCap()).toLowerCase().contains(text.toLowerCase())) {
+            if (ncc.getMaNhaCungCap().toLowerCase().contains(text.toLowerCase())) {
                 result.add(ncc);
             }
         }
         return result;
     }
 
-    public ArrayList<NhaCungCapDTO> searchDiaChi(String text) {
-        ArrayList<NhaCungCapDTO> result = new ArrayList<>();
-        ArrayList<NhaCungCapDTO> armt = NhaCungCapDAO.getInstance().selectAll();
+    public ArrayList<NhaCungCap> searchDiaChi(String text) {
+        ArrayList<NhaCungCap> result = new ArrayList<>();
+        ArrayList<NhaCungCap> armt = NhaCungCapDAO.getInstance().selectAll();
         for (var ncc : armt) {
             if (ncc.getDiaChi().toLowerCase().contains(text.toLowerCase())) {
                 result.add(ncc);
@@ -66,9 +65,9 @@ public class SearchNhaCungCap {
         return result;
     }
 
-    public ArrayList<NhaCungCapDTO> searchSdt(String text) {
-        ArrayList<NhaCungCapDTO> result = new ArrayList<>();
-        ArrayList<NhaCungCapDTO> armt = NhaCungCapDAO.getInstance().selectAll();
+    public ArrayList<NhaCungCap> searchSdt(String text) {
+        ArrayList<NhaCungCap> result = new ArrayList<>();
+        ArrayList<NhaCungCap> armt = NhaCungCapDAO.getInstance().selectAll();
         for (var ncc : armt) {
             if (ncc.getSdt().toLowerCase().contains(text.toLowerCase())) {
                 result.add(ncc);
