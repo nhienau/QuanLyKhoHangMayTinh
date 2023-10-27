@@ -5,10 +5,10 @@
 package GUI;
 
 import DAO.SanPhamDAO;
-import DAO.khoDAO;
+import DAO.KhoDAO;
 import DAO.tonKhoDAO;
 import DTO.SanPhamDTO;
-import DTO.khoDTO;
+import DTO.KhoDTO;
 import DTO.tonKhoDTO;
 import java.awt.Point;
 import java.awt.event.ActionEvent;

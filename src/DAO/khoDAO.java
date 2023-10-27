@@ -4,7 +4,7 @@
  */
 package DAO;
 
-import DTO.khoDTO;
+import DTO.KhoDTO;
 import database.JDBCUtil;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,21 +16,21 @@ import java.util.ArrayList;
  *
  * @author trant
  */
-public class khoDAO  {
+public class KhoDAO {
     
-    public static khoDAO getInstance() {
-        return new khoDAO();
+    public static KhoDAO getInstance() {
+        return new KhoDAO();
     }
     
-    public ArrayList<khoDTO> getListWareHouse(){
-        ArrayList<khoDTO> listKho = new ArrayList<khoDTO>();
+    public ArrayList<KhoDTO> getListWareHouse() {
+        ArrayList<KhoDTO> listKho = new ArrayList<KhoDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM kho WHERE trangthai = 1";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                khoDTO kho = new khoDTO();
+                KhoDTO kho = new KhoDTO();
                 kho.setMaKho(rs.getInt("makho"));
                 kho.setTenKho(rs.getString("tenkho"));
                 kho.setDiaDiem(rs.getString("diachi"));
@@ -44,7 +44,7 @@ public class khoDAO  {
         return listKho;
     }
     
-    public boolean  addWareHouse(khoDTO kho){
+    public boolean addWareHouse(KhoDTO kho){
         boolean result = false;
         
         try {
@@ -52,7 +52,7 @@ public class khoDAO  {
             String sql = "INSERT INTO kho(tenkho,diachi,trangthai) VALUES(?,?,1)";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, kho.getTenKho());
-            stmt.setString(2, kho.getDiaDiem());
+            stmt.setString(2, kho.getDiaChi());
             if(stmt.executeUpdate() >= 1){
                 result = true;
             }

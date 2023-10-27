@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package view;
 
 import DAO.loaiSanPhamDAO;
@@ -14,11 +10,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-
-
 public class AddProduct extends javax.swing.JDialog {
-
-    
     private ProductForm owner;
 
     public AddProduct(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
@@ -27,7 +19,6 @@ public class AddProduct extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         addCbb();
-
     }
 
     private AddProduct(JFrame jFrame, boolean b) {
@@ -379,10 +370,7 @@ public class AddProduct extends javax.swing.JDialog {
         if (cbxloaisp.getSelectedItem().equals("Laptop")) {
             CardLayout productCategory = (CardLayout) jPanel3.getLayout();
             productCategory.first(jPanel3);
-
         }
-
-        
     }//GEN-LAST:event_cbxloaispItemStateChanged
 
     private void cbxloaispActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxloaispActionPerformed
