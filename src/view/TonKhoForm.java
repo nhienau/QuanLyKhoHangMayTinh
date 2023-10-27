@@ -53,7 +53,7 @@ public class TonKhoForm extends javax.swing.JInternalFrame {
         tblSanPham.setDefaultEditor(Object.class, null);
         initTable();
 //        loadDataToTable();
-        changeTextFind();
+//        changeTextFind();
         
         authorize(user);
     }

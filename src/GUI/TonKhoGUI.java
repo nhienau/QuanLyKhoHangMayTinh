@@ -5,10 +5,10 @@
 package GUI;
 
 import DAO.SanPhamDAO;
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DAO.tonKhoDAO;
 import DTO.SanPhamDTO;
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import DTO.tonKhoDTO;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -353,7 +353,7 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
         String name = (String) modalCbbTenkho.getSelectedItem();
         khoDTO kho = khoDAO.getInstance().getWareHouseByName(name);
         txtMaKho.setText(String.valueOf(kho.getMaKho()));
-        txtDiaChi.setText(kho.getDiaDiem());
+        txtDiaChi.setText(kho.getDiaChi());
         int makho = Integer.parseInt(txtMaKho.getText());
         loadDataTotable(makho);
     }//GEN-LAST:event_cbbTenKhoActionPerformed

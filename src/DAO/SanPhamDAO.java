@@ -80,7 +80,8 @@ public class SanPhamDAO {
                 Float trongLuong = rs.getFloat("trongluong");
                 
 
-                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
+                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, giaXuat, cpu, ram, vga, oCung, manHinh, 
+                        pin, trongLuong, mauSac, os);
 
             }
             JDBCUtil.closeConnection(con);

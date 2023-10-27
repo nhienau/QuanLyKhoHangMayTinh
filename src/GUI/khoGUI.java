@@ -1,9 +1,9 @@
 package GUI;
 
 import BUS.ChiTietQuyenBUS;
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DTO.ChiTietQuyenDTO;
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import DTO.NguoiDungDTO;
 import GUI.Dialog.AddKhoDialog;
 import java.sql.SQLException;
@@ -16,9 +16,8 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.addKho;
-import view.updateKho;
 
-public class KhoGUI extends javax.swing.JInternalFrame {
+public class khoGUI extends javax.swing.JInternalFrame {
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private DefaultTableModel dtm;
     private DefaultTableCellRenderer renderer;
@@ -26,7 +25,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     /**
      * Creates new form KhoGUI
      */
-    public KhoGUI(NguoiDungDTO user) {
+    public khoGUI(NguoiDungDTO user) {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
@@ -41,7 +40,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         loadDataWareHouse();
     }
     
-    public KhoGUI() {
+    public khoGUI() {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
@@ -71,10 +70,10 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     }
     
     public void loadDataWareHouse() {
-        ArrayList<KhoDTO> arr = KhoDAO.getInstance().getListWareHouse();
+        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
         dtm.setRowCount(0);
         for(int i = 0 ; i< arr.size() ; i++){
-            KhoDTO item = arr.get(i);
+            khoDTO item = arr.get(i);
             int stt = i+1;
             int maKho = item.getMaKho();
             String tenKho = item.getTenKho();
@@ -99,11 +98,11 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         try {
             allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(KhoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(KhoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
@@ -146,9 +145,9 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         btnLamMoi = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbKho = new javax.swing.JTable();
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        jInternalFrame1.setBorder(null);
-        jInternalFrame1.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
@@ -254,7 +253,6 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1180, 750));
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -480,22 +478,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         tbKho.setDefaultRenderer(String.class, renderer);
         tbKho.getTableHeader().setDefaultRenderer(renderer);
     }
-    public void loadDataWareHouse(){
-       
-        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
-        for(int i = 0 ; i< arr.size() ; i++){
-            khoDTO item = arr.get(i);
-            int stt = i+1;
-            int maKho = item.getMaKho();
-            String tenKho = item.getTenKho();
-            String diaDiem = item.getDiaDiem();
-            Object row[] = {stt, maKho, tenKho, diaDiem};
-            modelTbKho.addRow(row);
-        }
-        for(int i = 0; i < tbKho.getColumnCount(); i++){
-            tbKho.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }
-    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -519,6 +502,9 @@ public class KhoGUI extends javax.swing.JInternalFrame {
             java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -528,7 +514,6 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         });
     }
     private DefaultTableModel modelTbKho ;
-    private DefaultTableCellRenderer renderer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
