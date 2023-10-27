@@ -1,14 +1,17 @@
 package DTO;
 
-public class LoaiSanPhamDTO {
+public class loaiSanPhamDTO {
     private int maLoaiSanPham;
     private String tenLoaiSanPham;
-    private int trangThai;
 
-    public LoaiSanPhamDTO(int maLoaiSanPham, String tenLoaiSanPham, int trangThai) {
+    public loaiSanPhamDTO() {
+    }
+
+
+    public loaiSanPhamDTO(int maLoaiSanPham, String tenLoaiSanPham) {
         this.maLoaiSanPham = maLoaiSanPham;
         this.tenLoaiSanPham = tenLoaiSanPham;
-        this.trangThai = trangThai;
+       
     }
 
     public int getMaLoaiSanPham() {
@@ -27,11 +30,5 @@ public class LoaiSanPhamDTO {
         this.tenLoaiSanPham = tenLoaiSanPham;
     }
 
-    public int getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(int trangThai) {
-        this.trangThai = trangThai;
-    }
+    
 }
