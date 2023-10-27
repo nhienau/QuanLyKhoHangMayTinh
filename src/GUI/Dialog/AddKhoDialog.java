@@ -6,7 +6,7 @@ package GUI.Dialog;
 
 import DAO.khoDAO;
 import DTO.khoDTO;
-import GUI.KhoGUI;
+import GUI.khoGUI;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  * @author HP
  */
 public class AddKhoDialog extends javax.swing.JDialog {
-    private KhoGUI owner;
+    private khoGUI owner;
     
     /**
      * Creates new form AddKhoDialog
@@ -26,7 +26,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
     
     public AddKhoDialog(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
         super(owner, modal);
-        this.owner = (KhoGUI) parent;
+        this.owner = (khoGUI) parent;
         initComponents();
         setLocationRelativeTo(null);
     }
