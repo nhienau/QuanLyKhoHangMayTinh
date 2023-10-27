@@ -4,28 +4,21 @@
  */
 package view;
 
+import DAO.loaiSanPhamDAO;
 import DAO.SanPhamDAO;
+import DTO.loaiSanPhamDTO;
 import DTO.SanPhamDTO;
-import OldDAO.LaptopDAO;
-import OldDAO.MayTinhDAO;
-import OldDAO.PCDAO;
 import java.awt.CardLayout;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import model.Laptop;
-import model.MayTinh;
-import model.PC;
 
-/**
- *
- * @author Tran Nhat Sinh
- */
+
+
 public class AddProduct extends javax.swing.JDialog {
 
-    /**
-     * Creates new form ThemSP
-     */
+    
     private ProductForm owner;
 
     public AddProduct(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
@@ -33,6 +26,7 @@ public class AddProduct extends javax.swing.JDialog {
         this.owner = (ProductForm) parent;
         initComponents();
         setLocationRelativeTo(null);
+        addCbb();
 
     }
 
@@ -108,7 +102,6 @@ public class AddProduct extends javax.swing.JDialog {
 
         jLabel10.setText("Loại sản phẩm");
 
-        cbxloaisp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Laptop", "PC" }));
         cbxloaisp.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbxloaispItemStateChanged(evt);
@@ -268,7 +261,7 @@ public class AddProduct extends javax.swing.JDialog {
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(txtKichThuocMan1))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 12, Short.MAX_VALUE)))
+                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(43, 43, 43))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtOS, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -426,7 +419,6 @@ public class AddProduct extends javax.swing.JDialog {
                 spDTO.setTenSanPham(tenMay);
                 spDTO.setGiaXuat(dongia);
                 spDTO.setSoLuong(0);
-                spDTO.setNhaCungCap(1);
                 spDTO.setManHinh(manhinh);
                 spDTO.setOs(os);
                 spDTO.setPin(dungluongpin);
@@ -471,6 +463,14 @@ public class AddProduct extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     
+    public void addCbb(){
+        modalCbb = (DefaultComboBoxModel) cbxloaisp.getModel();
+        ArrayList<loaiSanPhamDTO> lsp = loaiSanPhamDAO.getInstance().getTypeOfProduct();
+        for(int i=0 ; i < lsp.size() ; i++){
+            loaiSanPhamDTO item = lsp.get(i);
+            modalCbb.addElement(item.getTenLoaiSanPham());
+        }
+    }
 
 
     public static void main(String args[]) {
@@ -497,6 +497,12 @@ public class AddProduct extends javax.swing.JDialog {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -513,6 +519,7 @@ public class AddProduct extends javax.swing.JDialog {
         });
     }
 
+    private DefaultComboBoxModel modalCbb ;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnCancel;

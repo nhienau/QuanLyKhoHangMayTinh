@@ -10,12 +10,14 @@ import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
 import DTO.SanPhamDTO;
 import DAO.SanPhamDAO;
+import GUI.loaiSanPhamGUI;
 import controller.SearchProduct;
 import OldDAO.LaptopDAO;
 import OldDAO.MayTinhDAO;
 import OldDAO.PCDAO;
 import java.awt.Desktop;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
@@ -42,7 +44,6 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.Account;
-import model.Laptop;
 import model.MayTinh;
 import model.PC;
 import org.apache.poi.ss.usermodel.Cell;
@@ -159,12 +160,13 @@ public class ProductForm extends javax.swing.JInternalFrame {
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         tblSanPham.setDefaultRenderer(String.class, renderer);
         tblSanPham.addMouseListener(new MouseAdapter(){
+            private ActionEvent evt;
             public void mousePressed(MouseEvent mouseEvent){
                 JTable table = (JTable) mouseEvent.getSource();
                 Point point = mouseEvent.getPoint();
                 int row = table.rowAtPoint(point);
                 if(mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 ){
-                    
+                           btnDetailActionPerformed(evt); 
                 }
             }
         });
@@ -211,6 +213,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnXuatExcel = new javax.swing.JButton();
         btnNhapExcel = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
@@ -304,11 +307,23 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnNhapExcel);
 
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon_laptop.jpg"))); // NOI18N
+        jButton2.setText("Thương hiệu");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jComboBoxLuaChon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã máy", "Tên máy", "Số lượng", "Đơn giá", "RAM", "CPU", "Dung lượng", "Card màn hình", "Xuất xứ", "Đã xóa" }));
+        jComboBoxLuaChon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã máy", "Tên máy", "Số lượng", "Đơn giá", "Thương hiệu", "RAM", "CPU", "Dung lượng", "Card màn hình", "Màu sắc", "Pin" }));
         jComboBoxLuaChon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxLuaChonActionPerformed(evt);
@@ -321,6 +336,11 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jPanel3.add(jComboBoxLuaChon, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, 40));
 
+        jTextFieldSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchActionPerformed(evt);
+            }
+        });
         jTextFieldSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextFieldSearchKeyPressed(evt);
@@ -349,6 +369,20 @@ public class ProductForm extends javax.swing.JInternalFrame {
 
             }
         ));
+        tblSanPham.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                tblSanPhamAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        tblSanPham.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSanPhamMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblSanPham);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -360,8 +394,8 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -384,7 +418,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 
-        AddProduct a = new AddProduct(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
+        AddProduct a = new  AddProduct(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
         a.setVisible(true);
 
     }//GEN-LAST:event_btnAddActionPerformed
@@ -450,62 +484,62 @@ public class ProductForm extends javax.swing.JInternalFrame {
 
     private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
         // TODO add your handling code here:
-        File excelFile;
-        FileInputStream excelFIS = null;
-        BufferedInputStream excelBIS = null;
-        XSSFWorkbook excelJTableImport = null;
-        ArrayList<MayTinh> listAccExcel = new ArrayList<MayTinh>();
-        JFileChooser jf = new JFileChooser();
-        int result = jf.showOpenDialog(null);
-        jf.setDialogTitle("Open file");
-        Workbook workbook = null;
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                excelFile = jf.getSelectedFile();
-                excelFIS = new FileInputStream(excelFile);
-                excelBIS = new BufferedInputStream(excelFIS);
-                excelJTableImport = new XSSFWorkbook(excelBIS);
-                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
-                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
-                    XSSFRow excelRow = excelSheet.getRow(row);
-                    String maMay = excelRow.getCell(0).getStringCellValue();
-                    String tenMay = excelRow.getCell(1).getStringCellValue();
-                    int soLuong = (int) excelRow.getCell(2).getNumericCellValue();
-                    String giaFomat = excelRow.getCell(3).getStringCellValue().replaceAll(",", "");
-                    int viTri = giaFomat.length() - 1;
-                    String giaoke = giaFomat.substring(0, viTri) + giaFomat.substring(viTri + 1);
-                    double donGia = Double.parseDouble(giaoke);
-                    String boXuLi = excelRow.getCell(4).getStringCellValue();
-                    String ram = excelRow.getCell(5).getStringCellValue();
-                    String boNho = excelRow.getCell(6).getStringCellValue();
-                    MayTinh mt = new MayTinh(maMay, tenMay, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
-                    listAccExcel.add(mt);
-                    DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
-                    table_acc.setRowCount(0);
-                    loadDataToTableSearch(listAccExcel);
-                }
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        for (int i = 0; i < listAccExcel.size(); i++) {
-            MayTinh mayTinh = listAccExcel.get(i);
-            if (mayTinh.getMaMay().contains("LP")) {
-                Laptop lapNew = new Laptop(0, "", mayTinh.getMaMay(),
-                        mayTinh.getTenMay(), mayTinh.getSoLuong(), mayTinh.getGia(), mayTinh.getTenCpu(),
-                        mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(), mayTinh.getRom(), 1);
-                LaptopDAO.getInstance().insert(lapNew);
-            } else if (mayTinh.getMaMay().contains("PC")) {
-                PC pcNew = new PC("", 0, mayTinh.getMaMay(), mayTinh.getTenMay(), mayTinh.getSoLuong(),
-                        mayTinh.getGia(), mayTinh.getTenCpu(), mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(),
-                        mayTinh.getRom(), mayTinh.getTrangThai());
-                PCDAO.getInstance().insert(pcNew);
-            } else {
-                JOptionPane.showMessageDialog(this, "Mã máy " + mayTinh.getMaMay() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            }
-        }
+//        File excelFile;
+//        FileInputStream excelFIS = null;
+//        BufferedInputStream excelBIS = null;
+//        XSSFWorkbook excelJTableImport = null;
+//        ArrayList<SanPhamDTO> listAccExcel = new ArrayList<SanPhamDTO>();
+//        JFileChooser jf = new JFileChooser();
+//        int result = jf.showOpenDialog(null);
+//        jf.setDialogTitle("Open file");
+//        Workbook workbook = null;
+//        if (result == JFileChooser.APPROVE_OPTION) {
+//            try {
+//                excelFile = jf.getSelectedFile();
+//                excelFIS = new FileInputStream(excelFile);
+//                excelBIS = new BufferedInputStream(excelFIS);
+//                excelJTableImport = new XSSFWorkbook(excelBIS);
+//                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
+//                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
+//                    XSSFRow excelRow = excelSheet.getRow(row);
+//                    String maMay = excelRow.getCell(0).getStringCellValue();
+//                    String tenMay = excelRow.getCell(1).getStringCellValue();
+//                    int soLuong = (int) excelRow.getCell(2).getNumericCellValue();
+//                    String giaFomat = excelRow.getCell(3).getStringCellValue().replaceAll(",", "");
+//                    int viTri = giaFomat.length() - 1;
+//                    String giaoke = giaFomat.substring(0, viTri) + giaFomat.substring(viTri + 1);
+//                    double donGia = Double.parseDouble(giaoke);
+//                    String boXuLi = excelRow.getCell(4).getStringCellValue();
+//                    String ram = excelRow.getCell(5).getStringCellValue();
+//                    String boNho = excelRow.getCell(6).getStringCellValue();
+//                    MayTinh mt = new MayTinh(maMay, tenMay, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
+//                    listAccExcel.add(mt);
+//                    DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
+//                    table_acc.setRowCount(0);
+//                    loadDataToTableSearch(listAccExcel);
+//                }
+//            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (IOException ex) {
+//                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        for (int i = 0; i < listAccExcel.size(); i++) {
+//            SanPhamDTO spDTO = listAccExcel.get(i);
+//            if (mayTinh.getMaMay().contains("LP")) {
+//                Laptop lapNew = new Laptop(0, "", mayTinh.getMaMay(),
+//                        mayTinh.getTenMay(), mayTinh.getSoLuong(), mayTinh.getGia(), mayTinh.getTenCpu(),
+//                        mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(), mayTinh.getRom(), 1);
+//                LaptopDAO.getInstance().insert(lapNew);
+//            } else if (mayTinh.getMaMay().contains("PC")) {
+//                PC pcNew = new PC("", 0, mayTinh.getMaMay(), mayTinh.getTenMay(), mayTinh.getSoLuong(),
+//                        mayTinh.getGia(), mayTinh.getTenCpu(), mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(),
+//                        mayTinh.getRom(), mayTinh.getTrangThai());
+//                PCDAO.getInstance().insert(pcNew);
+//            } else {
+//                JOptionPane.showMessageDialog(this, "Mã máy " + mayTinh.getMaMay() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+//            }
+//        }
     }//GEN-LAST:event_btnNhapExcelActionPerformed
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
@@ -528,7 +562,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
+        ArrayList<SanPhamDTO> result = searchFn(luaChon, content);
         loadDataToTableSearch(result);
     }//GEN-LAST:event_jTextFieldSearchKeyReleased
 
@@ -536,7 +570,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
+        ArrayList<SanPhamDTO> result = searchFn(luaChon, content);
         loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonActionPerformed
 
@@ -549,22 +583,44 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTable();
+        ArrayList<SanPhamDTO> result = searchFn(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonPropertyChange
 
-    public ArrayList<MayTinh> searchFn(String luaChon, String content) {
-        ArrayList<MayTinh> result = new ArrayList<>();
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        
+        loaiSanPhamGUI lsp = new loaiSanPhamGUI();
+        lsp.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextFieldSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldSearchActionPerformed
+
+    private void tblSanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPhamMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblSanPhamMouseClicked
+
+    private void tblSanPhamAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_tblSanPhamAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblSanPhamAncestorAdded
+
+    public ArrayList<SanPhamDTO> searchFn(String luaChon, String content) {
+        ArrayList<SanPhamDTO> result = new ArrayList<>();
         SearchProduct searchPr = new SearchProduct();
         switch (luaChon) {
             case "Tất cả":
                 result = searchPr.searchTatCa(content);
                 break;
             case "Mã máy":
-                result = searchPr.searchMaMay(content);
+                result = searchPr.searchMaSanPham(content);
                 break;
             case "Tên máy":
-                result = searchPr.searchTenMay(content);
+                result = searchPr.searchTenSanPham(content);
+                break;
+            case "Thương hiệu":
+                result = searchPr.searchThuongHieu(content);
                 break;
             case "Số lượng":
                 result = searchPr.searchSoLuong(content);
@@ -578,17 +634,17 @@ public class ProductForm extends javax.swing.JInternalFrame {
             case "CPU":
                 result = searchPr.searchCpu(content);
                 break;
-            case "Dung lượng":
-                result = searchPr.searchDungLuong(content);
+            case "Pin":
+                result = searchPr.searchPin(content);
                 break;
             case "Card màn hình":
-                result = searchPr.searchCard(content);
+                result = searchPr.searchManHinh(content);
                 break;
-            case "Xuất xứ":
-                result = searchPr.searchXuatXu(content);
+            case "Màu sắc":
+                result = searchPr.searchMauSac(content);
                 break;
-            case "Đã xóa":
-                result = searchPr.searchDaXoa(content);
+            case "VGA":
+                result = searchPr.searchVGA(content);
         }
         return result;
     }
@@ -638,18 +694,13 @@ public class ProductForm extends javax.swing.JInternalFrame {
         return spDTO;
     }
     
-    public void loadDataToTableSearch(ArrayList<MayTinh> result) {
+    public void loadDataToTableSearch(ArrayList<SanPhamDTO> result) {
         try {
             tblModel.setRowCount(0);
-            for (MayTinh i : result) {
-                String loaimay;
-                if (LaptopDAO.getInstance().isLaptop(i.getMaMay()) == true) {
-                    loaimay = "Laptop";
-                } else {
-                    loaimay = "PC/Case";
-                }
+            for (SanPhamDTO i : result) {
+                
                 tblModel.addRow(new Object[]{
-                    i.getMaMay(), i.getTenMay(), i.getSoLuong(), formatter.format(i.getGia()) + "đ", i.getTenCpu(), i.getRam(), i.getRom(), loaimay
+                    i.getMaSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
                 });
             }
         } catch (Exception e) {
@@ -689,6 +740,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnLamMoi;
     private javax.swing.JButton btnNhapExcel;
     private javax.swing.JButton btnXuatExcel;
+    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;

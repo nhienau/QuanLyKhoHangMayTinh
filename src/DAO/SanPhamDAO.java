@@ -33,8 +33,8 @@ public class SanPhamDAO {
                 SanPhamDTO sp = new SanPhamDTO();
                 sp.setMaSanPham( rs.getInt("masanpham"));
                 sp.setTenSanPham(rs.getString("tensanpham"));
+                sp.setLoaiSanPham(rs.getInt("maloaisanpham"));
                 sp.setSoLuong( rs.getInt("soluong"));
-                sp.setNhaCungCap( rs.getInt("nhacungcap"));
                 sp.setGiaXuat(rs.getInt("giaxuat"));
                 sp.setCpu(rs.getString("cpu"));
                 sp.setRam( rs.getString("ram"));
@@ -67,6 +67,7 @@ public class SanPhamDAO {
 
                 int maMay = id;
                 String tenMay = rs.getString("tensanpham");
+                int loaiSP = rs.getInt("maloaisanpham");
                 int soLuong = rs.getInt("soluong");
                 String tenCpu = rs.getString("cpu");
                 String ram = rs.getString("ram");
@@ -80,7 +81,45 @@ public class SanPhamDAO {
                 Float trongLuong = rs.getFloat("trongluong");
                 int nhacungcap = 1;
                 
-                spDTO = new SanPhamDTO(maMay, tenMay, soLuong, nhacungcap, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
+                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
+
+            }
+            JDBCUtil.closeConnection(con);
+        } catch(Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return spDTO;
+    }
+    
+    
+    public SanPhamDTO selectProductByName(String name){
+        SanPhamDTO spDTO = null ;
+        
+        try{
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and  tensanpham = '" + name + "'"  ;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+
+                int maMay = rs.getInt("masanpham");
+                String tenMay = rs.getString("tensanpham");
+                int loaiSP = rs.getInt("maloaisanpham");
+                int soLuong = rs.getInt("soluong");
+                String tenCpu = rs.getString("cpu");
+                String ram = rs.getString("ram");
+                String vga = rs.getString("vga");
+                int gia = rs.getInt("giaxuat");
+                String kichThuocMan = rs.getString("manhinh");
+                String dungLuongPin = rs.getString("pin");
+                String mausac = rs.getString("mausac");
+                String os = rs.getString("os");
+                String ocung = rs.getString("ocung");
+                Float trongLuong = rs.getFloat("trongluong");
+                int nhacungcap = 1;
+                
+                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
 
             }
             JDBCUtil.closeConnection(con);
@@ -96,22 +135,22 @@ public class SanPhamDAO {
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "INSERT INTO sanpham VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)";
+            String sql = "INSERT INTO sanpham VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)";
             PreparedStatement presttm = con.prepareStatement(sql);
             presttm.setInt(1, sp.getMaSanPham());
             presttm.setString(2, sp.getTenSanPham());
-            presttm.setInt(3, sp.getSoLuong());
-            presttm.setInt(4, sp.getNhaCungCap());
-            presttm.setInt(5, sp.getGiaXuat());
-            presttm.setString(6, sp.getCpu());
-            presttm.setString(7, sp.getRam());
-            presttm.setString(8, sp.getVga());
-            presttm.setString(9, sp.getoCung());
-            presttm.setString(10, sp.getManHinh());
-            presttm.setString(11, sp.getPin());
-            presttm.setFloat(12, sp.getTrongLuong());
-            presttm.setString(13, sp.getMauSac());
-            presttm.setString(14, sp.getOs());
+            presttm.setInt(3, sp.getLoaiSanPham());
+            presttm.setInt(4, sp.getSoLuong());
+            presttm.setInt(6, sp.getGiaXuat());
+            presttm.setString(7, sp.getCpu());
+            presttm.setString(8, sp.getRam());
+            presttm.setString(9, sp.getVga());
+            presttm.setString(10, sp.getoCung());
+            presttm.setString(11, sp.getManHinh());
+            presttm.setString(12, sp.getPin());
+            presttm.setFloat(13, sp.getTrongLuong());
+            presttm.setString(14, sp.getMauSac());
+            presttm.setString(15, sp.getOs());
             if(presttm.executeUpdate() >= 1){
                 result = true;
             }
@@ -145,18 +184,19 @@ public class SanPhamDAO {
         int ketqua = 0;
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE sanpham SET tensanpham = ? , giaxuat = ? , cpu = ?, ram = ?, mausac = ?, manhinh=  ?, vga = ?, ocung = ?, trongluong = ? WHERE masanpham=?";
+            String sql = "UPDATE sanpham SET tensanpham = ? , maloaisanpham = ?, giaxuat = ? , cpu = ?, ram = ?, mausac = ?, manhinh=  ?, vga = ?, ocung = ?, trongluong = ? WHERE masanpham=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, sp.getTenSanPham());
-            pst.setInt(2, sp.getGiaXuat());
-            pst.setString(3, sp.getCpu());
-            pst.setString(4, sp.getRam());
-            pst.setString(5, sp.getMauSac());
-            pst.setString(6, sp.getManHinh());
-            pst.setString(7, sp.getVga());
-            pst.setString(8, sp.getoCung());
-            pst.setFloat(9, sp.getTrongLuong());
-            pst.setInt(10, sp.getMaSanPham());
+            pst.setInt(2, sp.getLoaiSanPham());
+            pst.setInt(3, sp.getGiaXuat());
+            pst.setString(4, sp.getCpu());
+            pst.setString(5, sp.getRam());
+            pst.setString(6, sp.getMauSac());
+            pst.setString(7, sp.getManHinh());
+            pst.setString(8, sp.getVga());
+            pst.setString(9, sp.getoCung());
+            pst.setFloat(10, sp.getTrongLuong());
+            pst.setInt(11, sp.getMaSanPham());
             ketqua = pst.executeUpdate();
             JDBCUtil.closeConnection(con);
         } catch (Exception ex) {
@@ -164,4 +204,21 @@ public class SanPhamDAO {
         }
         return ketqua;
     }
+    
+    public String getNameByID(int masanpham) {
+        String name = "";
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT tensanpham FROM sanpham WHERE trangthai = 1 AND masanpham = " + masanpham;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                name = rs.getString("tensanpham");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
+    
 }

@@ -38,7 +38,7 @@ public class addKho extends javax.swing.JFrame {
         txtDiaDiem = new javax.swing.JTextField();
         btnThem = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
 
         jLabel1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
@@ -112,6 +112,7 @@ public class addKho extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtDiaDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiaDiemActionPerformed

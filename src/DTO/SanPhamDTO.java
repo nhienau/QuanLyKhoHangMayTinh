@@ -3,8 +3,8 @@ package DTO;
 public class SanPhamDTO {
     private int maSanPham;
     private String tenSanPham;
+    private int loaiSanPham;
     private int soLuong;
-    private int nhaCungCap;
     private int giaXuat;
     private String cpu;
     private String ram;
@@ -21,11 +21,11 @@ public class SanPhamDTO {
     }
 
     
-    public SanPhamDTO(int maSanPham, String tenSanPham, int soLuong, int nhaCungCap, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, float trongLuong, String mauSac, String os) {
+    public SanPhamDTO(int maSanPham, String tenSanPham, int loaiSanPham, int soLuong, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, float trongLuong, String mauSac, String os) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
+        this.loaiSanPham = loaiSanPham;
         this.soLuong = soLuong;
-        this.nhaCungCap = nhaCungCap;
         this.giaXuat = giaXuat;
         this.cpu = cpu;
         this.ram = ram;
@@ -54,6 +54,16 @@ public class SanPhamDTO {
         this.tenSanPham = tenSanPham;
     }
 
+    public int getLoaiSanPham() {
+        return loaiSanPham;
+    }
+
+    public void setLoaiSanPham(int loaiSanPham) {
+        this.loaiSanPham = loaiSanPham;
+    }
+    
+    
+
     public int getSoLuong() {
         return soLuong;
     }
@@ -62,13 +72,6 @@ public class SanPhamDTO {
         this.soLuong = soLuong;
     }
 
-    public int getNhaCungCap() {
-        return nhaCungCap;
-    }
-
-    public void setNhaCungCap(int nhaCungCap) {
-        this.nhaCungCap = nhaCungCap;
-    }
 
     public int getGiaXuat() {
         return giaXuat;

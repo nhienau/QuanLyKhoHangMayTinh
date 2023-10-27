@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.addKho;
+import view.updateKho;
 
 /**
  *
@@ -98,7 +99,7 @@ public class khoGUI extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tbKho = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jInternalFrame1.setBorder(null);
         jInternalFrame1.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -747,6 +748,7 @@ public class khoGUI extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -916,6 +918,7 @@ public class khoGUI extends javax.swing.JFrame {
 
     private void btnEdit3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit3ActionPerformed
         // TODO add your handling code here:
+
      
     }//GEN-LAST:event_btnEdit3ActionPerformed
 
