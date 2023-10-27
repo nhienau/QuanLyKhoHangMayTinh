@@ -174,7 +174,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
     }
 
     public void loadDataToTable() {
-        ArrayList<SanPhamDTO> arr = new ArrayList<SanPhamDTO>();
+        ArrayList<SanPhamDTO> arr = new ArrayList<>();
         arr = spBUS.getlistProducts();
         tblModel.setRowCount(0);
         
@@ -702,7 +702,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
             for (SanPhamDTO i : result) {
                 
                 tblModel.addRow(new Object[]{
-                    i.getMaSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
+                    i.getMaSanPham(), i.getMaLoaiSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
                 });
             }
         } catch (Exception e) {

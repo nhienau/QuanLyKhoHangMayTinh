@@ -1,15 +1,15 @@
 package DTO;
 
-public class KhoDTO {
+public class khoDTO {
     private int maKho;
     private String tenKho;
     private String diaChi;
     private int trangThai;
     
-    public KhoDTO() {
+    public khoDTO() {
     }
 
-    public KhoDTO(int maKho, String tenKho, String diaChi, int trangThai) {
+    public khoDTO(int maKho, String tenKho, String diaChi, int trangThai) {
         this.maKho = maKho;
         this.tenKho = tenKho;
         this.diaChi = diaChi;

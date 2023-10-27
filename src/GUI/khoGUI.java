@@ -1,9 +1,9 @@
 package GUI;
 
 import BUS.ChiTietQuyenBUS;
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DTO.ChiTietQuyenDTO;
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import DTO.NguoiDungDTO;
 import GUI.Dialog.AddKhoDialog;
 import java.sql.SQLException;
@@ -16,7 +16,6 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.addKho;
-import view.updateKho;
 
 public class KhoGUI extends javax.swing.JInternalFrame {
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
@@ -71,10 +70,10 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     }
     
     public void loadDataWareHouse() {
-        ArrayList<KhoDTO> arr = KhoDAO.getInstance().getListWareHouse();
+        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
         dtm.setRowCount(0);
         for(int i = 0 ; i< arr.size() ; i++){
-            KhoDTO item = arr.get(i);
+            khoDTO item = arr.get(i);
             int stt = i+1;
             int maKho = item.getMaKho();
             String tenKho = item.getTenKho();
@@ -146,9 +145,9 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         btnLamMoi = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbKho = new javax.swing.JTable();
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        jInternalFrame1.setBorder(null);
-        jInternalFrame1.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
@@ -254,7 +253,6 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1180, 750));
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -480,22 +478,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         tbKho.setDefaultRenderer(String.class, renderer);
         tbKho.getTableHeader().setDefaultRenderer(renderer);
     }
-    public void loadDataWareHouse(){
-       
-        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
-        for(int i = 0 ; i< arr.size() ; i++){
-            khoDTO item = arr.get(i);
-            int stt = i+1;
-            int maKho = item.getMaKho();
-            String tenKho = item.getTenKho();
-            String diaDiem = item.getDiaDiem();
-            Object row[] = {stt, maKho, tenKho, diaDiem};
-            modelTbKho.addRow(row);
-        }
-        for(int i = 0; i < tbKho.getColumnCount(); i++){
-            tbKho.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }
-    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -510,25 +493,25 @@ public class KhoGUI extends javax.swing.JInternalFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new khoGUI().setVisible(true);
+                new KhoGUI().setVisible(true);
             }
         });
     }
     private DefaultTableModel modelTbKho ;
-    private DefaultTableCellRenderer renderer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
