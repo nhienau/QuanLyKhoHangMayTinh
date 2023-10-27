@@ -4,6 +4,7 @@
  */
 package DTO;
 
+
 /**
  *
  * @author trant
@@ -19,6 +20,7 @@ public class loaiSanPhamDTO {
 
     public loaiSanPhamDTO() {
     }
+    
 
     public int getMaLoaiSanPham() {
         return maLoaiSanPham;
@@ -35,6 +37,6 @@ public class loaiSanPhamDTO {
     public void setTenLoaiSanPham(String tenLoaiSanPham) {
         this.tenLoaiSanPham = tenLoaiSanPham;
     }
-    
+
     
 }
