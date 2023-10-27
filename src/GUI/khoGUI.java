@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.addKho;
 
-public class KhoGUI extends javax.swing.JInternalFrame {
+public class khoGUI extends javax.swing.JInternalFrame {
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private DefaultTableModel dtm;
     private DefaultTableCellRenderer renderer;
@@ -25,7 +25,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     /**
      * Creates new form KhoGUI
      */
-    public KhoGUI(NguoiDungDTO user) {
+    public khoGUI(NguoiDungDTO user) {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
@@ -40,7 +40,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         loadDataWareHouse();
     }
     
-    public KhoGUI() {
+    public khoGUI() {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
@@ -98,11 +98,11 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         try {
             allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(KhoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(KhoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
@@ -493,21 +493,23 @@ public class KhoGUI extends javax.swing.JInternalFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(KhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new KhoGUI().setVisible(true);
+                new khoGUI().setVisible(true);
             }
         });
     }

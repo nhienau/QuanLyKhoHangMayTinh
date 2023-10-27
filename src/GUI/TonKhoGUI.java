@@ -242,7 +242,7 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnKhoInfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoInfActionPerformed
-        KhoGUI kho = new KhoGUI();
+        khoGUI kho = new khoGUI();
         kho.setVisible(true);
     }//GEN-LAST:event_btnKhoInfActionPerformed
 
