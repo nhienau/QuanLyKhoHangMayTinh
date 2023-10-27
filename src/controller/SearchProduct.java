@@ -165,7 +165,17 @@ public class SearchProduct {
         return result;
     }
 
-    public SanPhamDTO searchId(int text) {
+    public MayTinh searchId(String text) {
+        SanPhamDTO result = new SanPhamDTO();
+        ArrayList<MayTinh> allsp = MayTinhDAO.getInstance().selectAll();
+        for (var sp : allsp) {
+            if (String.valueOf(sp.getMaMay()).toLowerCase().contains(text.toLowerCase())) {
+                return sp;
+            }
+        }
+        return null;
+    }
+        public SanPhamDTO searchMaSanPham(int text) {
         SanPhamDTO result = new SanPhamDTO();
         ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getlistProduct();
         for (var sp : allsp) {
