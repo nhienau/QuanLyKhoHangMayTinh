@@ -4,7 +4,7 @@
  */
 package DAO;
 
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import database.JDBCUtil;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,24 +16,24 @@ import java.util.ArrayList;
  *
  * @author trant
  */
-public class KhoDAO {
+public class khoDAO {
     
-    public static KhoDAO getInstance() {
-        return new KhoDAO();
+    public static khoDAO getInstance() {
+        return new khoDAO();
     }
     
-    public ArrayList<KhoDTO> getListWareHouse() {
-        ArrayList<KhoDTO> listKho = new ArrayList<KhoDTO>();
+    public ArrayList<khoDTO> getListWareHouse() {
+        ArrayList<khoDTO> listKho = new ArrayList<khoDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM kho WHERE trangthai = 1";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                KhoDTO kho = new KhoDTO();
+                khoDTO kho = new khoDTO();
                 kho.setMaKho(rs.getInt("makho"));
                 kho.setTenKho(rs.getString("tenkho"));
-                kho.setDiaDiem(rs.getString("diachi"));
+                kho.setDiaChi(rs.getString("diachi"));
                 listKho.add(kho);
             }
             JDBCUtil.closeConnection(con);
@@ -44,7 +44,7 @@ public class KhoDAO {
         return listKho;
     }
     
-    public boolean addWareHouse(KhoDTO kho){
+    public boolean addWareHouse(khoDTO kho){
         boolean result = false;
         
         try {
@@ -69,7 +69,7 @@ public class KhoDAO {
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT diachi FROM kho WHERE trangthai = 1 and diachi = '" + kho.getDiaDiem() + "' and makho not in (" + kho.getMaKho() + ")";
+            String sql = "SELECT diachi FROM kho WHERE trangthai = 1 and diachi = '" + kho.getDiaChi() + "' and makho not in (" + kho.getMaKho() + ")";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
@@ -88,7 +88,7 @@ public class KhoDAO {
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "' and diachi = '" + kho.getDiaDiem() + "' WHERE makho = " + kho.getMaKho();
+            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "' and diachi = '" + kho.getDiaChi() + "' WHERE makho = " + kho.getMaKho();
             Statement stmt = con.createStatement();
             
             if(stmt.executeUpdate(sql) >= 1){
@@ -111,7 +111,7 @@ public class KhoDAO {
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 kho.setMaKho(rs.getInt("makho"));
-                kho.setDiaDiem(rs.getString("diachi"));
+                kho.setDiaChi(rs.getString("diachi"));
                 kho.setTenKho(rs.getString("tenkho"));
             }
             

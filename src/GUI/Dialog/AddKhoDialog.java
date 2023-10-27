@@ -4,8 +4,8 @@
  */
 package GUI.Dialog;
 
-import DAO.KhoDAO;
-import DTO.KhoDTO;
+import DAO.khoDAO;
+import DTO.khoDTO;
 import GUI.KhoGUI;
 import javax.swing.JOptionPane;
 
@@ -138,11 +138,11 @@ public class AddKhoDialog extends javax.swing.JDialog {
         if(ten.trim().equals("") || ten.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");
         } else {
-            KhoDTO kho = new KhoDTO();
+            khoDTO kho = new khoDTO();
             kho.setTenKho(ten);
             kho.setDiaChi(diaChi);
             try {
-                KhoDAO.getInstance().addWareHouse(kho);
+                khoDAO.getInstance().addWareHouse(kho);
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
                 this.dispose();
                 owner.loadDataWareHouse();
