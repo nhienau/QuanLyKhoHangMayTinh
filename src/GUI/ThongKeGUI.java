@@ -1,12 +1,24 @@
 package GUI;
 
+import BUS.ThongKeBUS;
 import DTO.NguoiDungDTO;
+import DTO.ThongKe.ThongKeDoanhThuDTO;
 import GUI.Chart.ModelChart;
 import java.awt.Color;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 public class ThongKeGUI extends javax.swing.JInternalFrame {
-
+    private final ThongKeBUS tkBUS = new ThongKeBUS();
+    private DefaultTableModel dtmOverview;
+    private DefaultTableCellRenderer dtcrOverview;
+    
     /**
      * Creates new form ThongKeGUI
      */
@@ -14,8 +26,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
-        
+        initTable();
         setUpChart();
+        thongKeDoanhThu7NgayQua();
 
         // Authorize
         // ...
@@ -29,6 +42,62 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         chartOverview.addLegend("Chi phí", new Color(245, 189, 135));
         chartOverview.addLegend("Doanh thu", new Color(135, 189, 245));
         chartOverview.addLegend("Lợi nhuận", new Color(189, 135, 245));
+    }
+    
+    private void initTable() {
+        dtmOverview = new DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Ngày", "Chi phí", "Doanh thu", "Lợi nhuận"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
+        tbOverview.setModel(dtmOverview);
+        dtcrOverview = new DefaultTableCellRenderer();
+        dtcrOverview.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+    
+    public void thongKeDoanhThu7NgayQua() {
+        // Get data
+        ArrayList<ThongKeDoanhThuDTO> arr = new ArrayList<>();
+        try {
+            arr = tkBUS.thongKeDoanhThu7NgayQua();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        dtmOverview.setRowCount(0);
+        for (int i = 0; i < arr.size(); ++i) {
+            ThongKeDoanhThuDTO tkdtDTO = arr.get(i);
+            Date ngay = tkdtDTO.getNgay();
+            Long chiPhi = tkdtDTO.getChiPhi();
+            Long doanhThu = tkdtDTO.getDoanhThu();
+            Long loiNhuan = tkdtDTO.getLoiNhuan();
+            Object [] row = {ngay, chiPhi, doanhThu, loiNhuan};
+            dtmOverview.addRow(row);
+            chartOverview.addData(new ModelChart(ngay.toString(), new double[]{chiPhi, doanhThu, loiNhuan}));
+        }
+        
+        for (int i = 0; i < tbOverview.getColumnCount(); ++i){
+            tbOverview.getColumnModel().getColumn(i).setCellRenderer(dtcrOverview);
+        }
+        
+        
     }
 
     /**
@@ -59,14 +128,19 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         chartOverview = new GUI.Chart.Chart();
         scrollPane1 = new javax.swing.JScrollPane();
         tbOverview = new javax.swing.JTable();
+        lblThongKe7NgayQua = new javax.swing.JLabel();
         pTonKho = new javax.swing.JPanel();
         pFilterTonKho = new javax.swing.JPanel();
         inputTonKho = new javax.swing.JTextField();
         cbTonKhoDate = new javax.swing.JComboBox<>();
-        lblTonKhoDate = new javax.swing.JLabel();
-        toolbarTonKho = new javax.swing.JToolBar();
+        lblTenKho1 = new javax.swing.JLabel();
         btnReloadTonKho = new javax.swing.JButton();
         btnExportExcelTonKho = new javax.swing.JButton();
+        btnChonKho = new javax.swing.JButton();
+        lblTonKhoDate = new javax.swing.JLabel();
+        lblKho = new javax.swing.JLabel();
+        spTenKho = new javax.swing.JScrollPane();
+        taTenKho = new javax.swing.JTextArea();
         scrollPane2 = new javax.swing.JScrollPane();
         tbTonKho = new javax.swing.JTable();
         pDoanhThu = new javax.swing.JPanel();
@@ -207,7 +281,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 .addGroup(pSoLuongTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTonKho)
                     .addComponent(txtTonKho, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(154, Short.MAX_VALUE))
         );
         pSoLuongTonKhoLayout.setVerticalGroup(
             pSoLuongTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,7 +305,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         );
         pChartOverviewLayout.setVerticalGroup(
             pChartOverviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(chartOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(chartOverview, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
         );
 
         tbOverview.setModel(new javax.swing.table.DefaultTableModel(
@@ -258,6 +332,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             tbOverview.getColumnModel().getColumn(3).setResizable(false);
         }
 
+        lblThongKe7NgayQua.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblThongKe7NgayQua.setText("Thống kê doanh thu 7 ngày qua");
+
         javax.swing.GroupLayout pOverviewLayout = new javax.swing.GroupLayout(pOverview);
         pOverview.setLayout(pOverviewLayout);
         pOverviewLayout.setHorizontalGroup(
@@ -265,15 +342,21 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             .addGroup(pOverviewLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pOverviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pChartOverview, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pOverviewLayout.createSequentialGroup()
+                    .addComponent(scrollPane1)
+                    .addGroup(pOverviewLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(pChartOverview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pOverviewLayout.createSequentialGroup()
                         .addComponent(pSoLuongNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pSoLuongXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pSoLuongTonKho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(scrollPane1))
+                        .addComponent(pSoLuongTonKho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(pOverviewLayout.createSequentialGroup()
+                .addGap(451, 451, 451)
+                .addComponent(lblThongKe7NgayQua)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pOverviewLayout.setVerticalGroup(
             pOverviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -283,10 +366,12 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                     .addComponent(pSoLuongXuat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pSoLuongTonKho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pSoLuongNhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblThongKe7NgayQua)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pChartOverview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -295,36 +380,74 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pTonKho.setBackground(new java.awt.Color(255, 255, 255));
 
         pFilterTonKho.setBackground(new java.awt.Color(255, 255, 255));
-        pFilterTonKho.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
+        pFilterTonKho.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pFilterTonKho.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pFilterTonKho.add(inputTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 730, 40));
 
+        inputTonKho.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        pFilterTonKho.add(inputTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 280, 40));
+
+        cbTonKhoDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbTonKhoDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "7 ngày qua", "28 ngày qua", "90 ngày qua", "365 ngày qua", "Toàn thời gian", "2023", "2022", "Tháng 10", "Tháng 9", "Tháng 8", "Tuỳ chỉnh" }));
-        pFilterTonKho.add(cbTonKhoDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 50, 210, -1));
+        pFilterTonKho.add(cbTonKhoDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 280, -1));
 
-        lblTonKhoDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblTonKhoDate.setForeground(new java.awt.Color(0, 0, 0));
-        lblTonKhoDate.setText("dd/mm/yyyy - dd/mm/yyyy");
-        pFilterTonKho.add(lblTonKhoDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, -1));
+        lblTenKho1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblTenKho1.setForeground(new java.awt.Color(0, 0, 0));
+        lblTenKho1.setText("Tìm kiếm sản phẩm");
+        pFilterTonKho.add(lblTenKho1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
 
-        toolbarTonKho.setBackground(new java.awt.Color(255, 255, 255));
-        toolbarTonKho.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
-        toolbarTonKho.setRollover(true);
-
-        btnReloadTonKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
+        btnReloadTonKho.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnReloadTonKho.setText("Làm mới");
         btnReloadTonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReloadTonKho.setFocusable(false);
         btnReloadTonKho.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnReloadTonKho.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbarTonKho.add(btnReloadTonKho);
+        pFilterTonKho.add(btnReloadTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, -1, -1));
 
-        btnExportExcelTonKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
+        btnExportExcelTonKho.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnExportExcelTonKho.setText("Xuất Excel");
         btnExportExcelTonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelTonKho.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelTonKho.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbarTonKho.add(btnExportExcelTonKho);
+        pFilterTonKho.add(btnExportExcelTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 250, -1, -1));
+
+        btnChonKho.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnChonKho.setText("Chọn kho");
+        pFilterTonKho.add(btnChonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, -1, -1));
+
+        lblTonKhoDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblTonKhoDate.setForeground(new java.awt.Color(0, 0, 0));
+        lblTonKhoDate.setText("dd/mm/yyyy - dd/mm/yyyy");
+        pFilterTonKho.add(lblTonKhoDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, -1));
+
+        lblKho.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblKho.setForeground(new java.awt.Color(0, 0, 0));
+        lblKho.setText("Kho");
+        pFilterTonKho.add(lblKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        spTenKho.setBackground(new java.awt.Color(255, 255, 255));
+        spTenKho.setBorder(null);
+        spTenKho.setForeground(new java.awt.Color(255, 255, 255));
+        spTenKho.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        spTenKho.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        spTenKho.setOpaque(false);
+
+        taTenKho.setEditable(false);
+        taTenKho.setBackground(new java.awt.Color(255, 255, 255));
+        taTenKho.setColumns(20);
+        taTenKho.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        taTenKho.setForeground(new java.awt.Color(0, 0, 0));
+        taTenKho.setLineWrap(true);
+        taTenKho.setRows(5);
+        taTenKho.setText("[Tên kho]");
+        taTenKho.setToolTipText("");
+        taTenKho.setWrapStyleWord(true);
+        taTenKho.setFocusable(false);
+        taTenKho.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        taTenKho.setOpaque(false);
+        spTenKho.setViewportView(taTenKho);
+
+        pFilterTonKho.add(spTenKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 280, 50));
+        spTenKho.getViewport().setOpaque(false);
+        spTenKho.setVisible(false);
 
         tbTonKho.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -348,36 +471,28 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             tbTonKho.getColumnModel().getColumn(1).setResizable(false);
             tbTonKho.getColumnModel().getColumn(2).setResizable(false);
             tbTonKho.getColumnModel().getColumn(3).setResizable(false);
-            tbTonKho.getColumnModel().getColumn(3).setHeaderValue("Lợi nhuận");
             tbTonKho.getColumnModel().getColumn(4).setResizable(false);
-            tbTonKho.getColumnModel().getColumn(4).setHeaderValue("Xuất trong kỳ");
             tbTonKho.getColumnModel().getColumn(5).setResizable(false);
-            tbTonKho.getColumnModel().getColumn(5).setHeaderValue("Tồn cuối kỳ");
         }
 
         javax.swing.GroupLayout pTonKhoLayout = new javax.swing.GroupLayout(pTonKho);
         pTonKho.setLayout(pTonKhoLayout);
         pTonKhoLayout.setHorizontalGroup(
             pTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pTonKhoLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pTonKhoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane2)
-                    .addGroup(pTonKhoLayout.createSequentialGroup()
-                        .addComponent(pFilterTonKho, javax.swing.GroupLayout.DEFAULT_SIZE, 1019, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(toolbarTonKho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(pFilterTonKho, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pTonKhoLayout.setVerticalGroup(
             pTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pTonKhoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(toolbarTonKho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 707, Short.MAX_VALUE)
                     .addComponent(pFilterTonKho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(scrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -674,6 +789,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChonKho;
     private javax.swing.JButton btnExportExcelLoaiSanPham;
     private javax.swing.JButton btnExportExcelSanPham;
     private javax.swing.JButton btnExportExcelTonKho;
@@ -695,9 +811,12 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JTextField inputSanPham;
     private javax.swing.JTextField inputTonKho;
     private javax.swing.JLabel lblDoanhThuDate;
+    private javax.swing.JLabel lblKho;
     private javax.swing.JLabel lblLoaiSanPhamDate;
     private javax.swing.JLabel lblNhap;
     private javax.swing.JLabel lblSanPhamDate;
+    private javax.swing.JLabel lblTenKho1;
+    private javax.swing.JLabel lblThongKe7NgayQua;
     private javax.swing.JLabel lblTonKho;
     private javax.swing.JLabel lblTonKhoDate;
     private javax.swing.JLabel lblXuat;
@@ -720,6 +839,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane scrollPane3;
     private javax.swing.JScrollPane scrollPane4;
     private javax.swing.JScrollPane scrollPane5;
+    private javax.swing.JScrollPane spTenKho;
+    private javax.swing.JTextArea taTenKho;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTable tbDoanhThu;
     private javax.swing.JTable tbLoaiSanPham;
@@ -729,7 +850,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JToolBar toolbarDoanhThu;
     private javax.swing.JToolBar toolbarLoaiSanPham;
     private javax.swing.JToolBar toolbarSanPham;
-    private javax.swing.JToolBar toolbarTonKho;
     private javax.swing.JLabel txtSoLuongNhap;
     private javax.swing.JLabel txtSoLuongXuat;
     private javax.swing.JLabel txtTonKho;
