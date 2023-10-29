@@ -48,6 +48,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
         btnThem = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thêm thông tin kho");
         setResizable(false);
 
         jLabel1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));

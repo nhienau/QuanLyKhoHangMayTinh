@@ -975,7 +975,6 @@ public class KhoGUI0 extends javax.swing.JInternalFrame {
         tbKho.getTableHeader().setDefaultRenderer(renderer);
     }
     public void loadDataWareHouse(){
-       
         ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
         for(int i = 0 ; i< arr.size() ; i++){
             khoDTO item = arr.get(i);
