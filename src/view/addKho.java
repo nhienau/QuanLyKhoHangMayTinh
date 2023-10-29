@@ -5,7 +5,7 @@
 package view;
 
 import DAO.khoDAO;
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import GUI.KhoGUI0;
 import javax.swing.JOptionPane;
 
@@ -39,7 +39,7 @@ public class addKho extends javax.swing.JFrame {
         txtDiaDiem = new javax.swing.JTextField();
         btnThem = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
 
         jLabel1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
@@ -113,6 +113,7 @@ public class addKho extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtDiaDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiaDiemActionPerformed
@@ -126,7 +127,7 @@ public class addKho extends javax.swing.JFrame {
         if(ten.trim().equals("") || ten.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");
         } else {
-            KhoDTO kho = new KhoDTO();
+            khoDTO kho = new khoDTO();
             kho.setTenKho(ten);
             kho.setDiaChi(diaChi);
             try {

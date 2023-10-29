@@ -5,7 +5,7 @@
 package GUI.Dialog;
 
 import DAO.khoDAO;
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import GUI.khoGUI;
 import javax.swing.JOptionPane;
 
@@ -139,7 +139,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
         if(ten.trim().equals("") || ten.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");
         } else {
-            KhoDTO kho = new KhoDTO();
+            khoDTO kho = new khoDTO();
             kho.setTenKho(ten);
             kho.setDiaChi(diaChi);
             try {

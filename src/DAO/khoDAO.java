@@ -4,7 +4,7 @@
  */
 package DAO;
 
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import database.JDBCUtil;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,19 +22,18 @@ public class khoDAO {
         return new khoDAO();
     }
     
-    public ArrayList<KhoDTO> getListWareHouse() {
-        ArrayList<KhoDTO> listKho = new ArrayList<KhoDTO>();
+    public ArrayList<khoDTO> getListWareHouse() {
+        ArrayList<khoDTO> listKho = new ArrayList<khoDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM kho WHERE trangthai = 1";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                KhoDTO kho = new KhoDTO();
+                khoDTO kho = new khoDTO();
                 kho.setMaKho(rs.getInt("makho"));
                 kho.setTenKho(rs.getString("tenkho"));
                 kho.setDiaChi(rs.getString("diachi"));
-                kho.setTrangThai(1);
                 listKho.add(kho);
             }
             JDBCUtil.closeConnection(con);
@@ -45,7 +44,7 @@ public class khoDAO {
         return listKho;
     }
     
-    public boolean addWareHouse(KhoDTO kho){
+    public boolean addWareHouse(khoDTO kho){
         boolean result = false;
         
         try {
@@ -63,5 +62,81 @@ public class khoDAO {
             e.printStackTrace();
         }
         return result;
+    }
+    
+    public boolean updateAddressWareHouse(khoDTO kho){
+        boolean result = false;
+        
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT diachi FROM kho WHERE trangthai = 1 and diachi = '" + kho.getDiaChi() + "' and makho not in (" + kho.getMaKho() + ")";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                result = true;
+            }
+            
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public boolean updateWareHouse(khoDTO kho){
+        boolean result = false;
+        
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "' and diachi = '" + kho.getDiaChi() + "' WHERE makho = " + kho.getMaKho();
+            Statement stmt = con.createStatement();
+            
+            if(stmt.executeUpdate(sql) >= 1){
+                result = true;
+            }
+            
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public khoDTO getWareHouseByName(String name){
+        khoDTO kho = new khoDTO();
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM kho WHERE trangthai = 1 and tenkho = '" + name + "'";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                kho.setMaKho(rs.getInt("makho"));
+                kho.setDiaChi(rs.getString("diachi"));
+                kho.setTenKho(rs.getString("tenkho"));
+            }
+            
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return kho;
+    }
+    
+    public String getWareHouseByID(int id){
+        String name = "";
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT tenkho FROM kho WHERE trangthai = 1 and makho = " + id ;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                name = rs.getString("tenkho");
+            }
+            
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 }

@@ -5,7 +5,7 @@
 package GUI;
 
 import DAO.khoDAO;
-import DTO.KhoDTO;
+import DTO.khoDTO;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -975,10 +975,9 @@ public class KhoGUI0 extends javax.swing.JInternalFrame {
         tbKho.getTableHeader().setDefaultRenderer(renderer);
     }
     public void loadDataWareHouse(){
-       
-        ArrayList<KhoDTO> arr = khoDAO.getInstance().getListWareHouse();
+        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
         for(int i = 0 ; i< arr.size() ; i++){
-            KhoDTO item = arr.get(i);
+            khoDTO item = arr.get(i);
             int stt = i+1;
             int maKho = item.getMaKho();
             String tenKho = item.getTenKho();
