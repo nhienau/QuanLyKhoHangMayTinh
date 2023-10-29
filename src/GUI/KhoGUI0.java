@@ -4,7 +4,7 @@
  */
 package GUI;
 
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DTO.KhoDTO;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
@@ -976,7 +976,7 @@ public class KhoGUI0 extends javax.swing.JInternalFrame {
     }
     public void loadDataWareHouse(){
        
-        ArrayList<KhoDTO> arr = KhoDAO.getInstance().getListWareHouse();
+        ArrayList<KhoDTO> arr = khoDAO.getInstance().getListWareHouse();
         for(int i = 0 ; i< arr.size() ; i++){
             KhoDTO item = arr.get(i);
             int stt = i+1;

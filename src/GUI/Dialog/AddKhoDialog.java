@@ -4,9 +4,9 @@
  */
 package GUI.Dialog;
 
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DTO.KhoDTO;
-import GUI.KhoGUI;
+import GUI.khoGUI;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  * @author HP
  */
 public class AddKhoDialog extends javax.swing.JDialog {
-    private KhoGUI owner;
+    private khoGUI owner;
     
     /**
      * Creates new form AddKhoDialog
@@ -26,7 +26,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
     
     public AddKhoDialog(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
         super(owner, modal);
-        this.owner = (KhoGUI) parent;
+        this.owner = (khoGUI) parent;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -48,6 +48,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
         btnThem = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thêm thông tin kho");
         setResizable(false);
 
         jLabel1.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
@@ -142,7 +143,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
             kho.setTenKho(ten);
             kho.setDiaChi(diaChi);
             try {
-                KhoDAO.getInstance().addWareHouse(kho);
+                khoDAO.getInstance().addWareHouse(kho);
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
                 this.dispose();
                 owner.loadDataWareHouse();

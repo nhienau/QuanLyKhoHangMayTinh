@@ -16,10 +16,10 @@ import java.util.ArrayList;
  *
  * @author trant
  */
-public class KhoDAO {
+public class khoDAO {
     
-    public static KhoDAO getInstance() {
-        return new KhoDAO();
+    public static khoDAO getInstance() {
+        return new khoDAO();
     }
     
     public ArrayList<KhoDTO> getListWareHouse() {

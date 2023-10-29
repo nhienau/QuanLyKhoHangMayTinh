@@ -1,7 +1,7 @@
 package GUI;
 
 import BUS.ChiTietQuyenBUS;
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DTO.ChiTietQuyenDTO;
 import DTO.KhoDTO;
 import DTO.NguoiDungDTO;
@@ -16,7 +16,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class KhoGUI extends javax.swing.JInternalFrame {
+public class khoGUI extends javax.swing.JInternalFrame {
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private DefaultTableModel dtm;
     private DefaultTableCellRenderer renderer;
@@ -24,7 +24,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     /**
      * Creates new form KhoGUI
      */
-    public KhoGUI(NguoiDungDTO user) {
+    public khoGUI(NguoiDungDTO user) {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
@@ -39,7 +39,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         loadDataWareHouse();
     }
     
-    public KhoGUI() {
+    public khoGUI() {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
@@ -69,7 +69,7 @@ public class KhoGUI extends javax.swing.JInternalFrame {
     }
     
     public void loadDataWareHouse() {
-        ArrayList<KhoDTO> arr = KhoDAO.getInstance().getListWareHouse();
+        ArrayList<KhoDTO> arr = khoDAO.getInstance().getListWareHouse();
         dtm.setRowCount(0);
         for(int i = 0 ; i< arr.size() ; i++){
             KhoDTO item = arr.get(i);
@@ -97,11 +97,11 @@ public class KhoGUI extends javax.swing.JInternalFrame {
         try {
             allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(KhoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(KhoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }

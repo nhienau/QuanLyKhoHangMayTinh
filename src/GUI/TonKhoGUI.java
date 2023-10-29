@@ -5,7 +5,7 @@
 package GUI;
 
 import DAO.SanPhamDAO;
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DAO.tonKhoDAO;
 import DTO.SanPhamDTO;
 import DTO.KhoDTO;
@@ -97,7 +97,7 @@ public class TonKhoGUI extends javax.swing.JFrame {
   
         cbbKho.addActionListener (new ActionListener () {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<KhoDTO> kho = KhoDAO.getInstance().getListWareHouse();
+                ArrayList<KhoDTO> kho = khoDAO.getInstance().getListWareHouse();
                 int index = cbbKho.getSelectedIndex();
                 if(index != -1 ){
                    KhoDTO item = kho.get(index); 
@@ -174,7 +174,7 @@ public class TonKhoGUI extends javax.swing.JFrame {
     
     public void addComboboxWareHouse(){
         
-        ArrayList<KhoDTO> listKho = KhoDAO.getInstance().getListWareHouse();
+        ArrayList<KhoDTO> listKho = khoDAO.getInstance().getListWareHouse();
         DefaultComboBoxModel modalCbbKho = new DefaultComboBoxModel();
         for( KhoDTO i : listKho){
            String name = i.getTenKho();

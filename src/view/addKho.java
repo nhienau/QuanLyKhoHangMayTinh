@@ -4,7 +4,7 @@
  */
 package view;
 
-import DAO.KhoDAO;
+import DAO.khoDAO;
 import DTO.KhoDTO;
 import GUI.KhoGUI0;
 import javax.swing.JOptionPane;
@@ -130,7 +130,7 @@ public class addKho extends javax.swing.JFrame {
             kho.setTenKho(ten);
             kho.setDiaChi(diaChi);
             try {
-                KhoDAO.getInstance().addWareHouse(kho);
+                khoDAO.getInstance().addWareHouse(kho);
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
                 
             } catch (Exception e) {
