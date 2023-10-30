@@ -8,6 +8,7 @@ import DAO.khoDAO;
 import DTO.khoDTO;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.addKho;
@@ -17,13 +18,15 @@ import view.updateKho;
  *
  * @author trant
  */
-public class khoGUI extends javax.swing.JFrame {
+public class khoGUI extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form khoGUI
      */
     public khoGUI() {
         initComponents();
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
         moreInit();
         loadDataWareHouse();
     }
@@ -393,7 +396,6 @@ public class khoGUI extends javax.swing.JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
