@@ -10,16 +10,17 @@ public class loaiSanPhamDTO {
     private int maLoaiSanPham;
     private String tenLoaiSanPham ;
 
+    
+    public loaiSanPhamDTO() {
+        
+    }
+
     public loaiSanPhamDTO(int maLoaiSanPham, String tenLoaiSanPham) {
         this.maLoaiSanPham = maLoaiSanPham;
         this.tenLoaiSanPham = tenLoaiSanPham;
 
     }
 
-
-    public loaiSanPhamDTO() {
-    }
-    
 
     public int getMaLoaiSanPham() {
         return maLoaiSanPham;
