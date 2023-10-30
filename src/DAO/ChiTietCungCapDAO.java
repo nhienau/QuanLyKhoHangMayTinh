@@ -57,23 +57,24 @@ public class ChiTietCungCapDAO {
         return ketQua;  
     }
     
-//    public boolean delete(ChiTietCungCapDTO ct) {
-//        boolean ketQua = false;
-//        try {
-//            java.sql.Connection con = JDBCUtil.getConnection();
-//            String sql = "UPDATE chitietcungcap SET trangthai = 0 WHERE masanpham = ? and manhacung = ?";
-//            PreparedStatement pst = con.prepareStatement(sql);
-//            
-//            if(pst.executeUpdate() >= 1){
-//                ketQua = true;
-//            }
-//            JDBCUtil.closeConnection(con);
-//        } catch (Exception e) {
-//            // TODO: handle exception
-//            e.printStackTrace();
-//        }
-//        return ketQua;
-//    }
+    public boolean delete(ChiTietCungCapDTO ct) {
+        boolean ketQua = false;
+        try {
+            java.sql.Connection con = JDBCUtil.getConnection();
+            String sql = "UPDATE chitietcungcap SET trangthai = 0 WHERE manhacungcap = ? and masanpham = ? ";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, ct.getMaNhaCungCap());
+            pst.setInt(2, ct.getMaSanPham());
+            if(pst.executeUpdate() >= 1){
+                ketQua = true;
+            }
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
     
     public boolean update(ChiTietCungCapDTO ct){
         boolean ketQua = false;
