@@ -64,11 +64,7 @@ public class ChiTietCungCap extends javax.swing.JFrame {
         }
     }
     
-    public ChiTietCungCapDTO getChitietCungCapSelect() {
-        int i_row = tbSanPham.getSelectedRow();
-        ChiTietCungCapDTO ct = ChiTietCungCapDAO.getInstance().getListChiTietCungCap(idNCC).get(i_row);
-        return ct;
-    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -249,26 +245,38 @@ public class ChiTietCungCap extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-//        if (tbSanPham.getSelectedRow() == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm muốn xoá");
-//        } else {
-//            int output = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xoá nhà cung cấp", "Xác nhận xoá nhà cung cấp", JOptionPane.YES_NO_OPTION);
-//            if (output == JOptionPane.YES_OPTION) {
-////                NhaCungCapDAO.getInstance().delete(getNhaCungCapSelect());
-//                JOptionPane.showMessageDialog(this, "Xóa thành công !");
-//                loadDataToTable();
-//            }
-//        }
-
-            
+        if (tbSanPham.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp muốn sửa");
+        }
+        else{
+            int row = tbSanPham.getSelectedRow();
+            int maSanPham = Integer.parseInt(tbSanPham.getValueAt(row,1 ).toString());
+            ChiTietCungCapDTO ct = new ChiTietCungCapDTO();
+            ct.setMaNhaCungCap(idNCC);
+            ct.setMaSanPham(maSanPham);
+            if(ChiTietCungCapDAO.getInstance().delete(ct) == true){
+                JOptionPane.showMessageDialog(this, "Xóa thành công !");
+                LoadDataToTable(idNCC);
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa failed !");
+            }
+        }     
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         if (tbSanPham.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp muốn sửa");
         } else {
-            UpdateChiTietCungCap up = new UpdateChiTietCungCap(this);
+            int row = tbSanPham.getSelectedRow();
+            int maSanPham = Integer.parseInt(tbSanPham.getValueAt(row,1 ).toString());
+            String tenSanPham = tbSanPham.getValueAt(row, 2).toString();
+            int gia = Integer.parseInt(tbSanPham.getValueAt(row, 3).toString());
+            ChiTietCungCapDTO ct = new ChiTietCungCapDTO();
+            ct.setMaNhaCungCap(idNCC);
+            ct.setMaSanPham(maSanPham);
+            ct.setGiaNhap(gia);
+            ct.setTenSanPham(tenSanPham);
+            UpdateChiTietCungCap up = new UpdateChiTietCungCap(this, ct);
             up.setVisible(true);
         }
     }//GEN-LAST:event_btnEditActionPerformed
