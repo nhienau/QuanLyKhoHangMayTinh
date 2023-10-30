@@ -4,6 +4,7 @@
  */
 package view;
 
+import DAO.ChiTietCungCapDAO;
 import DAO.SanPhamDAO;
 import DTO.NhaCungCapDTO;
 import DTO.ChiTietCungCapDTO;
@@ -29,7 +30,7 @@ public class ChiTietCungCap extends javax.swing.JFrame {
      */
     
 
-
+    int idNCC;
     public ChiTietCungCap(NhaCungCapDTO ncc) {
         initComponents();
         txtTenNCC.setEditable(false);
@@ -37,15 +38,15 @@ public class ChiTietCungCap extends javax.swing.JFrame {
         tbModel =(DefaultTableModel) tbSanPham.getModel();
         tbSanPham.setDefaultEditor(Object.class, null);
         
-        int id = ncc.getMaNhaCungCap();
+        idNCC = ncc.getMaNhaCungCap();
         txtTenNCC.setText(ncc.getTenNhaCungCap());
-        LoadDataToTable(id);
+        LoadDataToTable(idNCC);
         
         setResizable(false);
     }
     
     public void LoadDataToTable(int id){
-        ccsp = NhaCungCapDAO.getInstance().getListChiTietCungCap(id);
+        ccsp = ChiTietCungCapDAO.getInstance().getListChiTietCungCap(id);
         tbModel.setRowCount(0);
         for(int i = 0; i < ccsp.size(); i++){
             ChiTietCungCapDTO ql = ccsp.get(i);
@@ -62,7 +63,12 @@ public class ChiTietCungCap extends javax.swing.JFrame {
             tbSanPham.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }
     }
-
+    
+    public ChiTietCungCapDTO getChitietCungCapSelect() {
+        int i_row = tbSanPham.getSelectedRow();
+        ChiTietCungCapDTO ct = ChiTietCungCapDAO.getInstance().getListChiTietCungCap(idNCC).get(i_row);
+        return ct;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,6 +86,10 @@ public class ChiTietCungCap extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbSanPham = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        btnAdd = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -144,6 +154,72 @@ public class ChiTietCungCap extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 140, 880, 310));
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
+
+        btnAdd.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
+        btnAdd.setText("Thêm");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnAdd.setFocusable(false);
+        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
+        btnDelete.setText("Xoá");
+        btnDelete.setFocusable(false);
+        btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
+        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
+        btnEdit.setText("Sửa");
+        btnEdit.setFocusable(false);
+        btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btnAdd)
+                .addGap(18, 18, 18)
+                .addComponent(btnDelete)
+                .addGap(18, 18, 18)
+                .addComponent(btnEdit)
+                .addContainerGap(603, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 450, 880, 100));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -166,6 +242,37 @@ public class ChiTietCungCap extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+       AddChiTietCungCap a = new  AddChiTietCungCap(idNCC);
+        a.setVisible(true);
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+//        if (tbSanPham.getSelectedRow() == -1) {
+//            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm muốn xoá");
+//        } else {
+//            int output = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xoá nhà cung cấp", "Xác nhận xoá nhà cung cấp", JOptionPane.YES_NO_OPTION);
+//            if (output == JOptionPane.YES_OPTION) {
+////                NhaCungCapDAO.getInstance().delete(getNhaCungCapSelect());
+//                JOptionPane.showMessageDialog(this, "Xóa thành công !");
+//                loadDataToTable();
+//            }
+//        }
+
+            
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        if (tbSanPham.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp muốn sửa");
+        } else {
+            UpdateChiTietCungCap up = new UpdateChiTietCungCap(this);
+            up.setVisible(true);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -174,8 +281,12 @@ public class ChiTietCungCap extends javax.swing.JFrame {
     private DefaultTableModel tbModel;
     private ArrayList<ChiTietCungCapDTO> ccsp;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbNCC;
     private javax.swing.JPanel panel1;
