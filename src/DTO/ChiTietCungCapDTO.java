@@ -10,17 +10,29 @@ package DTO;
  */
 public class ChiTietCungCapDTO {
     int maSanPham;
+    int maNhaCungCap;
     String tenSanPham;
     int giaNhap;
 
     public ChiTietCungCapDTO() {
     }
 
-    public ChiTietCungCapDTO(int maSanPham, String tenSanPham, int giaNhap) {
+    public ChiTietCungCapDTO(int maSanPham, int maNhaCungCap, String tenSanPham, int giaNhap) {
         this.maSanPham = maSanPham;
+        this.maNhaCungCap = maNhaCungCap;
         this.tenSanPham = tenSanPham;
         this.giaNhap = giaNhap;
     }
+
+    public int getMaNhaCungCap() {
+        return maNhaCungCap;
+    }
+
+    public void setMaNhaCungCap(int maNhaCungCap) {
+        this.maNhaCungCap = maNhaCungCap;
+    }
+
+    
 
     public int getMaSanPham() {
         return maSanPham;
