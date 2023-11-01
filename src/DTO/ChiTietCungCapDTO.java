@@ -1,27 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DTO;
 
-/**
- *
- * @author downny
- */
 public class ChiTietCungCapDTO {
-    int maSanPham;
-    int maNhaCungCap;
-    String tenSanPham;
-    int giaNhap;
+    private int maNhaCungCap;
+    private int maSanPham;
+    private int giaNhap;
+    private int trangThai;
 
-    public ChiTietCungCapDTO() {
-    }
-
-    public ChiTietCungCapDTO(int maSanPham, int maNhaCungCap, String tenSanPham, int giaNhap) {
-        this.maSanPham = maSanPham;
+    public ChiTietCungCapDTO(int maNhaCungCap, int maSanPham, int giaNhap, int trangThai) {
         this.maNhaCungCap = maNhaCungCap;
-        this.tenSanPham = tenSanPham;
+        this.maSanPham = maSanPham;
         this.giaNhap = giaNhap;
+        this.trangThai = trangThai;
     }
 
     public int getMaNhaCungCap() {
@@ -32,22 +21,12 @@ public class ChiTietCungCapDTO {
         this.maNhaCungCap = maNhaCungCap;
     }
 
-    
-
     public int getMaSanPham() {
         return maSanPham;
     }
 
     public void setMaSanPham(int maSanPham) {
         this.maSanPham = maSanPham;
-    }
-
-    public String getTenSanPham() {
-        return tenSanPham;
-    }
-
-    public void setTenSanPham(String tenSanPham) {
-        this.tenSanPham = tenSanPham;
     }
 
     public int getGiaNhap() {
@@ -57,6 +36,12 @@ public class ChiTietCungCapDTO {
     public void setGiaNhap(int giaNhap) {
         this.giaNhap = giaNhap;
     }
-    
-    
+
+    public int getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(int trangThai) {
+        this.trangThai = trangThai;
+    }
 }

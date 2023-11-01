@@ -141,7 +141,7 @@ public class AddKhoDialog extends javax.swing.JDialog {
         } else {
             khoDTO kho = new khoDTO();
             kho.setTenKho(ten);
-            kho.setDiaDiem(diaChi);
+            kho.setDiaChi(diaChi);
             try {
                 khoDAO.getInstance().addWareHouse(kho);
                 JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
