@@ -213,7 +213,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnXuatExcel = new javax.swing.JButton();
         btnNhapExcel = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnThuongHieu = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
@@ -307,17 +307,17 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnNhapExcel);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon_laptop.jpg"))); // NOI18N
-        jButton2.setText("Thương hiệu");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnThuongHieu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon_laptop.jpg"))); // NOI18N
+        btnThuongHieu.setText("Thương hiệu");
+        btnThuongHieu.setFocusable(false);
+        btnThuongHieu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnThuongHieu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnThuongHieu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnThuongHieuActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
+        jToolBar1.add(btnThuongHieu);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -587,12 +587,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
         loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonPropertyChange
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnThuongHieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThuongHieuActionPerformed
         // TODO add your handling code here:
         
         loaiSanPhamGUI lsp = new loaiSanPhamGUI();
         lsp.setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnThuongHieuActionPerformed
 
     private void jTextFieldSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchActionPerformed
         // TODO add your handling code here:
@@ -739,8 +739,8 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi;
     private javax.swing.JButton btnNhapExcel;
+    private javax.swing.JButton btnThuongHieu;
     private javax.swing.JButton btnXuatExcel;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;

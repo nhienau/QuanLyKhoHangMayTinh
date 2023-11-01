@@ -415,7 +415,7 @@ public class MainLayout extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
-        jLabel10.setText("Tồn kho");
+        jLabel10.setText("Kho");
         TonKho.add(jLabel10, java.awt.BorderLayout.CENTER);
 
         pNav.add(TonKho);
@@ -581,9 +581,9 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
         // TODO add your handling code here:
-        TonKhoGUI tonKhoForm = new TonKhoGUI();
+        khoGUI khoForm = new khoGUI();
         pMainContent.removeAll();
-        pMainContent.add(tonKhoForm).setVisible(true);
+        pMainContent.add(khoForm).setVisible(true);
 
     }//GEN-LAST:event_TonKhoMouseClicked
 

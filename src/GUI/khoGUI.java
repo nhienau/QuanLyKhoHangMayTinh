@@ -8,11 +8,14 @@ import DAO.khoDAO;
 import DTO.khoDTO;
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.addKho;
 import view.updateKho;
+
 
 /**
  *
@@ -24,9 +27,10 @@ public class khoGUI extends javax.swing.JInternalFrame {
      * Creates new form khoGUI
      */
     public khoGUI() {
-        initComponents();
+        
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
+        initComponents();
         moreInit();
         loadDataWareHouse();
     }
@@ -61,6 +65,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
         jSeparator4 = new javax.swing.JToolBar.Separator();
         btnXuatExcel3 = new javax.swing.JButton();
         btnNhapExcel3 = new javax.swing.JButton();
+        btnKhoInf = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jComboBoxLuaChon3 = new javax.swing.JComboBox<>();
         jTextFieldSearch3 = new javax.swing.JTextField();
@@ -69,7 +74,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         tbKho = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1180, 774));
 
         jInternalFrame1.setBorder(null);
 
@@ -293,11 +298,24 @@ public class khoGUI extends javax.swing.JInternalFrame {
         });
         jToolBar4.add(btnNhapExcel3);
 
+        btnKhoInf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/warehouse.png"))); // NOI18N
+        btnKhoInf.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnKhoInf.setFocusable(false);
+        btnKhoInf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnKhoInf.setLabel("Tồn Kho");
+        btnKhoInf.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnKhoInf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKhoInfActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnKhoInf);
+
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jComboBoxLuaChon3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã máy", "Tên máy", "Số lượng", "Đơn giá", "RAM", "CPU", "Dung lượng", "Card màn hình", "Xuất xứ", "Đã xóa" }));
+        jComboBoxLuaChon3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Tên kho", "Địa điểm" }));
         jComboBoxLuaChon3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxLuaChon3ActionPerformed(evt);
@@ -310,6 +328,11 @@ public class khoGUI extends javax.swing.JInternalFrame {
         });
         jPanel7.add(jComboBoxLuaChon3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, 40));
 
+        jTextFieldSearch3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearch3ActionPerformed(evt);
+            }
+        });
         jTextFieldSearch3.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextFieldSearch3KeyPressed(evt);
@@ -348,15 +371,15 @@ public class khoGUI extends javax.swing.JInternalFrame {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1016, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -366,33 +389,36 @@ public class khoGUI extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(14, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToolBar4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 17, Short.MAX_VALUE)))
+                .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 524, Short.MAX_VALUE)
+                    .addGap(0, 584, Short.MAX_VALUE)
                     .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 524, Short.MAX_VALUE)))
+                    .addGap(0, 584, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 298, Short.MAX_VALUE)
+                    .addGap(0, 336, Short.MAX_VALUE)
                     .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 298, Short.MAX_VALUE)))
+                    .addGap(0, 337, Short.MAX_VALUE)))
         );
 
         pack();
@@ -440,6 +466,10 @@ public class khoGUI extends javax.swing.JInternalFrame {
 
     private void jTextFieldSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearchKeyReleased
         // TODO add your handling code here:
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
       
     }//GEN-LAST:event_jTextFieldSearchKeyReleased
 
@@ -448,11 +478,17 @@ public class khoGUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void jComboBoxLuaChon3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon3ActionPerformed
-
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChon3ActionPerformed
 
     private void jComboBoxLuaChon3PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon3PropertyChange
-
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChon3PropertyChange
 
     private void jTextFieldSearch3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch3KeyPressed
@@ -461,7 +497,10 @@ public class khoGUI extends javax.swing.JInternalFrame {
 
     private void jTextFieldSearch3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch3KeyReleased
         // TODO add your handling code here:
-
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jTextFieldSearch3KeyReleased
 
     private void btnLamMoi3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoi3ActionPerformed
@@ -504,6 +543,15 @@ public class khoGUI extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_btnAdd3ActionPerformed
 
+    private void btnKhoInfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoInfActionPerformed
+        TonKhoGUI tonkho = new TonKhoGUI();
+        tonkho.setVisible(true);
+    }//GEN-LAST:event_btnKhoInfActionPerformed
+
+    private void jTextFieldSearch3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearch3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldSearch3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -541,37 +589,92 @@ public class khoGUI extends javax.swing.JInternalFrame {
             tbKho.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }
     }
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    
+    public ArrayList<khoDTO> searchKho(String luaChon, String content) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        khoDAO searchPr = new khoDAO();
+        switch (luaChon) {
+            case "Tất cả":
+                result = searchPr.searchTatCa(content);
+                break;
+            case "Địa điểm":
+                result = searchPr.searchDiaDiem(content);
+                break;
+            case "Tên kho":
+                result = searchPr.searchTenKho(content);
+                break;
+
+        }
+        return result;
+    }
+    
+    public void loadDataToTableSearch(ArrayList<khoDTO> result) {
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            modelTbKho.setRowCount(0);
+            int stt = 0;
+            for (khoDTO i : result) {
+                
+                modelTbKho.addRow(new Object[]{
+                    stt++,i.getMaKho(), i.getTenKho(), i.getDiaDiem()
+                });
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    public void changeTextFind() {
+        jTextFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                /* do nothing */
+                if (jTextFieldSearch.getText().length() == 0) {
+                    loadDataWareHouse();
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new khoGUI().setVisible(true);
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                /* do nothing */
+
             }
         });
     }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new khoGUI().setVisible(true);
+//            }
+//        });
+//    }
     private DefaultTableModel modelTbKho ;
     private DefaultTableCellRenderer renderer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -582,6 +685,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnEdit3;
+    private javax.swing.JButton btnKhoInf;
     private javax.swing.JButton btnLamMoi;
     private javax.swing.JButton btnLamMoi3;
     private javax.swing.JButton btnNhapExcel;
