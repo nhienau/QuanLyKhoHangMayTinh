@@ -53,7 +53,7 @@ public class TonKhoForm extends javax.swing.JInternalFrame {
         tblSanPham.setDefaultEditor(Object.class, null);
         initTable();
 //        loadDataToTable();
-        changeTextFind();
+//        changeTextFind();
         
         authorize(user);
     }
@@ -65,7 +65,7 @@ public class TonKhoForm extends javax.swing.JInternalFrame {
         tblSanPham.setDefaultEditor(Object.class, null);
         initTable();
         loadDataToTable();
-        changeTextFind();
+        //changeTextFind();
     }
     
     private void authorize(NguoiDungDTO user) {
@@ -256,6 +256,32 @@ public class TonKhoForm extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+//
+//        addProduct a = new addProduct(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
+//        a.setVisible(true);
+
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+//        // TODO add your handling code here:
+//        if (tblSanPham.getSelectedRow() == -1) {
+//            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần xoá");
+//        } else {
+//            xoaMayTinhSelect();
+//        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        if (tblSanPham.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa");
+        } else {
+            UpdateProduct a = new UpdateProduct(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
+            a.setVisible(true);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+  
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
         try {
@@ -312,16 +338,16 @@ public class TonKhoForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTableSearch(result);
+        //ArrayList<MayTinh> result = searchFn(luaChon, content);
+        //loadDataToTableSearch(result);
     }//GEN-LAST:event_jTextFieldSearchKeyReleased
 
     private void jComboBoxLuaChonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChonActionPerformed
         // TODO add your handling code here:
         String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
         String content = jTextFieldSearch.getText();
-        ArrayList<MayTinh> result = searchFn(luaChon, content);
-        loadDataToTableSearch(result);
+        //ArrayList<MayTinh> result = searchFn(luaChon, content);
+        //loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonActionPerformed
 
     private void jTextFieldSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearchKeyPressed
@@ -384,68 +410,68 @@ public class TonKhoForm extends javax.swing.JInternalFrame {
         }
     }
 
-    public ArrayList<MayTinh> searchFn(String luaChon, String content) {
-        ArrayList<MayTinh> result = new ArrayList<>();
-        SearchProduct searchPr = new SearchProduct();
-        switch (luaChon) {
-            case "Tất cả":
-                result = searchPr.searchTatCa(content);
-                break;
-            case "Mã máy":
-                result = searchPr.searchMaMay(content);
-                break;
-            case "Tên máy":
-                result = searchPr.searchTenMay(content);
-                break;
-            case "Số lượng":
-                result = searchPr.searchSoLuong(content);
-                break;
-            case "Đơn giá":
-                result = searchPr.searchDonGia(content);
-                break;
-            case "RAM":
-                result = searchPr.searchRam(content);
-                break;
-            case "CPU":
-                result = searchPr.searchCpu(content);
-                break;
-            case "Dung lượng":
-                result = searchPr.searchDungLuong(content);
-                break;
-            case "Card màn hình":
-                result = searchPr.searchCard(content);
-                break;
-            case "Xuất xứ":
-                result = searchPr.searchXuatXu(content);
-                break;
-            case "Đã xóa":
-                result = searchPr.searchDaXoa(content);
-        }
-        return result;
-    }
-
-    public void changeTextFind() {
-        jTextFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                /* do nothing */
-                if (jTextFieldSearch.getText().length() == 0) {
-                    loadDataToTable();
-                }
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                /* do nothing */
-
-            }
-        });
-    }
+//    public ArrayList<SanPhamDTO> searchFn(String luaChon, String content) {
+//        ArrayList<MayTinh> result = new ArrayList<>();
+//        SearchProduct searchPr = new SearchProduct();
+//        switch (luaChon) {
+//            case "Tất cả":
+//                result = searchPr.searchTatCa(content);
+//                break;
+//            case "Mã máy":
+//                result = searchPr.searchMaMay(content);
+//                break;
+//            case "Tên máy":
+//                result = searchPr.searchTenMay(content);
+//                break;
+//            case "Số lượng":
+//                result = searchPr.searchSoLuong(content);
+//                break;
+//            case "Đơn giá":
+//                result = searchPr.searchDonGia(content);
+//                break;
+//            case "RAM":
+//                result = searchPr.searchRam(content);
+//                break;
+//            case "CPU":
+//                result = searchPr.searchCpu(content);
+//                break;
+//            case "Dung lượng":
+//                result = searchPr.searchDungLuong(content);
+//                break;
+//            case "Card màn hình":
+//                result = searchPr.searchCard(content);
+//                break;
+//            case "Xuất xứ":
+//                result = searchPr.searchXuatXu(content);
+//                break;
+//            case "Đã xóa":
+//                result = searchPr.searchDaXoa(content);
+//        }
+//        return result;
+//    }
+//
+//    public void changeTextFind() {
+//        jTextFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                /* do nothing */
+//                if (jTextFieldSearch.getText().length() == 0) {
+//                    loadDataToTable();
+//                }
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                /* do nothing */
+//
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDetail;

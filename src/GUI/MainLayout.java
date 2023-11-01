@@ -595,10 +595,9 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
         // TODO add your handling code here:
-//        TonKhoForm tonKhoForm = new TonKhoForm(user);
-        KhoGUI khoGUI = new KhoGUI(user);
+        TonKhoGUI tonKho = new TonKhoGUI();
         pMainContent.removeAll();
-        pMainContent.add(khoGUI).setVisible(true);
+        pMainContent.add(tonKho).setVisible(true);
     }//GEN-LAST:event_TonKhoMouseClicked
 
     private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked
@@ -665,9 +664,10 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void ThongKeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongKeMouseClicked
         // TODO add your handling code here:
-        ThongKeForm thongKeForm = new ThongKeForm();
+//        ThongKeForm thongKeForm = new ThongKeForm();
+        ThongKeGUI thongKe = new ThongKeGUI(user);
         pMainContent.removeAll();
-        pMainContent.add(thongKeForm).setVisible(true);
+        pMainContent.add(thongKe).setVisible(true);
     }//GEN-LAST:event_ThongKeMouseClicked
 
     private void ThongKeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ThongKeMousePressed
