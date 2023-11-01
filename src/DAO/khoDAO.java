@@ -139,4 +139,45 @@ public class khoDAO  {
         }
         return name;
     }
+    
+    public ArrayList<khoDTO> searchTatCa(String text) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
+        for (var kho : allkho) {
+             
+            if (kho.getTenKho().toLowerCase().contains(text.toLowerCase())
+                        || kho.getDiaDiem().toLowerCase().contains(text.toLowerCase())) {
+                    result.add(kho);
+            }
+            
+        }
+        return result;
+    }
+    
+    public ArrayList<khoDTO> searchTenKho(String text) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
+        for (var kho : allkho) {
+             
+            if (kho.getTenKho().toLowerCase().contains(text.toLowerCase()))
+            {
+                    result.add(kho);
+            }
+            
+        }
+        return result;
+    }
+    
+    public ArrayList<khoDTO> searchDiaDiem(String text) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
+        for (var kho : allkho) {
+             
+            if (kho.getDiaDiem().toLowerCase().contains(text.toLowerCase())) {
+                    result.add(kho);
+            }
+            
+        }
+        return result;
+    }
 }

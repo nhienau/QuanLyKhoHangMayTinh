@@ -17,20 +17,18 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import view.DetailTonKho;
 
 
-public class TonKhoGUI extends javax.swing.JInternalFrame  {
+public class TonKhoGUI extends javax.swing.JDialog  {
 
 
     DefaultTableCellRenderer renderer;
     
     public TonKhoGUI() {
-        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
-        ui.setNorthPane(null);
+        
         
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -51,7 +49,6 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        btnKhoInf = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnXuatExcel = new javax.swing.JButton();
         btnNhapExcel = new javax.swing.JButton();
@@ -66,25 +63,12 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTonKho = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Tồn kho");
         setPreferredSize(new java.awt.Dimension(1180, 774));
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
         jToolBar1.setRollover(true);
-
-        btnKhoInf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/warehouse.png"))); // NOI18N
-        btnKhoInf.setText("Thông tin kho");
-        btnKhoInf.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnKhoInf.setFocusable(false);
-        btnKhoInf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnKhoInf.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnKhoInf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnKhoInfActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnKhoInf);
         jToolBar1.add(jSeparator1);
 
         btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
@@ -234,17 +218,13 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnKhoInfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoInfActionPerformed
-        khoGUI kho = new khoGUI();
-        kho.setVisible(true);
-    }//GEN-LAST:event_btnKhoInfActionPerformed
 
     private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
         // TODO add your handling code here:
@@ -378,43 +358,43 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
             String tensanpham = tbTonKho.getValueAt(row, 1).toString().trim();
             SanPhamDTO sanpham = SanPhamDAO.getInstance().selectProductByName(tensanpham);
             int makho = Integer.parseInt(txtMaKho.getText());
-            DetailTonKho a = new DetailTonKho(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, sanpham.getMaSanPham(), makho);
+            DetailTonKho a = new DetailTonKho(sanpham.getMaSanPham(), makho);
             a.setVisible(true);
         }
     }//GEN-LAST:event_btnDetailActionPerformed
 
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-////        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TonKhoGUI().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(TonKhoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//////        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new TonKhoGUI().setVisible(true);
+//            }
+//        });
+//    }
     
     public void loadDataTotable(int makho){
         modelTonKho = (DefaultTableModel) tbTonKho.getModel();
@@ -452,7 +432,6 @@ public class TonKhoGUI extends javax.swing.JInternalFrame  {
     private DefaultTableModel modelTonKho ;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDetail;
-    private javax.swing.JButton btnKhoInf;
     private javax.swing.JButton btnNhapExcel;
     private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> cbbTenKho;

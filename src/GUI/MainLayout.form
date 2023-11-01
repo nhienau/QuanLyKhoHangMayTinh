@@ -545,7 +545,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/icon/icons8-warehouse-25.png"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="T&#x1ed3;n kho"/>
+                    <Property name="text" type="java.lang.String" value="Kho"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

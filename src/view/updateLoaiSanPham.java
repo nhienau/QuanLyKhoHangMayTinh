@@ -12,18 +12,20 @@ import javax.swing.JOptionPane;
  *
  * @author trant
  */
-public class updateLoaiSanPham extends javax.swing.JFrame {
+public class updateLoaiSanPham extends javax.swing.JDialog {
 
     /**
      * Creates new form updateLoaiSanPham
      */
 
     int masanpham;
-    public updateLoaiSanPham(int id, String name) {
+    loaiSanPhamGUI parent ;
+    public updateLoaiSanPham(loaiSanPhamGUI frame ,int id, String name) {
 
         initComponents();
         txtTenThuongHieu.setText(name);
         masanpham = id;
+        parent = frame;
     }
 
     /**
@@ -123,7 +125,7 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
             boolean rs = loaiSanPhamDAO.getInstance().editTypeOfProduct(name, masanpham);
             if(rs == true){
                 JOptionPane.showMessageDialog(this, "Sửa thương hiệu thành công!", "Sửa thương hiệu",JOptionPane.INFORMATION_MESSAGE);
-
+                parent.loadDataToTable();
             } else {
                 JOptionPane.showMessageDialog(this, "Sửa thương hiệu thất bại!","Sửa thương hiệu",JOptionPane.ERROR_MESSAGE);
             }

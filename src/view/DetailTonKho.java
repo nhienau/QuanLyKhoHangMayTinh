@@ -28,10 +28,9 @@ public class DetailTonKho extends javax.swing.JDialog {
     DefaultTableCellRenderer renderer;
     DecimalFormat formatter = new DecimalFormat("###, ###, ###");
     private TonKhoGUI owner;
-    
-    public DetailTonKho(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal, int masanpham, int makho) {
-        super(owner, modal);
-        this.owner = (TonKhoGUI) parent;
+    String status;
+    public DetailTonKho( int masanpham, int makho) {
+
         
         initComponents();
         renderer = new DefaultTableCellRenderer();

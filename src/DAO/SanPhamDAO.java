@@ -5,6 +5,7 @@
 package DAO;
 
 import DTO.SanPhamDTO;
+import DTO.khoDTO;
 import database.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -220,5 +221,7 @@ public class SanPhamDAO {
         }
         return name;
     }
+    
+    
     
 }
