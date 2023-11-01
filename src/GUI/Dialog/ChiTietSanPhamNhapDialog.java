@@ -24,9 +24,6 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
     private JInternalFrame parent;
     private DefaultTableModel dtm;
     private DefaultTableCellRenderer dtcr;
-    private ArrayList<ChiTietSanPhamNhapDTO> arr;
-    private ThongKeSanPhamDTO product;
-    private DateRangeDTO dateRange;
     
     public ChiTietSanPhamNhapDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -39,11 +36,9 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         this.parent = parent;
-        this.product = product;
-        this.dateRange = dateRange;
         initTable();
         displayInfo(product, dateRange);
-        this.arr = thongKeChiTietSanPhamNhap(dateRange, product.getMaSanPham());
+        thongKeChiTietSanPhamNhap(dateRange, product.getMaSanPham());
     }
     
     private void initTable() {
@@ -52,11 +47,11 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập"
+                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập", "Giá nhập"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -92,35 +87,35 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
         }
     }
     
-    private ArrayList<ChiTietSanPhamNhapDTO> thongKeChiTietSanPhamNhap(DateRangeDTO dateRange, int productId) {
+    private void thongKeChiTietSanPhamNhap(DateRangeDTO dateRange, int productId) {
         ArrayList<ChiTietSanPhamNhapDTO> arr = new ArrayList<>();
         try {
             arr = tkBUS.thongKeChiTietSanPhamNhap(dateRange, productId);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(ChiTietSanPhamNhapDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            return arr;
+            return;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(ChiTietSanPhamNhapDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            return arr;
+            return;
         }
         dtm.setRowCount(0);
-        if (arr.size() == 0) return arr;
+        if (arr.size() == 0) return;
         
         for (int i = 0; i < arr.size(); ++i) {
             ChiTietSanPhamNhapDTO ctspnDTO = arr.get(i);
             int maNhaCungCap = ctspnDTO.getMaNhaCungCap();
             String tenNhaCungCap = ctspnDTO.getTenNhaCungCap();
             int tongSoLuongNhap = ctspnDTO.getTongSoLuongNhap();
-            Object [] row = {maNhaCungCap, tenNhaCungCap, tongSoLuongNhap};
+            Long donGia = ctspnDTO.getDonGia();
+            Object [] row = {maNhaCungCap, tenNhaCungCap, tongSoLuongNhap, donGia};
             dtm.addRow(row);
         }
         for (int i = 0; i < table.getColumnCount(); ++i) {
             table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
         }
         addDataToChart(arr);
-        return arr;
     }
     
     /**
@@ -153,20 +148,15 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập"
+                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập", "Giá nhập"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
-            }
-        });
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableMouseClicked(evt);
             }
         });
         scrollPane.setViewportView(table);
@@ -174,6 +164,7 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
             table.getColumnModel().getColumn(0).setResizable(false);
             table.getColumnModel().getColumn(1).setResizable(false);
             table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(3).setResizable(false);
         }
 
         lblTenSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -203,7 +194,7 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
                         .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pContainerLayout.createSequentialGroup()
                                 .addComponent(lblThoiGian)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(lblTongSoLuongNhap)
                                 .addGap(60, 60, 60))
                             .addGroup(pContainerLayout.createSequentialGroup()
@@ -211,10 +202,10 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
                                     .addComponent(lblTenSanPham)
                                     .addComponent(lblLoaiSanPham))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pContainerLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pContainerLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
                         .addComponent(pieChart, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)))
                 .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -251,20 +242,6 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void handleViewGiaNhap(int row) {
-        ChiTietSanPhamNhapDTO provider = arr.get(row);
-        ChiTietGiaNhapNCCDialog chiTietGiaNhap = new ChiTietGiaNhapNCCDialog(this, true, this.product, provider, this.dateRange);
-        chiTietGiaNhap.setVisible(true);
-    }
-    
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        // TODO add your handling code here:
-        if(evt.getClickCount() == 2 && table.getSelectedRow() != -1) {
-            int row = table.getSelectedRow();
-            handleViewGiaNhap(row);
-        }
-    }//GEN-LAST:event_tableMouseClicked
 
     /**
      * @param args the command line arguments

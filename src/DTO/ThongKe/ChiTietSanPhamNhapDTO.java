@@ -4,11 +4,13 @@ public class ChiTietSanPhamNhapDTO {
     private int maNhaCungCap;
     private String tenNhaCungCap;
     private int tongSoLuongNhap;
+    private Long donGia;
 
-    public ChiTietSanPhamNhapDTO(int maNhaCungCap, String tenNhaCungCap, int tongSoLuongNhap) {
+    public ChiTietSanPhamNhapDTO(int maNhaCungCap, String tenNhaCungCap, int tongSoLuongNhap, Long donGia) {
         this.maNhaCungCap = maNhaCungCap;
         this.tenNhaCungCap = tenNhaCungCap;
         this.tongSoLuongNhap = tongSoLuongNhap;
+        this.donGia = donGia;
     }
 
     public int getMaNhaCungCap() {
@@ -33,5 +35,13 @@ public class ChiTietSanPhamNhapDTO {
 
     public void setTongSoLuongNhap(int tongSoLuongNhap) {
         this.tongSoLuongNhap = tongSoLuongNhap;
+    }
+
+    public Long getDonGia() {
+        return donGia;
+    }
+
+    public void setDonGia(Long donGia) {
+        this.donGia = donGia;
     }
 }

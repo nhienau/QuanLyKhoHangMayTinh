@@ -27,20 +27,4 @@ public class ThongKeBUS {
     public ArrayList<ChiTietSanPhamNhapDTO> thongKeChiTietSanPhamNhap(DateRangeDTO dateRange, int productId) throws SQLException {
         return tkDAO.thongKeChiTietSanPhamNhap(dateRange, productId);
     }
-    
-    public ArrayList<ChiTietGiaNhapNCCDTO> chiTietGiaNhapNCC (int productId, int providerId, DateRangeDTO dateRange) throws SQLException {
-        return tkDAO.chiTietGiaNhapNCC(productId, providerId, dateRange);
-    }
-    
-    public ArrayList<ThongKeLoaiSanPhamDTO> thongKeLoaiSanPham(DateRangeDTO dateRange, String productType) throws SQLException {
-        return tkDAO.thongKeLoaiSanPham(dateRange, productType);
-    }
-    
-    public ArrayList<ChiTietLoaiSanPhamDTO> chiTietLoaiSanPham(DateRangeDTO dateRange, int productTypeId) throws SQLException {
-        return tkDAO.chiTietLoaiSanPham(dateRange, productTypeId);
-    }
-    
-    public ArrayList<ChiTietGiaXuatSPDTO> chiTietGiaXuatSanPham (int productId, DateRangeDTO dateRange) throws SQLException {
-        return tkDAO.chiTietGiaXuatSanPham(productId, dateRange);
-    }
 }
