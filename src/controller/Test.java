@@ -18,6 +18,6 @@ public class Test {
         System.out.println("BCrypt hash: " + hash);
         boolean valuate = BCrypt.checkpw(password, "$2a$12$z4LV6HekAKa8mgywwiZtQO29YnXRRPx38TxEGOQNMT411TsUuFSYO");
         System.out.println(valuate);
-//        SendEmailSMTP.sendOTP("sinhbaoreact2003@gmail.com","12345");
+        SendEmailSMTP.sendOTP("sinhbaoreact2003@gmail.com","12345");
     }
 }

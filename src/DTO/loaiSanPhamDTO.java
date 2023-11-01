@@ -1,19 +1,26 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package DTO;
+
+
 
 public class loaiSanPhamDTO {
     private int maLoaiSanPham;
-    private String tenLoaiSanPham;
-    private int trangThai;
+    private String tenLoaiSanPham ;
+
     
     public loaiSanPhamDTO() {
         
     }
 
-    public loaiSanPhamDTO(int maLoaiSanPham, String tenLoaiSanPham, int trangThai) {
+    public loaiSanPhamDTO(int maLoaiSanPham, String tenLoaiSanPham) {
         this.maLoaiSanPham = maLoaiSanPham;
         this.tenLoaiSanPham = tenLoaiSanPham;
-        this.trangThai = trangThai;
+
     }
+
 
     public int getMaLoaiSanPham() {
         return maLoaiSanPham;
@@ -30,12 +37,6 @@ public class loaiSanPhamDTO {
     public void setTenLoaiSanPham(String tenLoaiSanPham) {
         this.tenLoaiSanPham = tenLoaiSanPham;
     }
-
-    public int getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(int trangThai) {
-        this.trangThai = trangThai;
-    }
+    
+    
 }
