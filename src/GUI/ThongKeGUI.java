@@ -5,8 +5,10 @@ import DTO.DateRangeDTO;
 import DTO.NguoiDungDTO;
 import DTO.ThongKe.*;
 import GUI.Chart.ModelChart;
+import GUI.Dialog.ChiTietLoaiSanPhamDialog;
 import GUI.Dialog.ChiTietSanPhamNhapDialog;
 import GUI.Dialog.SelectDateDialog;
+import helper.LoaiSanPhamTableModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,12 +28,16 @@ import javax.swing.table.DefaultTableModel;
 
 public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
+    private ArrayList<ThongKeLoaiSanPhamDTO> arrLoaiSanPham;
     private DefaultTableModel dtmOverview;
     private DefaultTableModel dtmTonKho;
     private DefaultTableModel dtmSanPham;
+    private DefaultTableModel dtmLoaiSanPham;
     private DefaultTableCellRenderer dtcrOverview;
     private DefaultTableCellRenderer dtcrTonKho;
     private DefaultTableCellRenderer dtcrSanPham;
+    private DefaultTableCellRenderer dtcrLoaiSanPham;
+    private LoaiSanPhamTableModel tmLoaiSanPham;
     
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final LocalDateTime nowDateTime = LocalDateTime.now();
@@ -59,9 +65,12 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     
     private String queryTonKho;
     private String querySanPham;
+    private String queryLoaiSanPham;
     
     private boolean isLoadingTonKho;
     private boolean isLoadingSanPham;
+    private boolean isLoadingLoaiSanPham;
+    
     /**
      * Creates new form ThongKeGUI
      */
@@ -69,6 +78,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         initComponents();
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
+        initList();
         initTable();
         initChart();
         initDateRange();
@@ -79,6 +89,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         thongKeDoanhThu7NgayQua();
         thongKeTonKho(drTonKho, queryTonKho);
         thongKeSanPham(drSanPham, querySanPham);
+        thongKeLoaiSanPham(drLoaiSanPham, queryLoaiSanPham);
         // Authorize
         // ...
     }
@@ -119,6 +130,26 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         this.isLoadingSanPham = isLoadingSanPham;
     }
 
+    public String getQueryLoaiSanPham() {
+        return queryLoaiSanPham;
+    }
+
+    public void setQueryLoaiSanPham(String queryLoaiSanPham) {
+        this.queryLoaiSanPham = queryLoaiSanPham;
+    }
+
+    public boolean isIsLoadingLoaiSanPham() {
+        return isLoadingLoaiSanPham;
+    }
+
+    public void setIsLoadingLoaiSanPham(boolean isLoadingLoaiSanPham) {
+        this.isLoadingLoaiSanPham = isLoadingLoaiSanPham;
+    }
+    
+    private void initList() {
+        this.arrLoaiSanPham = new ArrayList<>();
+    }
+    
     private void initTable() {
         dtmOverview = new DefaultTableModel(
             new Object [][] {
@@ -182,6 +213,36 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         tbSanPham.getColumnModel().getColumn(2).setPreferredWidth(400);
         dtcrSanPham = new DefaultTableCellRenderer();
         dtcrSanPham.setHorizontalAlignment(SwingConstants.CENTER);
+        
+//        dtmLoaiSanPham = new DefaultTableModel(
+//            new Object [][] {
+//
+//            },
+//            new String [] {
+//                "Mã", "Loại sản phẩm", "Số lượng xuất"
+//            }
+//        ) {
+//            boolean[] canEdit = new boolean [] {
+//                false, false, false
+//            };
+//
+//            public boolean isCellEditable(int rowIndex, int columnIndex) {
+//                return canEdit [columnIndex];
+//            }
+//        };
+        
+//        tbLoaiSanPham.setModel(dtmLoaiSanPham);
+//        tbLoaiSanPham.getColumnModel().removeColumn(tbLoaiSanPham.getColumnModel().getColumn(0));
+
+        String[] tbLoaiSanPhamColumnNames = {"Mã", "Loại sản phẩm", "Số lượng xuất"};
+        this.tmLoaiSanPham = new LoaiSanPhamTableModel(this.arrLoaiSanPham, tbLoaiSanPhamColumnNames);
+        tbLoaiSanPham.setModel(tmLoaiSanPham);
+        tbLoaiSanPham.getColumnModel().getColumn(0).setMinWidth(0);
+        tbLoaiSanPham.getColumnModel().getColumn(0).setMaxWidth(0);
+        tbLoaiSanPham.getColumnModel().getColumn(0).setWidth(0);
+        tbLoaiSanPham.getColumnModel().getColumn(0).setPreferredWidth(0);
+        dtcrLoaiSanPham = new DefaultTableCellRenderer();
+        dtcrLoaiSanPham.setHorizontalAlignment(SwingConstants.CENTER);
     }
     
     private void initChart() {
@@ -213,11 +274,13 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private void initLoadingState() {
         setIsLoadingTonKho(false);
         setIsLoadingSanPham(false);
+        setIsLoadingLoaiSanPham(false);
     }
     
     private void initQueryString() {
         setQueryTonKho("");
         setQuerySanPham("");
+        setQueryLoaiSanPham("");
     }
     
     public void setDateRange(String dateRangeName, DateRangeDTO dateRange) {
@@ -227,6 +290,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         } else if (dateRangeName.equals("sanpham")) {
             drSanPham = dateRange;
             displayDateRangeToLabel(drSanPham, lblSanPhamDate);
+        } else if (dateRangeName.equals("loaisanpham")) {
+            drLoaiSanPham = dateRange;
+            displayDateRangeToLabel(drLoaiSanPham, lblLoaiSanPhamDate);
         }
         // else if..
     }
@@ -236,6 +302,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             setIsLoadingTonKho(value);
         } else if (name.equals("sanpham")) {
             setIsLoadingSanPham(value);
+        } else if (name.equals("loaisanpham")) {
+            setIsLoadingLoaiSanPham(value);
         }
     }
     
@@ -318,6 +386,15 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         int soLuongNhap = Integer.parseInt(tbSanPham.getValueAt(row, 3).toString());
         ThongKeSanPhamDTO product = new ThongKeSanPhamDTO(maSanPham, loaiSanPham, tenSanPham, soLuongNhap);
         ChiTietSanPhamNhapDialog detailDialog = new ChiTietSanPhamNhapDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, drSanPham, product);
+        detailDialog.setVisible(true);
+    }
+    
+    private void handleViewProductTypeDetail(int row) {
+        int maLoaiSanPham = Integer.parseInt(tbLoaiSanPham.getValueAt(row, 0).toString());
+        String tenLoaiSanPham = tbLoaiSanPham.getValueAt(row, 1).toString();
+        int soLuong = Integer.parseInt(tbLoaiSanPham.getValueAt(row, 2).toString());
+        ThongKeLoaiSanPhamDTO productType = new ThongKeLoaiSanPhamDTO(maLoaiSanPham, tenLoaiSanPham, soLuong);
+        ChiTietLoaiSanPhamDialog detailDialog = new ChiTietLoaiSanPhamDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, drLoaiSanPham, productType);
         detailDialog.setVisible(true);
     }
     
@@ -417,7 +494,39 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             thongKeTonKho(dateRange, query);
         } else if (name.equals("sanpham")) {
             thongKeSanPham(dateRange, query);
+        } else if (name.equals("loaisanpham")) {
+            thongKeLoaiSanPham(dateRange, query);
         }
+    }
+    
+    private void thongKeLoaiSanPham(DateRangeDTO dateRange, String productType) {
+        ArrayList<ThongKeLoaiSanPhamDTO> arr = new ArrayList<>();
+        try {
+            arr = tkBUS.thongKeLoaiSanPham(dateRange, productType);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        tmLoaiSanPham.setData(arr);
+        tmLoaiSanPham.fireTableDataChanged();
+//        dtmLoaiSanPham.setRowCount(0);
+//        for (int i = 0; i < arr.size(); ++i) {
+//            ThongKeLoaiSanPhamDTO lsp = arr.get(i);
+//            int maLoaiSanPham = lsp.getMaLoaiSanPham();
+//            String tenLoaiSanPham = lsp.getTenLoaiSanPham();
+//            int soLuong = lsp.getSoLuong();
+//            Object [] row = {maLoaiSanPham, tenLoaiSanPham, soLuong};
+//            dtmLoaiSanPham.addRow(row);
+//        }
+        for (int i = 0; i < tbLoaiSanPham.getColumnCount(); ++i) {
+            tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(dtcrLoaiSanPham);
+        }
+        setIsLoadingLoaiSanPham(false);
     }
     
     /**
@@ -481,13 +590,15 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         scrollPane4 = new javax.swing.JScrollPane();
         tbSanPham = new javax.swing.JTable();
         pLoaiSanPham = new javax.swing.JPanel();
-        pFilterLoaiSanPham = new javax.swing.JPanel();
-        cbLoaiSanPhamDate = new javax.swing.JComboBox<>();
-        lblLoaiSanPhamDate = new javax.swing.JLabel();
-        toolbarLoaiSanPham = new javax.swing.JToolBar();
-        btnReloadLoaiSanPham = new javax.swing.JButton();
-        btnExportExcelLoaiSanPham = new javax.swing.JButton();
         chartLoaiSanPham = new GUI.Chart.Chart();
+        pFilterLoaiSanPham = new javax.swing.JPanel();
+        lblSearchLoaiSanPham = new javax.swing.JLabel();
+        inputLoaiSanPham = new javax.swing.JTextField();
+        lblLoaiSanPhamDate = new javax.swing.JLabel();
+        cbLoaiSanPhamDate = new javax.swing.JComboBox<>();
+        btnChiTietLoaiSanPham = new javax.swing.JButton();
+        btnExportExcelLoaiSanPham = new javax.swing.JButton();
+        btnReloadLoaiSanPham = new javax.swing.JButton();
         scrollPane5 = new javax.swing.JScrollPane();
         tbLoaiSanPham = new javax.swing.JTable();
 
@@ -688,7 +799,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pChartOverview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -789,7 +900,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pTonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pFilterTonKho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 708, Short.MAX_VALUE))
+                    .addComponent(scrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -876,7 +987,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chartDoanhThu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(scrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -991,7 +1102,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(pSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pFilterSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 708, Short.MAX_VALUE))
+                    .addComponent(scrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1000,33 +1111,64 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pLoaiSanPham.setBackground(new java.awt.Color(255, 255, 255));
 
         pFilterLoaiSanPham.setBackground(new java.awt.Color(255, 255, 255));
-        pFilterLoaiSanPham.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
+        pFilterLoaiSanPham.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pFilterLoaiSanPham.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pFilterLoaiSanPham.add(cbLoaiSanPhamDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 50, 210, -1));
+
+        lblSearchLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblSearchLoaiSanPham.setForeground(new java.awt.Color(0, 0, 0));
+        lblSearchLoaiSanPham.setText("Tìm kiếm loại sản phẩm");
+        pFilterLoaiSanPham.add(lblSearchLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        inputLoaiSanPham.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputLoaiSanPhamKeyPressed(evt);
+            }
+        });
+        pFilterLoaiSanPham.add(inputLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 280, 40));
 
         lblLoaiSanPhamDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         lblLoaiSanPhamDate.setForeground(new java.awt.Color(0, 0, 0));
         lblLoaiSanPhamDate.setText("dd/mm/yyyy - dd/mm/yyyy");
-        pFilterLoaiSanPham.add(lblLoaiSanPhamDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, -1));
+        pFilterLoaiSanPham.add(lblLoaiSanPhamDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
-        toolbarLoaiSanPham.setBackground(new java.awt.Color(255, 255, 255));
-        toolbarLoaiSanPham.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
-        toolbarLoaiSanPham.setRollover(true);
+        cbLoaiSanPhamDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbLoaiSanPhamDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbLoaiSanPhamDateActionPerformed(evt);
+            }
+        });
+        pFilterLoaiSanPham.add(cbLoaiSanPhamDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 280, -1));
 
-        btnReloadLoaiSanPham.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
-        btnReloadLoaiSanPham.setText("Làm mới");
-        btnReloadLoaiSanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReloadLoaiSanPham.setFocusable(false);
-        btnReloadLoaiSanPham.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnReloadLoaiSanPham.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbarLoaiSanPham.add(btnReloadLoaiSanPham);
+        btnChiTietLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnChiTietLoaiSanPham.setText("Chi tiết");
+        btnChiTietLoaiSanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnChiTietLoaiSanPham.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnChiTietLoaiSanPham.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnChiTietLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChiTietLoaiSanPhamActionPerformed(evt);
+            }
+        });
+        pFilterLoaiSanPham.add(btnChiTietLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, -1, -1));
 
-        btnExportExcelLoaiSanPham.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
+        btnExportExcelLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnExportExcelLoaiSanPham.setText("Xuất Excel");
         btnExportExcelLoaiSanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelLoaiSanPham.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelLoaiSanPham.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbarLoaiSanPham.add(btnExportExcelLoaiSanPham);
+        pFilterLoaiSanPham.add(btnExportExcelLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, -1));
+
+        btnReloadLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnReloadLoaiSanPham.setText("Làm mới");
+        btnReloadLoaiSanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReloadLoaiSanPham.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnReloadLoaiSanPham.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnReloadLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReloadLoaiSanPhamActionPerformed(evt);
+            }
+        });
+        pFilterLoaiSanPham.add(btnReloadLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, -1));
 
         tbLoaiSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1044,6 +1186,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tbLoaiSanPham.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbLoaiSanPhamMouseClicked(evt);
+            }
+        });
         scrollPane5.setViewportView(tbLoaiSanPham);
         if (tbLoaiSanPham.getColumnModel().getColumnCount() > 0) {
             tbLoaiSanPham.getColumnModel().getColumn(0).setResizable(false);
@@ -1058,25 +1205,22 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             .addGroup(pLoaiSanPhamLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chartLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(scrollPane5)
-                    .addGroup(pLoaiSanPhamLayout.createSequentialGroup()
-                        .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 1019, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(toolbarLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(chartLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 1168, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pLoaiSanPhamLayout.createSequentialGroup()
+                        .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(scrollPane5)))
                 .addContainerGap())
         );
         pLoaiSanPhamLayout.setVerticalGroup(
             pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pLoaiSanPhamLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(toolbarLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chartLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addGroup(pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                    .addComponent(scrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1173,7 +1317,43 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tbSanPhamMouseClicked
 
+    private void inputLoaiSanPhamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputLoaiSanPhamKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (inputLoaiSanPham.getText().trim().toLowerCase().equals(queryLoaiSanPham.toLowerCase()))
+                return;
+            setQueryLoaiSanPham(inputLoaiSanPham.getText().trim());
+            thongKeLoaiSanPham(drLoaiSanPham, queryLoaiSanPham);
+        }
+    }//GEN-LAST:event_inputLoaiSanPhamKeyPressed
+
+    private void cbLoaiSanPhamDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbLoaiSanPhamDateActionPerformed
+        // TODO add your handling code here:
+        handleComboBoxChanged("loaisanpham", String.valueOf(cbLoaiSanPhamDate.getSelectedItem()), drLoaiSanPham, lblLoaiSanPhamDate);
+        if (isLoadingLoaiSanPham) {
+            thongKeLoaiSanPham(drLoaiSanPham, queryLoaiSanPham);
+        }
+    }//GEN-LAST:event_cbLoaiSanPhamDateActionPerformed
+
+    private void btnChiTietLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChiTietLoaiSanPhamActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnChiTietLoaiSanPhamActionPerformed
+
+    private void btnReloadLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadLoaiSanPhamActionPerformed
+        // TODO add your handling code here:
+        handleReload(btnReloadLoaiSanPham, "loaisanpham", drLoaiSanPham, queryLoaiSanPham);
+    }//GEN-LAST:event_btnReloadLoaiSanPhamActionPerformed
+
+    private void tbLoaiSanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbLoaiSanPhamMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2 && tbLoaiSanPham.getSelectedRow() != -1) {
+            int row = tbLoaiSanPham.getSelectedRow();
+            handleViewProductTypeDetail(row);
+        }
+    }//GEN-LAST:event_tbLoaiSanPhamMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChiTietLoaiSanPham;
     private javax.swing.JButton btnChiTietSanPham;
     private javax.swing.JButton btnExportExcelLoaiSanPham;
     private javax.swing.JButton btnExportExcelSanPham;
@@ -1193,12 +1373,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JLabel iconSanPham;
     private javax.swing.JLabel iconSanPham1;
     private javax.swing.JLabel iconSanPham2;
+    private javax.swing.JTextField inputLoaiSanPham;
     private javax.swing.JTextField inputSanPham;
     private javax.swing.JTextField inputTonKho;
     private javax.swing.JLabel lblDoanhThuDate;
     private javax.swing.JLabel lblLoaiSanPhamDate;
     private javax.swing.JLabel lblNhap;
     private javax.swing.JLabel lblSanPhamDate;
+    private javax.swing.JLabel lblSearchLoaiSanPham;
     private javax.swing.JLabel lblSearchSanPham;
     private javax.swing.JLabel lblSearchTonKho;
     private javax.swing.JLabel lblThongKe7NgayQua;
@@ -1231,7 +1413,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JTable tbSanPham;
     private javax.swing.JTable tbTonKho;
     private javax.swing.JToolBar toolbarDoanhThu;
-    private javax.swing.JToolBar toolbarLoaiSanPham;
     private javax.swing.JLabel txtSoLuongNhap;
     private javax.swing.JLabel txtSoLuongXuat;
     private javax.swing.JLabel txtTonKho;
