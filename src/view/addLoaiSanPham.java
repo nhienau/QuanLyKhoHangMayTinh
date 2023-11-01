@@ -123,6 +123,7 @@ public class addLoaiSanPham  extends javax.swing.JDialog{
         
         if(loaiSanPhamDAO.getInstance().hasTypeOfProduct(txtTenThuongHieu.getText().trim()) == true){
             JOptionPane.showMessageDialog(this, "Tên thương hiệu đã tồn tại. Vui lòng thêm tên khác!");
+            return;
         }
         boolean rs = loaiSanPhamDAO.getInstance().addTypeOfProduct(txtTenThuongHieu.getText());
         if(rs == true){

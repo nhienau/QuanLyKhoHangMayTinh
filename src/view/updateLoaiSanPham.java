@@ -117,6 +117,7 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
         String name = txtTenThuongHieu.getText().trim();
         if(name.equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên thương hiệu bạn muốn sửa thành!");
+            return;
         }
 
         if(loaiSanPhamDAO.getInstance().hasTypeOfProductEdit(name, masanpham ) == true){
@@ -126,6 +127,7 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
             if(rs == true){
                 JOptionPane.showMessageDialog(this, "Sửa thương hiệu thành công!", "Sửa thương hiệu",JOptionPane.INFORMATION_MESSAGE);
                 parent.loadDataToTable();
+                
             } else {
                 JOptionPane.showMessageDialog(this, "Sửa thương hiệu thất bại!","Sửa thương hiệu",JOptionPane.ERROR_MESSAGE);
             }

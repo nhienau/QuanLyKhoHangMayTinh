@@ -904,8 +904,7 @@ public class KhoGUI0 extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLamMoi2ActionPerformed
 
     private void btnAdd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd3ActionPerformed
-        addKho newKho = new addKho();
-        newKho.setVisible(true);
+        
      
     }//GEN-LAST:event_btnAdd3ActionPerformed
 
