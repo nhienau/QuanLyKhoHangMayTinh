@@ -28,9 +28,10 @@ public class DetailTonKho extends javax.swing.JDialog {
     DefaultTableCellRenderer renderer;
     DecimalFormat formatter = new DecimalFormat("###, ###, ###");
     private TonKhoGUI owner;
-    String status;
-    public DetailTonKho( int masanpham, int makho) {
-
+    
+    public DetailTonKho(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal, int masanpham, int makho) {
+        super(owner, modal);
+        this.owner = (TonKhoGUI) parent;
         
         initComponents();
         renderer = new DefaultTableCellRenderer();
@@ -95,11 +96,11 @@ public class DetailTonKho extends javax.swing.JDialog {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtTenKho, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
+                .addGap(62, 62, 62)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtTenSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtTenSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

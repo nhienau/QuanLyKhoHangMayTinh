@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -71,15 +70,14 @@ public class ProductForm extends javax.swing.JInternalFrame {
         ui.setNorthPane(null);
         tblSanPham.setDefaultEditor(Object.class, null);
         initTable();
-        loadDataToTable();
-        changeTextFind();
         
         // Authorization
         javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
         disableAllButtons(buttons);
         authorizeAction(user);
-
-        // loadDataToTable();
+        
+        loadDataToTable();
+        changeTextFind();
     }
     
     public ProductForm() {
@@ -148,16 +146,18 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 return false;
             }
         };
-        String[] headerTbl = new String[]{"Mã máy", "Tên máy", "Số lượng", "Đơn giá"};
+        String[] headerTbl = new String[]{"Mã sản phẩm", "Loại sản phẩm", "Tên sản phẩm", "Số lượng", "Giá bán"};
         tblModel.setColumnIdentifiers(headerTbl);
         tblSanPham.setModel(tblModel);
-        tblSanPham.getColumnModel().getColumn(0).setPreferredWidth(5);
-        tblSanPham.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tblSanPham.getColumnModel().getColumn(2).setPreferredWidth(5);
-
+//        tblSanPham.getColumnModel().getColumn(0).setPreferredWidth(40);
+        tblSanPham.getColumnModel().getColumn(1).setPreferredWidth(120);
+        tblSanPham.getColumnModel().getColumn(2).setPreferredWidth(400);
+//        tblSanPham.getColumnModel().getColumn(3).setPreferredWidth(40);
+        tblSanPham.getColumnModel().getColumn(4).setPreferredWidth(120);
         
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tblSanPham.setRowHeight(24);
         tblSanPham.setDefaultRenderer(String.class, renderer);
         tblSanPham.addMouseListener(new MouseAdapter(){
             private ActionEvent evt;
@@ -174,17 +174,18 @@ public class ProductForm extends javax.swing.JInternalFrame {
     }
 
     public void loadDataToTable() {
-        ArrayList<SanPhamDTO> arr = new ArrayList<SanPhamDTO>();
+        ArrayList<SanPhamDTO> arr = new ArrayList<>();
         arr = spBUS.getlistProducts();
         tblModel.setRowCount(0);
         
         for(int i = 0; i< arr.size() ; i++){
             SanPhamDTO spDTO = arr.get(i);
             int maSP = spDTO.getMaSanPham();
+            int maLoaiSanPham = spDTO.getMaLoaiSanPham();
             String tenSP = spDTO.getTenSanPham();
             int soluong = spDTO.getSoLuong();
             int giaBan = spDTO.getGiaXuat();
-            Object [] row = {maSP, tenSP, soluong, formatter.format( giaBan) + " đ"  };
+            Object [] row = {maSP, maLoaiSanPham, tenSP, soluong, formatter.format( giaBan) + " đ"  };
             tblModel.addRow(row);
         }
         
@@ -213,7 +214,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnXuatExcel = new javax.swing.JButton();
         btnNhapExcel = new javax.swing.JButton();
-        btnThuongHieu = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
@@ -307,17 +308,17 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnNhapExcel);
 
-        btnThuongHieu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon_laptop.jpg"))); // NOI18N
-        btnThuongHieu.setText("Thương hiệu");
-        btnThuongHieu.setFocusable(false);
-        btnThuongHieu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnThuongHieu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnThuongHieu.addActionListener(new java.awt.event.ActionListener() {
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon_laptop.jpg"))); // NOI18N
+        jButton2.setText("Thương hiệu");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThuongHieuActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnThuongHieu);
+        jToolBar1.add(jButton2);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -361,6 +362,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         });
         jPanel3.add(btnLamMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 40));
 
+        tblSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         tblSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -587,12 +589,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
         loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonPropertyChange
 
-    private void btnThuongHieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThuongHieuActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         
         loaiSanPhamGUI lsp = new loaiSanPhamGUI();
         lsp.setVisible(true);
-    }//GEN-LAST:event_btnThuongHieuActionPerformed
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextFieldSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchActionPerformed
         // TODO add your handling code here:
@@ -700,7 +702,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
             for (SanPhamDTO i : result) {
                 
                 tblModel.addRow(new Object[]{
-                    i.getMaSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
+                    i.getMaSanPham(), i.getMaLoaiSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
                 });
             }
         } catch (Exception e) {
@@ -739,8 +741,8 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi;
     private javax.swing.JButton btnNhapExcel;
-    private javax.swing.JButton btnThuongHieu;
     private javax.swing.JButton btnXuatExcel;
+    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;

@@ -452,7 +452,6 @@ public class UpdateProduct extends javax.swing.JDialog {
         String mausac = txtMauSac.getText();
         String os = txtOS.getText();
         String ocung = txtOcung.getText();
-
         String dungluongpin = txtDungLuongPin.getText();
         if ( tenMay.equals("") && cpu.equals("") && ram.equals("") && vga.equals("") && mausac.equals("") && ocung.equals("") && dungluongpin.equals("") && os.equals("") && manhinh.equals("")) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");

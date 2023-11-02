@@ -60,7 +60,6 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
         tbLoaiSanPham = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Thương hiệu sản phẩm");
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
@@ -251,10 +250,9 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        
-        addLoaiSanPham a = new addLoaiSanPham(this);
+
+        addLoaiSanPham a = new addLoaiSanPham();
         a.setVisible(true);
-        
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -270,22 +268,13 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
             JOptionPane.showMessageDialog(this, "Thương hiệu này vẫn còn sản phẩm, vui lòng không xóa!");
             return;
         } 
-        
-        int dialog = JOptionPane.showConfirmDialog (null, "Bạn có chắc muốn xóa thương hiệu " + tenLoaiSanPham + "?" ,"WARNING", JOptionPane.YES_NO_OPTION) ;
-        
-            if(dialog == JOptionPane.YES_OPTION) {
-                if(loaiSanPhamDAO.getInstance().deleteTypeOfProduct(maLoaiSP)){
-                    JOptionPane.showMessageDialog(this, "Xóa thương hiệu thành công!");
-                    loadDataToTable();
-                
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa thương hiệu thất bại!");
-                }
-            } else {
-                  remove(this);
-                
-            }
-        
+        if(loaiSanPhamDAO.getInstance().deleteTypeOfProduct(maLoaiSP)){
+            
+            JOptionPane.showMessageDialog(this, "Xóa thương hiệu thành công!");
+            loadDataToTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thương hiệu thất bại!");
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
@@ -296,7 +285,7 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
             int row = tbLoaiSanPham.getSelectedRow();
             String name = tbLoaiSanPham.getValueAt(row, 1).toString();
             int id = loaiSanPhamDAO.getInstance().getIDOfType(name);
-            updateLoaiSanPham a = new updateLoaiSanPham(this,id, name );
+            updateLoaiSanPham a = new updateLoaiSanPham(id, name );
             a.setVisible(true);
             loadDataToTable();
         }
