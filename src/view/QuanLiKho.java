@@ -4,8 +4,7 @@
  */
 package view;
 
-import GUI.khoGUI;
-import GUI.khoGUI;
+import GUI.TonKhoGUI;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.util.logging.Level;
@@ -87,7 +86,7 @@ public class QuanLiKho extends javax.swing.JFrame {
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         TonKho = new javax.swing.JPanel();
-        labelKho = new javax.swing.JLabel();
+        labelTonKho = new javax.swing.JLabel();
         ThongKe = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         Account = new javax.swing.JPanel();
@@ -374,22 +373,22 @@ public class QuanLiKho extends javax.swing.JFrame {
             }
         });
 
-        labelKho.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        labelKho.setForeground(new java.awt.Color(255, 255, 255));
-        labelKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
-        labelKho.setText("KHO");
-        labelKho.addAncestorListener(new javax.swing.event.AncestorListener() {
+        labelTonKho.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        labelTonKho.setForeground(new java.awt.Color(255, 255, 255));
+        labelTonKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
+        labelTonKho.setText("TỒN KHO");
+        labelTonKho.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                labelKhoAncestorAdded(evt);
+                labelTonKhoAncestorAdded(evt);
             }
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
-        labelKho.addMouseListener(new java.awt.event.MouseAdapter() {
+        labelTonKho.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelKhoMouseClicked(evt);
+                labelTonKhoMouseClicked(evt);
             }
         });
 
@@ -399,14 +398,14 @@ public class QuanLiKho extends javax.swing.JFrame {
             TonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TonKhoLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(labelKho, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelTonKho, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(60, Short.MAX_VALUE))
         );
         TonKhoLayout.setVerticalGroup(
             TonKhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TonKhoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labelKho)
+                .addComponent(labelTonKho)
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
@@ -609,7 +608,7 @@ public class QuanLiKho extends javax.swing.JFrame {
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
         // TODO add your handling code here:
-        khoGUI px = new khoGUI();
+        TonKhoForm px = new TonKhoForm();
         MainContent.removeAll();
         MainContent.add(px).setVisible(true);
 
@@ -699,15 +698,15 @@ public class QuanLiKho extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private void labelKhoAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_labelKhoAncestorAdded
+    private void labelTonKhoAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_labelTonKhoAncestorAdded
         // TODO add your handling code here:
-    }//GEN-LAST:event_labelKhoAncestorAdded
+    }//GEN-LAST:event_labelTonKhoAncestorAdded
 
-    private void labelKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelKhoMouseClicked
-        khoGUI kho = new khoGUI();
+    private void labelTonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelTonKhoMouseClicked
+        TonKhoGUI kho = new TonKhoGUI();
         MainContent.removeAll();
         MainContent.add(kho).setVisible(true);
-    }//GEN-LAST:event_labelKhoMouseClicked
+    }//GEN-LAST:event_labelTonKhoMouseClicked
 
     /**
      * @param args the command line arguments
@@ -753,6 +752,6 @@ public class QuanLiKho extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel labelKho;
+    private javax.swing.JLabel labelTonKho;
     // End of variables declaration//GEN-END:variables
 }
