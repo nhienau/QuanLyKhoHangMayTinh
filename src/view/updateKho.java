@@ -25,7 +25,7 @@ public class updateKho extends javax.swing.JFrame {
         initComponents();
         kho.setMaKho( khoData.getMaKho());
 
-        txtDiaDiem.setText(khoData.getDiaChi());
+        txtDiaDiem.setText(khoData.getDiaDiem());
         txtTenKho.setText(khoData.getTenKho());
              
     }
@@ -123,7 +123,7 @@ public class updateKho extends javax.swing.JFrame {
         String address = txtDiaDiem.getText().trim();
                 
         kho.setTenKho(name);
-        kho.setDiaChi(address);
+        kho.setDiaDiem(address);
 
         if(name.trim().equals("") || address.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");

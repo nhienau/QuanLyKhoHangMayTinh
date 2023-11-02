@@ -17,15 +17,14 @@ public class ChiTietQuyenDAO {
         List<ChiTietQuyenDTO> list = new ArrayList<>();
         try {
             Connection conn = JDBCUtil.getConnection();
-            String query = "SELECT * FROM chitietquyen WHERE manhomquyen = ? AND hanhdong LIKE ?";
+            String query = "SELECT * FROM chitietquyen WHERE manhomquyen = ? AND hanhdong = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, maNhomQuyen);
-            ps.setString(2, "%view%");
+            ps.setString(2, "view");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String maChucNang = rs.getString("machucnang");
-                String hanChe = rs.getString("hanche");
-                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, "view", hanChe));
+                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, "view"));
             }
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
@@ -45,8 +44,7 @@ public class ChiTietQuyenDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String hanhDong = rs.getString("hanhdong");
-                String hanChe = rs.getString("hanche");
-                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, hanhDong, hanChe));
+                list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, hanhDong));
             }
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
