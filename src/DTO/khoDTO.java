@@ -47,8 +47,5 @@ public class khoDTO {
         this.diaDiem = diaDiem;
     }
 
-    public int return1(){
-        return 0;
-}
     
 }
