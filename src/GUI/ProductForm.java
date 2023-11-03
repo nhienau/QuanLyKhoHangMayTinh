@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
-package view;
+package GUI;
 
 import BUS.ChiTietQuyenBUS;
 import BUS.SanPhamBUS;
@@ -11,7 +11,7 @@ import DTO.NguoiDungDTO;
 import DTO.SanPhamDTO;
 import DAO.SanPhamDAO;
 import GUI.loaiSanPhamGUI;
-import controller.SearchProduct;
+import BUS.SearchProduct;
 import OldDAO.LaptopDAO;
 import OldDAO.MayTinhDAO;
 import OldDAO.PCDAO;

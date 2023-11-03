@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import model.NhaCungCap;
 
 public class AddNhaCungCap extends javax.swing.JDialog {
     private NhaCungCapForm parent;

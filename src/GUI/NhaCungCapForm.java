@@ -10,7 +10,6 @@ import DTO.NguoiDungDTO;
 import DTO.NhaCungCapDTO;
 import BUS.SearchNhaCungCap;
 import DAO.NhaCungCapDAO;
-import GUI.UpdateNhaCungCap;
 import java.awt.Desktop;
 import java.awt.Point;
 import java.io.BufferedInputStream;

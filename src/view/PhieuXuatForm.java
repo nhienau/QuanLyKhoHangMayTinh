@@ -4,6 +4,7 @@
  */
 package view;
 
+import GUI.ProductForm;
 import BUS.ChiTietQuyenBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;

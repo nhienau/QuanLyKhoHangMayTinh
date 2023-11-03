@@ -1,5 +1,6 @@
-package view;
+package GUI;
 
+import GUI.ProductForm;
 import DAO.loaiSanPhamDAO;
 import DAO.SanPhamDAO;
 import DTO.loaiSanPhamDTO;

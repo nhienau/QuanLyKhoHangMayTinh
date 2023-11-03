@@ -5,7 +5,7 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import controller.SearchProduct;
+import BUS.SearchProduct;
 import OldDAO.AccountDAO;
 import OldDAO.ChiTietPhieuXuatDAO;
 import java.sql.Timestamp;

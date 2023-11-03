@@ -5,8 +5,8 @@
 package view;
 
 import DTO.NguoiDungDTO;
-import controller.SearchProduct;
-import controller.WritePDF;
+import BUS.SearchProduct;
+import helper.WritePDF;
 import OldDAO.AccountDAO;
 import OldDAO.ChiTietPhieuNhapDAO;
 import OldDAO.MayTinhDAO;

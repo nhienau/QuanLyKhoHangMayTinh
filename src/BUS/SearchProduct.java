@@ -1,4 +1,4 @@
-package controller;
+package BUS;
 
 import DAO.SanPhamDAO;
 import DAO.loaiSanPhamDAO;
