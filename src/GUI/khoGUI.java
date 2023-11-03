@@ -1,126 +1,37 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package GUI;
 
-import BUS.ChiTietQuyenBUS;
 import DAO.khoDAO;
-import DTO.ChiTietQuyenDTO;
 import DTO.khoDTO;
-import DTO.NguoiDungDTO;
-import GUI.Dialog.AddKhoDialog;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import view.addKho;
 
+
+/**
+ *
+ * @author trant
+ */
 public class khoGUI extends javax.swing.JInternalFrame {
-    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
-    private DefaultTableModel dtm;
-    private DefaultTableCellRenderer renderer;
 
     /**
-     * Creates new form KhoGUI
+     * Creates new form khoGUI
      */
-    public khoGUI(NguoiDungDTO user) {
-        initComponents();
-        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
-        ui.setNorthPane(null);
-        tbKho.setDefaultEditor(Object.class, null);
-        initTable();
-        
-        // Authorization
-        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
-        disableAllButtons(buttons);
-        authorizeAction(user);
-
-        loadDataWareHouse();
-    }
-    
     public khoGUI() {
-        initComponents();
+        
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
-        tbKho.setDefaultEditor(Object.class, null);
-        
-        initTable();
+        initComponents();
+        moreInit();
         loadDataWareHouse();
-    }
-    
-    public void initTable(){
-        dtm = new DefaultTableModel(){
-            @Override
-            public boolean isCellEditable(int row, int column){
-               return false;
-           }
-        };
-        tbKho.setModel(dtm);
-        dtm.addColumn("STT");
-        dtm.addColumn("Mã kho");
-        dtm.addColumn("Tên kho");
-        dtm.addColumn("Địa điểm");
-        
-        renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-        tbKho.setDefaultRenderer(String.class, renderer);
-        tbKho.getTableHeader().setDefaultRenderer(renderer);
-    }
-    
-    public void loadDataWareHouse() {
-        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
-        dtm.setRowCount(0);
-        for(int i = 0 ; i< arr.size() ; i++){
-            khoDTO item = arr.get(i);
-            int stt = i+1;
-            int maKho = item.getMaKho();
-            String tenKho = item.getTenKho();
-            String diaChi = item.getDiaChi();
-            Object row[] = {stt, maKho, tenKho, diaChi};
-            dtm.addRow(row);
-        }
-        for(int i = 0; i < tbKho.getColumnCount(); i++){
-            tbKho.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }
-    }
-    
-    private void disableAllButtons(javax.swing.JButton[] buttons) {
-        for (javax.swing.JButton btn : buttons) {
-            btn.setEnabled(false);
-        }
-    }
-    
-    private void authorizeAction(NguoiDungDTO user) {
-        // Get all allowed actions in this functionality
-        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
-        try {
-            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        }
-        
-        for (ChiTietQuyenDTO ctq : allowedActions) {
-            if (ctq.getHanhDong().equals("create")) {
-                btnAdd.setEnabled(true);
-                continue;
-            }
-            if (ctq.getHanhDong().equals("update")) {
-                btnEdit.setEnabled(true);
-                continue;
-            }
-            if (ctq.getHanhDong().equals("delete")) {
-                btnDelete.setEnabled(true);
-                continue;
-            }
-        }
     }
 
     /**
@@ -132,27 +43,27 @@ public class khoGUI extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jToolBar1 = new javax.swing.JToolBar();
+        jToolBar4 = new javax.swing.JToolBar();
         btnAdd = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         btnXuatExcel = new javax.swing.JButton();
-        btnNhapExcel = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
+        btnNhapExcel3 = new javax.swing.JButton();
+        btnTonKho = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
-        btnLamMoi = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        btnLamMoi3 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
         tbKho = new javax.swing.JTable();
 
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        setPreferredSize(new java.awt.Dimension(1180, 774));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
-        jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
-        jToolBar1.setRollover(true);
+        jToolBar4.setBackground(new java.awt.Color(255, 255, 255));
+        jToolBar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
+        jToolBar4.setRollover(true);
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
         btnAdd.setText("Thêm");
@@ -165,14 +76,19 @@ public class khoGUI extends javax.swing.JInternalFrame {
                 btnAddActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnAdd);
+        jToolBar4.add(btnAdd);
 
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
         btnDelete.setText("Xoá");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(btnDelete);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnDelete);
 
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
         btnEdit.setText("Sửa");
@@ -185,107 +101,162 @@ public class khoGUI extends javax.swing.JInternalFrame {
                 btnEditActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnEdit);
-        jToolBar1.add(jSeparator1);
+        jToolBar4.add(btnEdit);
+        jToolBar4.add(jSeparator4);
 
         btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
         btnXuatExcel.setText("Xuất Excel");
         btnXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(btnXuatExcel);
+        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXuatExcelActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnXuatExcel);
 
-        btnNhapExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        btnNhapExcel.setText("Nhập Excel");
-        btnNhapExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNhapExcel.setFocusable(false);
-        btnNhapExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNhapExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(btnNhapExcel);
+        btnNhapExcel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
+        btnNhapExcel3.setText("Nhập Excel");
+        btnNhapExcel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNhapExcel3.setFocusable(false);
+        btnNhapExcel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNhapExcel3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNhapExcel3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhapExcel3ActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnNhapExcel3);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel3.add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 530, 40));
+        btnTonKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/warehouse.png"))); // NOI18N
+        btnTonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTonKho.setFocusable(false);
+        btnTonKho.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnTonKho.setLabel("Tồn Kho");
+        btnTonKho.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnTonKho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTonKhoActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnTonKho);
 
-        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
-        btnLamMoi.setText("Làm mới");
-        btnLamMoi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel3.add(btnLamMoi, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 40));
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tbKho.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jComboBoxLuaChon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Tên kho", "Địa điểm" }));
+        jComboBoxLuaChon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxLuaChonActionPerformed(evt);
+            }
+        });
+        jComboBoxLuaChon.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jComboBoxLuaChonPropertyChange(evt);
+            }
+        });
+        jPanel7.add(jComboBoxLuaChon, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, 40));
+
+        jTextFieldSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchActionPerformed(evt);
+            }
+        });
+        jTextFieldSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldSearchKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldSearchKeyReleased(evt);
+            }
+        });
+        jPanel7.add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 30, 360, 40));
+
+        btnLamMoi3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
+        btnLamMoi3.setText("Làm mới");
+        btnLamMoi3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLamMoi3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoi3ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(btnLamMoi3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 40));
+
         tbKho.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-
+                "STT", "Mã kho", "Tên kho", "Địa chỉ"
             }
         ));
-        jScrollPane1.setViewportView(tbKho);
+        jScrollPane5.setViewportView(tbKho);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 626, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1180, 750));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToolBar4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 17, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        // TODO add your handling code here:
-        AddKhoDialog addKhoDialog = new AddKhoDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-        addKhoDialog.setVisible(true);
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEditActionPerformed
-
-    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
-
-    }//GEN-LAST:event_btnDetailActionPerformed
-
-    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
-     
-        
-    }//GEN-LAST:event_btnXuatExcelActionPerformed
-
-    private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_btnNhapExcelActionPerformed
-
     private void jComboBoxLuaChonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChonActionPerformed
-        // TODO add your handling code here:
-       
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonActionPerformed
 
     private void jComboBoxLuaChonPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBoxLuaChonPropertyChange
-       
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jComboBoxLuaChonPropertyChange
 
     private void jTextFieldSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearchKeyPressed
@@ -294,168 +265,81 @@ public class khoGUI extends javax.swing.JInternalFrame {
 
     private void jTextFieldSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearchKeyReleased
         // TODO add your handling code here:
-      
+        String luaChon = jComboBoxLuaChon.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<khoDTO> result = searchKho(luaChon, content);
+        loadDataToTableSearch(result);
     }//GEN-LAST:event_jTextFieldSearchKeyReleased
-
-    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
-    
-    }//GEN-LAST:event_btnLamMoiActionPerformed
-
-    private void btnAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd1ActionPerformed
-
-     
-    }//GEN-LAST:event_btnAdd1ActionPerformed
-
-    private void btnDelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete1ActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_btnDelete1ActionPerformed
-
-    private void btnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit1ActionPerformed
-      
-    }//GEN-LAST:event_btnEdit1ActionPerformed
-
-    private void btnDetail1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetail1ActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_btnDetail1ActionPerformed
-
-    private void btnXuatExcel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcel1ActionPerformed
-        // TODO add your handling code here:
-      
-    }//GEN-LAST:event_btnXuatExcel1ActionPerformed
-
-    private void btnNhapExcel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcel1ActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_btnNhapExcel1ActionPerformed
-
-    private void jComboBoxLuaChon1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon1ActionPerformed
-        // TODO add your handling code here:
-      
-    }//GEN-LAST:event_jComboBoxLuaChon1ActionPerformed
-
-    private void jComboBoxLuaChon1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon1PropertyChange
-        // TODO add your handling code here:
-    
-    }//GEN-LAST:event_jComboBoxLuaChon1PropertyChange
-
-    private void jTextFieldSearch1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch1KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldSearch1KeyPressed
-
-    private void jTextFieldSearch1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch1KeyReleased
-        // TODO add your handling code here:
-      
-    }//GEN-LAST:event_jTextFieldSearch1KeyReleased
-
-    private void btnLamMoi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoi1ActionPerformed
-    
-    }//GEN-LAST:event_btnLamMoi1ActionPerformed
-
-    private void btnAdd2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd2ActionPerformed
-
-       
-    }//GEN-LAST:event_btnAdd2ActionPerformed
-
-    private void btnDelete2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete2ActionPerformed
-    
-    }//GEN-LAST:event_btnDelete2ActionPerformed
-
-    private void btnEdit2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit2ActionPerformed
-       
-       
-    }//GEN-LAST:event_btnEdit2ActionPerformed
-
-    private void btnDetail2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetail2ActionPerformed
-        
-    }//GEN-LAST:event_btnDetail2ActionPerformed
-
-    private void btnXuatExcel2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcel2ActionPerformed
-        // TODO add your handling code here:
-     
-                       
-    }//GEN-LAST:event_btnXuatExcel2ActionPerformed
-
-    private void btnNhapExcel2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcel2ActionPerformed
-        // TODO add your handling code here:
-       
-            
-    }//GEN-LAST:event_btnNhapExcel2ActionPerformed
-
-    private void jComboBoxLuaChon2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon2ActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_jComboBoxLuaChon2ActionPerformed
-
-    private void jComboBoxLuaChon2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon2PropertyChange
-        // TODO add your handling code here:
-      
-    }//GEN-LAST:event_jComboBoxLuaChon2PropertyChange
-
-    private void jTextFieldSearch2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch2KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldSearch2KeyPressed
-
-    private void jTextFieldSearch2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch2KeyReleased
-        // TODO add your handling code here:
-   
-    }//GEN-LAST:event_jTextFieldSearch2KeyReleased
-
-    private void btnLamMoi2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoi2ActionPerformed
-       
-    }//GEN-LAST:event_btnLamMoi2ActionPerformed
-
-    private void btnAdd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd3ActionPerformed
-        addKho newKho = new addKho();
-        newKho.setVisible(true);
-     
-    }//GEN-LAST:event_btnAdd3ActionPerformed
-
-    private void btnDelete3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete3ActionPerformed
-        // TODO add your handling code here:
-      
-    }//GEN-LAST:event_btnDelete3ActionPerformed
-
-    private void btnEdit3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit3ActionPerformed
-        // TODO add your handling code here:
-
-     
-    }//GEN-LAST:event_btnEdit3ActionPerformed
-
-    private void btnXuatExcel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcel3ActionPerformed
-   
-  
-       
-    }//GEN-LAST:event_btnXuatExcel3ActionPerformed
-
-    private void btnNhapExcel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcel3ActionPerformed
-        // TODO add your handling code here:
-       
-        
-    }//GEN-LAST:event_btnNhapExcel3ActionPerformed
-
-    private void jComboBoxLuaChon3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon3ActionPerformed
-
-    }//GEN-LAST:event_jComboBoxLuaChon3ActionPerformed
-
-    private void jComboBoxLuaChon3PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBoxLuaChon3PropertyChange
-
-    }//GEN-LAST:event_jComboBoxLuaChon3PropertyChange
-
-    private void jTextFieldSearch3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch3KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldSearch3KeyPressed
-
-    private void jTextFieldSearch3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearch3KeyReleased
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jTextFieldSearch3KeyReleased
 
     private void btnLamMoi3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoi3ActionPerformed
         // TODO add your handling code here:
       
     }//GEN-LAST:event_btnLamMoi3ActionPerformed
+
+    private void btnNhapExcel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcel3ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnNhapExcel3ActionPerformed
+
+    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
+
+    }//GEN-LAST:event_btnXuatExcelActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        int row = tbKho.getSelectedRow();
+        int makho = Integer.parseInt(tbKho.getValueAt(row, 1).toString());
+        String tenkho = tbKho.getValueAt(row, 2).toString();
+        String diachi = tbKho.getValueAt(row, 3).toString();
+        khoDTO kho = new khoDTO();
+        kho.setMaKho(makho);
+        kho.setTenKho(tenkho);
+        kho.setDiaChi(diachi);
+        updateKho upkho = new updateKho(kho);
+        upkho.setVisible(true);
+
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        int row = tbKho.getSelectedRow();
+        if(row == -1){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn kho cần xóa!");
+            return ;
+        }
+        int makho = Integer.parseInt(tbKho.getValueAt(row, 1).toString());
+        if(khoDAO.getInstance().getNumberOfProduct(makho) > 0){
+            JOptionPane.showMessageDialog(this, "Kho vẫn còn sản phẩm, vui lòng không xoá kho!");
+            return;
+        }
+        int dialog = JOptionPane.showConfirmDialog (null, "Bạn có chắc muốn xóa kho?" ,"WARNING", JOptionPane.YES_NO_OPTION) ;
+        if(dialog == JOptionPane.YES_OPTION){
+            if(khoDAO.getInstance().deleteWareHouse(makho)){
+                JOptionPane.showMessageDialog(this, "Xóa kho thành công!");
+                loadDataWareHouse();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+            }
+        } else {
+            remove(this);
+        }
+        
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        addKho newKho = new addKho(this);
+        newKho.setVisible(true);
+
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnTonKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTonKhoActionPerformed
+        TonKhoGUI tonkho = new TonKhoGUI();
+        tonkho.setVisible(true);
+    }//GEN-LAST:event_btnTonKhoActionPerformed
+
+    private void jTextFieldSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldSearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -478,55 +362,126 @@ public class khoGUI extends javax.swing.JInternalFrame {
         tbKho.setDefaultRenderer(String.class, renderer);
         tbKho.getTableHeader().setDefaultRenderer(renderer);
     }
+    public void loadDataWareHouse(){
+       modelTbKho.setRowCount(0);
+        ArrayList<khoDTO> arr = khoDAO.getInstance().getListWareHouse();
+        for(int i = 0 ; i< arr.size() ; i++){
+            khoDTO item = arr.get(i);
+            int stt = i+1;
+            int maKho = item.getMaKho();
+            String tenKho = item.getTenKho();
+            String diaDiem = item.getDiaChi();
+            Object row[] = {stt, maKho, tenKho, diaDiem};
+            modelTbKho.addRow(row);
+        }
+        for(int i = 0; i < tbKho.getColumnCount(); i++){
+            tbKho.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
+    }
+    
+    public ArrayList<khoDTO> searchKho(String luaChon, String content) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        khoDAO searchPr = new khoDAO();
+        switch (luaChon) {
+            case "Tất cả":
+                result = searchPr.searchTatCa(content);
+                break;
+            case "Địa điểm":
+                result = searchPr.searchDiaDiem(content);
+                break;
+            case "Tên kho":
+                result = searchPr.searchTenKho(content);
+                break;
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        }
+        return result;
+    }
+    
+    public void loadDataToTableSearch(ArrayList<khoDTO> result) {
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            modelTbKho.setRowCount(0);
+            int stt = 0;
+            for (khoDTO i : result) {
+                
+                modelTbKho.addRow(new Object[]{
+                    stt++,i.getMaKho(), i.getTenKho(), i.getDiaChi()
+                });
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    public void changeTextFind() {
+        jTextFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                /* do nothing */
+                if (jTextFieldSearch.getText().length() == 0) {
+                    loadDataWareHouse();
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new khoGUI().setVisible(true);
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                /* do nothing */
+
             }
         });
     }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(khoGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new khoGUI().setVisible(true);
+//            }
+//        });
+//    }
     private DefaultTableModel modelTbKho ;
+    private DefaultTableCellRenderer renderer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
-    private javax.swing.JButton btnLamMoi;
-    private javax.swing.JButton btnNhapExcel;
+    private javax.swing.JButton btnLamMoi3;
+    private javax.swing.JButton btnNhapExcel3;
+    private javax.swing.JButton btnTonKho;
     private javax.swing.JButton btnXuatExcel;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JComboBox<String> jComboBoxLuaChon;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JTextField jTextFieldSearch;
-    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar4;
     private javax.swing.JTable tbKho;
     // End of variables declaration//GEN-END:variables
 }
+

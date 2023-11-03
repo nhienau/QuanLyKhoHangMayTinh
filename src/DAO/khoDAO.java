@@ -102,6 +102,25 @@ public class khoDAO {
         return result;
     }
     
+    public boolean deleteWareHouse(int makho){
+        boolean result = false;
+
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "UPDATE kho SET trangthai = 0   WHERE makho = " + makho;
+            Statement stmt = con.createStatement();
+
+            if(stmt.executeUpdate(sql) >= 1){
+                result = true;
+            }
+
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
     public khoDTO getWareHouseByName(String name){
         khoDTO kho = new khoDTO();
         try {
@@ -138,5 +157,64 @@ public class khoDAO {
             e.printStackTrace();
         }
         return name;
+    }
+    
+    public int getNumberOfProduct(int makho){
+        int number = 0;
+        try{
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT COUNT(DISTINCT CTCC.masanpham) AS 'soluong'  FROM phieunhap PN, chitietphieunhap CTPN, kho K, trangthaiphieunhap TTPN, chitietcungcap CTCC, sanpham SP WHERE PN.maphieunhap = CTPN.maphieunhap AND K.makho = PN.makho AND PN.trangthai = TTPN.matrangthai AND CTCC.masanpham = CTPN.masanpham AND CTCC.masanpham = SP.masanpham AND TTPN.tentrangthai LIKE '%delivered%' AND soluongtonkho > 0 AND K.makho = " +makho;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+               number = rs.getInt("soluong");
+            }
+
+            JDBCUtil.closeConnection(con);
+        } catch(Exception e) {
+             e.printStackTrace();
+        }
+        return number;
+    }
+    
+    public ArrayList<khoDTO> searchTatCa(String text) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
+        for (var kho : allkho) {
+
+            if (kho.getTenKho().toLowerCase().contains(text.toLowerCase())
+                        || kho.getDiaChi().toLowerCase().contains(text.toLowerCase())) {
+                    result.add(kho);
+            }
+
+        }
+        return result;
+    }
+
+    public ArrayList<khoDTO> searchTenKho(String text) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
+        for (var kho : allkho) {
+
+            if (kho.getTenKho().toLowerCase().contains(text.toLowerCase()))
+            {
+                    result.add(kho);
+            }
+
+        }
+        return result;
+    }
+
+    public ArrayList<khoDTO> searchDiaDiem(String text) {
+        ArrayList<khoDTO> result = new ArrayList<>();
+        ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
+        for (var kho : allkho) {
+
+            if (kho.getDiaChi().toLowerCase().contains(text.toLowerCase())) {
+                    result.add(kho);
+            }
+
+        }
+        return result;
     }
 }

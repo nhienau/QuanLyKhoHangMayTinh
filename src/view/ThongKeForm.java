@@ -8,7 +8,7 @@ import controller.ConvertDate;
 import controller.SearchAccount;
 import OldDAO.AccountDAO;
 import OldDAO.MayTinhDAO;
-import OldDAO.NhaCungCapDAO;
+import DAO.NhaCungCapDAO;
 import OldDAO.PhieuNhapDAO;
 import OldDAO.PhieuXuatDAO;
 import OldDAO.ThongKeDAO;

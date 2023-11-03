@@ -21,7 +21,7 @@ import OldDAO.AccountDAO;
 import OldDAO.ChiTietPhieuNhapDAO;
 import OldDAO.ChiTietPhieuXuatDAO;
 import OldDAO.MayTinhDAO;
-import OldDAO.NhaCungCapDAO;
+import DAO.NhaCungCapDAO;
 import OldDAO.PhieuNhapDAO;
 import OldDAO.PhieuXuatDAO;
 import java.awt.Desktop;

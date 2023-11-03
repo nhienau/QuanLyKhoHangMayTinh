@@ -2,28 +2,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package view;
+package GUI.Dialog;
 
 import DAO.loaiSanPhamDAO;
 import GUI.loaiSanPhamGUI;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author trant
  */
-public class updateLoaiSanPham extends javax.swing.JFrame {
+public class addLoaiSanPham  extends javax.swing.JDialog{
 
+    
     /**
-     * Creates new form updateLoaiSanPham
+     * Creates new form addLoaiSanPham
      */
-
-    int masanpham;
-    public updateLoaiSanPham(int id, String name) {
-
+    loaiSanPhamGUI parent;
+    public addLoaiSanPham(loaiSanPhamGUI frame) {
+        
         initComponents();
-        txtTenThuongHieu.setText(name);
-        masanpham = id;
+        parent = frame ;
+    }
+
+    private addLoaiSanPham(JFrame jFrame, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
@@ -38,9 +42,10 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtTenThuongHieu = new javax.swing.JTextField();
-        btnChange = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Tên thương hiệu:");
@@ -51,10 +56,10 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
             }
         });
 
-        btnChange.setText("SỬA THƯƠNG HIỆU");
-        btnChange.addActionListener(new java.awt.event.ActionListener() {
+        btnAdd.setText("THÊM THƯƠNG HIỆU");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangeActionPerformed(evt);
+                btnAddActionPerformed(evt);
             }
         });
 
@@ -70,7 +75,7 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
                 .addGap(39, 39, 39))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(170, 170, 170)
-                .addComponent(btnChange, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -81,7 +86,7 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
                     .addComponent(txtTenThuongHieu, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(btnChange, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
 
@@ -92,14 +97,14 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
@@ -110,34 +115,72 @@ public class updateLoaiSanPham extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTenThuongHieuActionPerformed
 
-    private void btnChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeActionPerformed
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        String name = txtTenThuongHieu.getText().trim();
-        if(name.equals("")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên thương hiệu bạn muốn sửa thành!");
-        }
-
-        if(loaiSanPhamDAO.getInstance().hasTypeOfProductEdit(name, masanpham ) == true){
-            JOptionPane.showMessageDialog(this, "Tên thương hiệu đã tồn tại. Vui lòng thêm tên khác!");
-        } else {
-            boolean rs = loaiSanPhamDAO.getInstance().editTypeOfProduct(name, masanpham);
-            if(rs == true){
-                JOptionPane.showMessageDialog(this, "Sửa thương hiệu thành công!", "Sửa thương hiệu",JOptionPane.INFORMATION_MESSAGE);
-
-            } else {
-                JOptionPane.showMessageDialog(this, "Sửa thương hiệu thất bại!","Sửa thương hiệu",JOptionPane.ERROR_MESSAGE);
-            }
+        if(txtTenThuongHieu.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên thương hiệu muốn thêm!");
         }
         
-    }//GEN-LAST:event_btnChangeActionPerformed
+        if(loaiSanPhamDAO.getInstance().hasTypeOfProduct(txtTenThuongHieu.getText().trim()) == true){
+            JOptionPane.showMessageDialog(this, "Tên thương hiệu đã tồn tại. Vui lòng thêm tên khác!");
+            return;
+        }
+        boolean rs = loaiSanPhamDAO.getInstance().addTypeOfProduct(txtTenThuongHieu.getText());
+        if(rs == true){
+            JOptionPane.showMessageDialog(this, "Thêm thương hiệu mới thành công!", "Thêm thương hiệu",JOptionPane.INFORMATION_MESSAGE);
+            parent.loadDataToTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thương hiệu mới thất bại!","Thêm thương hiệu",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
 
     /**
      * @param args the command line arguments
      */
-
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(addLoaiSanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(addLoaiSanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(addLoaiSanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(addLoaiSanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                addLoaiSanPham dialog = new addLoaiSanPham();
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnChange;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtTenThuongHieu;

@@ -530,9 +530,9 @@ public class Admin extends javax.swing.JFrame {
 
     private void NhaCungCapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhaCungCapMouseClicked
         // TODO add your handling code here:
-        NhaCungCapForm af = new NhaCungCapForm();
-        MainContent.removeAll();
-        MainContent.add(af).setVisible(true);
+//        NhaCungCapForm af = new NhaCungCapForm();
+//        MainContent.removeAll();
+//        MainContent.add(af).setVisible(true);
     }//GEN-LAST:event_NhaCungCapMouseClicked
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked

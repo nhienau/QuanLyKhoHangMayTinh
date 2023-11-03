@@ -1,40 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package OldDAO;
+package DAO;
 
-import com.sun.jdi.connect.spi.Connection;
+import DTO.ChiTietCungCapDTO;
+import DTO.NhaCungCapDTO;
 import database.JDBCUtil;
-import java.sql.Date;
 import java.util.ArrayList;
-import model.NhaCungCap;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
-import model.Phieu;
-import org.apache.poi.hwmf.record.HwmfTernaryRasterOp;
 
-/**
- *
- * @author kali
- */
-public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
+public class NhaCungCapDAO implements DAOInterface<NhaCungCapDTO> {
 
     public static NhaCungCapDAO getInstance() {
         return new NhaCungCapDAO();
     }
 
     @Override
-    public int insert(NhaCungCap t) {
+    public int insert(NhaCungCapDTO t) {
         int ketQua = 0;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
             String sql = "INSERT INTO nhacungcap ( `tennhacungcap`, `sdt`, `diachi`)  VALUES (?,?,?)";
             PreparedStatement pst = con.prepareStatement(sql);
-              pst.setString(1, t.getTenNhaCungCap());
-              pst.setString(2, t.getSdt());
-              pst.setString(3, t.getDiaChi());
+            pst.setString(1, t.getTenNhaCungCap());
+            pst.setString(2, t.getSdt());
+            pst.setString(3, t.getDiaChi());
             ketQua = pst.executeUpdate();
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
@@ -43,21 +32,20 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
             e.printStackTrace();
         }
         return ketQua;
-
     }
 
     @Override
-    public int update(NhaCungCap t) {
+    public int update(NhaCungCapDTO t) {
         int ketQua = 0;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
             String sql = "UPDATE NhaCungCap SET maNhaCungCap=?, tenNhaCungCap=?, Sdt=?, diaChi=? WHERE maNhaCungCap=?";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, t.getMaNhaCungCap());
+            pst.setInt(1, t.getMaNhaCungCap());
             pst.setString(2, t.getTenNhaCungCap());
             pst.setString(3, t.getSdt());
             pst.setString(4, t.getDiaChi());
-            pst.setString(5, t.getMaNhaCungCap());
+            pst.setInt(5, t.getMaNhaCungCap());
             ketQua = pst.executeUpdate();
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
@@ -69,13 +57,13 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
     }
 
     @Override
-    public int delete(NhaCungCap t) {
+    public int delete(NhaCungCapDTO t) {
         int ketQua = 0;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE NhaCungCap SET trangthai = 0 WHERE maNhaCungCap=?";
+            String sql = "UPDATE NhaCungCap SET trangthai = 0 WHERE maNhaCungCap = ?";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, t.getMaNhaCungCap());
+            pst.setInt(1, t.getMaNhaCungCap());
             ketQua = pst.executeUpdate();
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
@@ -86,19 +74,19 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
     }
 
     @Override
-    public ArrayList<NhaCungCap> selectAll() {
-        ArrayList<NhaCungCap> ketQua = new ArrayList<NhaCungCap>();
+    public ArrayList<NhaCungCapDTO> selectAll() {
+        ArrayList<NhaCungCapDTO> ketQua = new ArrayList<NhaCungCapDTO>();
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM NhaCungCap WHERE trangthai = 1";
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                String maNhaCungCap = rs.getString("maNhaCungCap");
+                int maNhaCungCap = rs.getInt("maNhaCungCap");
                 String tenNhaCungCap = rs.getString("tenNhaCungCap");
                 String sdt = rs.getString("Sdt");
                 String diaChi = rs.getString("diaChi");
-                NhaCungCap ncc = new NhaCungCap (maNhaCungCap, tenNhaCungCap, sdt, diaChi);
+                NhaCungCapDTO ncc = new NhaCungCapDTO (maNhaCungCap, tenNhaCungCap, sdt, diaChi, 1);
                 ketQua.add(ncc);
             }
         } catch (Exception e) {
@@ -109,8 +97,8 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
     }
 
     @Override
-    public NhaCungCap selectById(String t) {
-        NhaCungCap ketQua = null;
+    public NhaCungCapDTO selectById(String t) {
+        NhaCungCapDTO ketQua = null;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM NhaCungCap WHERE maNhaCungCap=?";
@@ -118,16 +106,51 @@ public class NhaCungCapDAO implements DAOInterface<NhaCungCap> {
             pst.setString(1, t);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                String maNhaCungCap = rs.getString("maNhaCungCap");
+                int maNhaCungCap = rs.getInt("maNhaCungCap");
                 String tenNhaCungCap = rs.getString("tenNhaCungCap");
                 String sdt = rs.getString("Sdt");
                 String diaChi = rs.getString("diaChi");
-                ketQua = new NhaCungCap(maNhaCungCap, tenNhaCungCap, sdt, diaChi);
+                ketQua = new NhaCungCapDTO(maNhaCungCap, tenNhaCungCap, sdt, diaChi, 1);
             }
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
         }
         return ketQua;
+    }
+    
+    public boolean hasSDT(String sdt){
+        boolean result = false;
+
+            try {
+                java.sql.Connection con = JDBCUtil.getConnection();
+                String sql = "SELECT * FROM nhacungcap WHERE sdt = '" + sdt + "'";
+                PreparedStatement pst = con.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery();
+                result = rs.next();
+            } catch (Exception e) {
+                System.out.println(e);
+            } 
+        return result;
+    }
+
+    public ArrayList<ChiTietCungCapDTO> getListChiTietCungCap(int id){
+        ArrayList<ChiTietCungCapDTO> list = new ArrayList<ChiTietCungCapDTO>();
+        try {
+            java.sql.Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM chitietcungcap WHERE trangthai = 1 and manhacungcap = " + id;
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                ChiTietCungCapDTO ccsp = new ChiTietCungCapDTO();
+                ccsp.setMaSanPham(rs.getInt("masanpham"));
+                ccsp.setGiaNhap(rs.getInt("gianhap"));
+                list.add(ccsp);
+            }
+        } catch (Exception e) {
+             e.printStackTrace();
+        }
+        return list;
+
     }
 }

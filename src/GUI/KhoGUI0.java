@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import view.addKho;
 
 /**
  *
@@ -904,8 +903,8 @@ public class KhoGUI0 extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLamMoi2ActionPerformed
 
     private void btnAdd3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd3ActionPerformed
-        addKho newKho = new addKho();
-        newKho.setVisible(true);
+//        addKho newKho = new addKho();
+//        newKho.setVisible(true);
      
     }//GEN-LAST:event_btnAdd3ActionPerformed
 
