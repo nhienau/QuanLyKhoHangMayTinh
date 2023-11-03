@@ -4,16 +4,16 @@ public class khoDTO {
     private int maKho;
     private String tenKho;
     private String diaChi;
-    private int trangThai;
+
     
     public khoDTO() {
     }
 
-    public khoDTO(int maKho, String tenKho, String diaChi, int trangThai) {
+    public khoDTO(int maKho, String tenKho, String diaChi) {
         this.maKho = maKho;
         this.tenKho = tenKho;
         this.diaChi = diaChi;
-        this.trangThai = trangThai;
+      
     }
 
     public int getMaKho() {
@@ -40,11 +40,8 @@ public class khoDTO {
         this.diaChi = diaChi;
     }
 
-    public int getTrangThai() {
-        return trangThai;
-    }
 
-    public void setTrangThai(int trangThai) {
-        this.trangThai = trangThai;
+    public int return1(){
+        return 1;
     }
 }
