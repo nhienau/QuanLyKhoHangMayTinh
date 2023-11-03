@@ -17,7 +17,6 @@ import helper.Validation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public class NguoiDungBUS {
     private final NguoiDungDAO ndDAO = new NguoiDungDAO();

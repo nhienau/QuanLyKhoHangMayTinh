@@ -4,12 +4,13 @@
  */
 package view;
 
+import GUI.ProductForm;
 import BUS.ChiTietQuyenBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
 import OldDAO.AccountDAO;
 import OldDAO.ChiTietPhieuNhapDAO;
-import OldDAO.NhaCungCapDAO;
+import DAO.NhaCungCapDAO;
 import OldDAO.PhieuNhapDAO;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;

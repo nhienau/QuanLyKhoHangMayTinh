@@ -4,10 +4,12 @@
  */
 package view;
 
+import GUI.UpdateProduct;
+import GUI.DetailProduct;
 import BUS.ChiTietQuyenBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
-import controller.SearchProduct;
+import BUS.SearchProduct;
 import OldDAO.LaptopDAO;
 import OldDAO.MayTinhDAO;
 import OldDAO.PCDAO;

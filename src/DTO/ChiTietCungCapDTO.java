@@ -5,6 +5,11 @@ public class ChiTietCungCapDTO {
     private int maSanPham;
     private int giaNhap;
     private int trangThai;
+    private String tenSanPham;
+    
+    public ChiTietCungCapDTO() {
+        
+    }
 
     public ChiTietCungCapDTO(int maNhaCungCap, int maSanPham, int giaNhap, int trangThai) {
         this.maNhaCungCap = maNhaCungCap;
@@ -43,5 +48,13 @@ public class ChiTietCungCapDTO {
 
     public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public String getTenSanPham() {
+        return tenSanPham;
+    }
+
+    public void setTenSanPham(String tenSanPham) {
+        this.tenSanPham = tenSanPham;
     }
 }
