@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 24, 2023 at 08:19 PM
+-- Generation Time: Nov 04, 2023 at 08:44 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -116,7 +116,7 @@ INSERT INTO `chitietphieunhap` (`maphieunhap`, `manhacungcap`, `masanpham`, `sol
 (1, 1, 20, 10, 40740000, 0),
 (1, 5, 21, 10, 19290000, 0),
 (2, 5, 7, 10, 14200000, 0),
-(3, 1, 17, 10, 23090000, 10),
+(3, 1, 17, 10, 23090000, 0),
 (3, 2, 10, 10, 10250000, 0),
 (3, 7, 14, 20, 34790000, 10),
 (4, 8, 13, 20, 31690000, 0),
@@ -142,6 +142,25 @@ INSERT INTO `chitietphieunhap` (`maphieunhap`, `manhacungcap`, `masanpham`, `sol
 (15, 5, 7, 20, 14200000, 0),
 (16, 2, 13, 10, 32590000, 10),
 (16, 8, 21, 10, 19790000, 10);
+
+--
+-- Triggers `chitietphieunhap`
+--
+DELIMITER $$
+CREATE TRIGGER `update_sanpham_soluong` AFTER UPDATE ON `chitietphieunhap` FOR EACH ROW BEGIN
+    DECLARE updated_soluong INT;
+    DECLARE masanpham_val INT;
+    
+    -- Get the updated soluong value and masanpham value
+    SET updated_soluong = NEW.soluongtonkho;
+    SET masanpham_val = NEW.masanpham;
+    
+    -- Update the soluong column in the sanpham table
+    UPDATE sanpham SET soluong = soluong + (OLD.soluongtonkho - updated_soluong)
+    WHERE masanpham = masanpham_val;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -245,19 +264,6 @@ INSERT INTO `chitietquyen` (`manhomquyen`, `machucnang`, `hanhdong`, `hanche`) V
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chitiettonkho`
---
-
-CREATE TABLE `chitiettonkho` (
-  `makho` int(11) NOT NULL,
-  `masanpham` int(11) NOT NULL,
-  `soluong` int(11) NOT NULL,
-  `gianhap` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `chucnang`
 --
 
@@ -350,16 +356,18 @@ CREATE TABLE `nguoidung` (
 --
 
 INSERT INTO `nguoidung` (`taikhoan`, `matkhau`, `hoten`, `email`, `manhomquyen`, `trangthai`) VALUES
-('an', '$2a$12$phthu7KkJNlcmJ0oRfP1SOoFcAu2murqtpOD1XA9mgDCnLL4JfSRm', 'Nguyễn Thiên Ân', 'thienan@gmail.com', 2, 1),
-('anh', '$2a$12$5b64FYmh9Gz4DAU.qQqPt.3svz7QsS3WDHMakRgKB4xugxMzxC2ce', 'Nguyễn Trung Anh', 'trunganh@gmail.com', 2, 1),
-('duy', '$2a$12$K/ENOCA71OHp7z3XfSP1MutwfEOCfaeTZ6TA8WhIQD90ptnuUORjW', 'Nguyễn Lê Bảo Duy', 'baoduy@gmail.com', 2, 1),
-('duyen', '$2a$12$q/i1Ap90Go4/sIdz1s3ZAOYhCAOMZDXIIi45QMIDDHOzDWcC/P7cW', 'Nguyễn Thuỳ Duyên', 'thuyduyen@gmail.com', 2, 1),
-('nam', '$2a$12$0rHGEBziwTtk29BSlwmju.R0OuvKu8Oc/LoI1O5hvQPuANbQfYAwC', 'Thân Trọng Hoài Nam', 'hoainam@gmail.com', 2, 1),
-('nhien', '$2a$12$FgNmf0SIqdKejUX.liX3MO.ivMJozc5RrVBqrRN.2ieEIPsqjeVQ6', 'Âu Hạo Nhiên', 'nhienau@gmail.com', 1, 1),
+('baoduy', '$2a$12$K/ENOCA71OHp7z3XfSP1MutwfEOCfaeTZ6TA8WhIQD90ptnuUORjW', 'Nguyễn Lê Bảo Duy', 'baoduy@gmail.com', 2, 1),
+('haonhien', '$2a$12$l/LtGoIRthw8C1Ol2KB4k.Dal/1jC9YszPcKeIK3P0G5.OywK0oYK', 'Âu Hạo Nhiên', 'nhienau@gmail.com', 1, 1),
+('hoainam', '$2a$12$0rHGEBziwTtk29BSlwmju.R0OuvKu8Oc/LoI1O5hvQPuANbQfYAwC', 'Thân Trọng Hoài Nam', 'hoainam@gmail.com', 2, 1),
+('ngoctram', '$2a$12$LIrqqUIO.S.UqZyj1i0Dp.klvpvhUb/4V40hGKfkoNrs4xMfJk7cW', 'Võ Hồ Ngọc Trâm', 'ngoctram@gmail.com', 2, 1),
 ('nvnhap', '$2a$12$vK9g/aY1nPKvpEASL7fzeugVAHdm281zb8akeHO4I1g7sdE/pH7Wm', 'Test nhan vien nhap', 'nvnhap@gmail.com', 3, 1),
 ('nvxuat', '$2a$12$kiRyqK5HypKi.n4CpbS3PO6lFXcZRdtyEMO96HhrY4TAYOKQwSfJq', 'Test nhan vien xuat', 'nvxuat@gmail.com', 4, 1),
-('test', '$2a$12$uDmFamJCdeTYHhKqzQE6nu3e03gSCqXpaX7Lk1Ojx8GUT6ytIUjd.', 'Test', 'test@gmail.com', 3, 0),
-('tram', '$2a$12$LIrqqUIO.S.UqZyj1i0Dp.klvpvhUb/4V40hGKfkoNrs4xMfJk7cW', 'Võ Hồ Ngọc Trâm', 'ngoctram@gmail.com', 2, 1);
+('testuser1', '$2a$12$uDmFamJCdeTYHhKqzQE6nu3e03gSCqXpaX7Lk1Ojx8GUT6ytIUjd.', 'Test', 'test@gmail.com', 3, 0),
+('testuser2', '$2a$12$IfC/L/ozLxiwphaukOn3Z.VNELcDshk6/kfRnaXoYvD8ZCWKVH2nu', 'Test2', 'testuser2@gmail.com', 5, 1),
+('testuser3', '$2a$12$SioTgn2/CrEBTPTetXYVfemL/ITp12PT0OlKLnLuFeCbm1/qTqKfy', 'Test3', 'testuser3@gmail.com', 4, 1),
+('thienan', '$2a$12$phthu7KkJNlcmJ0oRfP1SOoFcAu2murqtpOD1XA9mgDCnLL4JfSRm', 'Nguyễn Thiên Ân', 'thienan@gmail.com', 2, 1),
+('thuyduyen', '$2a$12$q/i1Ap90Go4/sIdz1s3ZAOYhCAOMZDXIIi45QMIDDHOzDWcC/P7cW', 'Nguyễn Thuỳ Duyên', 'thuyduyen@gmail.com', 2, 1),
+('trunganh', '$2a$12$5b64FYmh9Gz4DAU.qQqPt.3svz7QsS3WDHMakRgKB4xugxMzxC2ce', 'Nguyễn Trung Anh', 'trunganh@gmail.com', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -409,7 +417,8 @@ INSERT INTO `nhomquyen` (`manhomquyen`, `tennhomquyen`, `trangthai`) VALUES
 (1, 'Admin', 1),
 (2, 'Quản lý kho', 1),
 (3, 'Nhân viên nhập hàng', 1),
-(4, 'Nhân viên xuất hàng', 1);
+(4, 'Nhân viên xuất hàng', 1),
+(5, 'test', 0);
 
 -- --------------------------------------------------------
 
@@ -431,22 +440,22 @@ CREATE TABLE `phieunhap` (
 --
 
 INSERT INTO `phieunhap` (`maphieunhap`, `thoigiantao`, `makho`, `nguoitao`, `tongtien`, `trangthai`) VALUES
-(1, '2023-10-25 00:18:11', 2, 'tram', 600300000, 4),
-(2, '2023-10-25 00:18:24', 3, 'duy', 142000000, 4),
-(3, '2023-10-25 00:18:24', 3, 'anh', 1029200000, 4),
-(4, '2023-10-25 00:18:24', 2, 'duyen', 633800000, 4),
-(5, '2023-10-25 00:18:24', 3, 'tram', 965700000, 4),
-(6, '2023-10-25 00:18:24', 3, 'an', 1086700000, 4),
-(7, '2023-10-25 00:18:24', 3, 'duy', 832700000, 4),
-(8, '2023-10-25 00:18:24', 2, 'tram', 165500000, 4),
-(9, '2023-10-25 00:18:24', 1, 'duy', 320000000, 4),
-(10, '2023-10-25 00:18:24', 3, 'tram', 228900000, 4),
-(11, '2023-10-25 00:18:24', 4, 'nam', 646700000, 4),
-(12, '2023-10-25 00:18:24', 1, 'an', 781700000, 4),
-(13, '2023-10-25 00:18:24', 2, 'duy', 652800000, 4),
-(14, '2023-10-25 00:18:24', 1, 'an', 142000000, 4),
-(15, '2023-10-25 00:18:24', 4, 'tram', 524900000, 4),
-(16, '2023-10-25 00:18:24', 2, 'duyen', 523800000, 4);
+(1, '2023-10-25 00:18:11', 2, 'ngoctram', 600300000, 4),
+(2, '2023-10-25 00:18:24', 3, 'baoduy', 142000000, 4),
+(3, '2023-10-25 00:18:24', 3, 'trunganh', 1029200000, 4),
+(4, '2023-10-25 00:18:24', 2, 'thuyduyen', 633800000, 4),
+(5, '2023-10-25 00:18:24', 3, 'ngoctram', 965700000, 4),
+(6, '2023-10-25 00:18:24', 3, 'thienan', 1086700000, 4),
+(7, '2023-10-25 00:18:24', 3, 'baoduy', 832700000, 4),
+(8, '2023-10-25 00:18:24', 2, 'ngoctram', 165500000, 4),
+(9, '2023-10-25 00:18:24', 1, 'baoduy', 320000000, 4),
+(10, '2023-10-25 00:18:24', 3, 'ngoctram', 228900000, 4),
+(11, '2023-10-25 00:18:24', 4, 'hoainam', 646700000, 4),
+(12, '2023-10-25 00:18:24', 1, 'thienan', 781700000, 4),
+(13, '2023-10-25 00:18:24', 2, 'baoduy', 652800000, 4),
+(14, '2023-10-25 00:18:24', 1, 'thienan', 142000000, 4),
+(15, '2023-10-25 00:18:24', 4, 'ngoctram', 524900000, 4),
+(16, '2023-10-25 00:18:24', 2, 'thuyduyen', 523800000, 4);
 
 -- --------------------------------------------------------
 
@@ -467,18 +476,18 @@ CREATE TABLE `phieuxuat` (
 --
 
 INSERT INTO `phieuxuat` (`maphieuxuat`, `thoigiantao`, `nguoitao`, `tongtien`, `trangthai`) VALUES
-(1, '2023-10-25 00:46:54', 'duy', 239900000, 1),
-(2, '2023-10-25 00:46:54', 'anh', 387800000, 1),
-(3, '2023-10-25 00:46:54', 'tram', 479800000, 1),
-(4, '2023-10-25 00:46:54', 'anh', 244900000, 1),
-(5, '2023-10-25 00:46:54', 'duyen', 899800000, 1),
-(6, '2023-10-25 00:46:54', 'nam', 446700000, 1),
-(7, '2023-10-25 00:46:54', 'an', 449900000, 1),
-(8, '2023-10-25 00:46:54', 'duyen', 464800000, 1),
-(9, '2023-10-25 00:46:54', 'nam', 484800000, 1),
-(10, '2023-10-25 00:46:54', 'an', 719800000, 1),
-(11, '2023-10-25 00:46:54', 'duy', 549800000, 1),
-(12, '2023-10-25 00:46:54', 'tram', 404900000, 1);
+(1, '2023-10-26 00:46:54', 'baoduy', 239900000, 1),
+(2, '2023-10-26 00:46:54', 'trunganh', 387800000, 1),
+(3, '2023-10-26 00:46:54', 'ngoctram', 479800000, 1),
+(4, '2023-10-26 00:46:54', 'trunganh', 244900000, 1),
+(5, '2023-10-26 00:46:54', 'thuyduyen', 899800000, 1),
+(6, '2023-10-26 00:46:54', 'hoainam', 446700000, 1),
+(7, '2023-10-26 00:46:54', 'thienan', 449900000, 1),
+(8, '2023-10-26 00:46:54', 'thuyduyen', 464800000, 1),
+(9, '2023-10-26 00:46:54', 'hoainam', 484800000, 1),
+(10, '2023-10-26 00:46:54', 'thienan', 719800000, 1),
+(11, '2023-10-26 00:46:54', 'baoduy', 549800000, 1),
+(12, '2023-10-26 00:46:54', 'ngoctram', 404900000, 1);
 
 -- --------------------------------------------------------
 
@@ -526,7 +535,7 @@ INSERT INTO `sanpham` (`masanpham`, `maloaisanpham`, `tensanpham`, `soluong`, `g
 (14, 8, 'LG Gram Ultra Slim 15Z90RT GAH55A5', 0, 36290000, 40490000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '15.6 inch FHD (1920*1080), 16:9, OLED 60Hz, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '60 Wh Li-Ion', 0.99, 'Đen', 'Windows 11 Home', 1),
 (15, 1, 'Lenovo Ideapad Gaming 3 15IAH7 82S9006YVN', 0, 16990000, 18990000, 'Intel Core i5-12500H, 12C (4P + 8E) / 16T, P-core 2.5 / 4.5GHz, E-core 1.8 / 3.3GHz, 18MB', '1 x 8GB DDR4 3200MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Boost Clock 1740MHz, TGP 85W', '512GB SSD M.2 2242 PCIe 4.0x4 NVMe (2 Slots)', '15.6\" FHD (1920x1080) IPS 250nits Anti-glare, 120Hz, 45% NTSC, DC dimmer', 'Integrated 60Wh', 2.315, 'Onyx Grey', 'Windows 11 Home', 1),
 (16, 3, 'ASUS TUF F15 FX507ZC4 HN074W', 0, 17790000, 19990000, 'Intel® Core™ i5-12500H Processor 2.5 GHz (18M Cache, up to 4.5 GHz, 12 cores: 4 P-cores and 8 E-cores)', '8GB DDR4 3200MHz (2x SO-DIMM socket, up to 32GB RAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Up to 1790MHz* at 95W (1740MHz Boost Clock+50MHz OC, 80W+15W Dynamic Boost) + MUX Switch + Optimus', '512GB SSD M.2 PCIE G3X2 (Còn trống 1 khe SSD M.2 PCIE)', '15.6\" FHD (1920 x 1080) IPS, 144Hz, Wide View, 250nits, Narrow Bezel, Non-Glare with 45% NTSC, 62.5% sRGB', '4 Cell 56WHr', 2.2, 'Jaeger Grey', 'Windows 11 Home', 1),
-(17, 4, 'Acer Nitro 5 Tiger AN515 58 50D2', 0, 24590000, 27490000, 'Intel Core i5-12500H 3.3GHz up to 4.5GHz 18MB', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX™ 3060 6GB GDDR6', '512GB PCIe NVMe SED SSD (Còn trống 1 khe SSD M.2 PCIE và 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS, 165Hz, Acer ComfyView LED-backlit TFT LCD, SlimBezel, 100% sRGB', '4 Cell 57.5WHr', 2.5, 'Obsidian Black', 'Windows 11 Home', 1),
+(17, 4, 'Acer Nitro 5 Tiger AN515 58 50D2', 10, 24590000, 27490000, 'Intel Core i5-12500H 3.3GHz up to 4.5GHz 18MB', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX™ 3060 6GB GDDR6', '512GB PCIe NVMe SED SSD (Còn trống 1 khe SSD M.2 PCIE và 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS, 165Hz, Acer ComfyView LED-backlit TFT LCD, SlimBezel, 100% sRGB', '4 Cell 57.5WHr', 2.5, 'Obsidian Black', 'Windows 11 Home', 1),
 (18, 2, 'MSI GF63 12UC 887VN', 0, 17790000, 19890000, 'Intel Core i7-12650H 3.5GHz up to 4.70GHz 24MB, 10 nhân, 16 luồng', '8GB (8x1) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'Nvidia Geforce RTX 3050 4GB GDDR6', '512GB NVMe PCIe Gen 4x4 SSD ( Còn trống 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS 144Hz, Thin Bezel, 45%NTSC', '3 Cell 52.4 WHr', 1.86, 'Đen', 'Windows 11 Home', 1),
 (19, 4, 'Acer Aspire 7 A715 42G R05G', 0, 13390000, 14990000, 'AMD Ryzen 5 – 5500U (6 nhân 12 luồng)', '8GB DDR4 (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce GTX 1650 4GB GDDR6', '512GB PCIe® NVMe™ M.2 SSD', '15.6\" FHD (1920 x 1080) IPS, Anti-Glare, 144Hz', '4 Cell 48Whr', 2.1, 'Đen, Có đèn bàn phím', 'Windows 11 Home', 1),
 (20, 7, 'Dell Alienware M15 R6 P109F001CBL', 0, 39990000, 44990000, 'Intel Core i7-11800H 2.3GHz up to 4.6GHz 24MB', '32GB (16x2) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '1TB SSD M.2 PCIe', '15.6 inch QHD (2560 x 1440) 240Hz, 2ms, with ComfortView plus, NVIDIA G-SYNC and Advanced Optimus, WVA Display', '6 Cell 86WHr', 2.69, 'Dark Side of the Moon', 'Windows 11 Home + Office Home & Student', 1),
@@ -535,7 +544,8 @@ INSERT INTO `sanpham` (`masanpham`, `maloaisanpham`, `tensanpham`, `soluong`, `g
 (23, 5, 'HP Omen 16 b0127TX 4Y0W7PA', 0, 38990000, 45990000, 'Intel Core i7-11800H (8 nhân, 16 luồng)', '16GB (2x8GB) DDR4 3200Mhz (2 khe, max 64GB RAM)', 'NVIDIA® GeForce RTX 3060 (6GB GDDR4)', '1TB SSD M.2 PCIE + 32GB Intel Optane memory', '16.1\"  QHD (2560 x 1440), 165 Hz 3 ms, IPS, 300 nits, 100% sRGB', '4 Cell 70WHr Li-ion polymer', 2.3, 'Shadow Black', 'Windows 10 Home', 1),
 (24, 5, 'HP VICTUS 16 e0177AX 4R0U9PA', 0, 15190000, 16990000, 'AMD Ryzen 5 5600H', '8GB (2x4GB) DDR4 3200Mhz (2 khe, max 64GB RAM)', 'NVIDIA® GeForce GTX™ 1650 Laptop GPU', '512GB SSD M.2 PCIE (2x M.2 SATA/NVMe)', '16.1\" FHD (1920 x 1080) IPS, 144Hz', '4 Cell 70WHr Li-ion polymer', 2.46, 'Mica Silver', 'Windows 11 Home', 1),
 (25, 6, 'Gigabyte AORUS 15 XE4 73VNB14GH', 0, 30390000, 35990000, 'Intel Core i7-12700H 3.6GHz up to 4.9GHz 25MB', '16GB (8x2) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 3070Ti 8GB GDDR6 Boost Clock 1485 MHz / Maximum Graphics Power 130 W', '1TB SSD M.2 PCIE G4X4 (2 Slots)', '15.6\" QHD (2560x1440) IPS-level Anti-glare Display LCD (165Hz, 72% NTSC)', '4 Cell 99 WHrs', 2.4, 'Black', 'Windows 11 Home', 1),
-(26, 6, 'Lenovo Legion 5 15ARH7H 82RE0036VN', 0, 23890000, 27990000, 'AMD Ryzen 7 6800H (8C / 16T, 3.2 / 4.7GHz, 4MB L2 / 16MB L3)', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 Ti 4GB GDDR6, Boost Clock 1695MHz, TGP 95W', '512GB SSD M.2 2280 PCIe 4.0x4 NVMe (2 slots)', '15.6\" FHD (1920x1080) IPS 300nits Anti-glare, 165Hz, 100% sRGB, Dolby Vision, FreeSync, G-SYNC, DC dimmer', '4Cell, 80WHrs', 2.35, 'Storm Grey', 'Windows 11 Home', 1);
+(26, 6, 'Lenovo Legion 5 15ARH7H 82RE0036VN', 0, 23890000, 27990000, 'AMD Ryzen 7 6800H (8C / 16T, 3.2 / 4.7GHz, 4MB L2 / 16MB L3)', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 Ti 4GB GDDR6, Boost Clock 1695MHz, TGP 95W', '512GB SSD M.2 2280 PCIe 4.0x4 NVMe (2 slots)', '15.6\" FHD (1920x1080) IPS 300nits Anti-glare, 165Hz, 100% sRGB, Dolby Vision, FreeSync, G-SYNC, DC dimmer', '4Cell, 80WHrs', 2.35, 'Storm Grey', 'Windows 11 Home', 1),
+(27, 1, 'Lenovo Legion Y9000X IAH7', 0, 24790000, 28990000, 'Intel Core i7-12700H (24MB Cache, 3.50GHZ up to 4.70 GHz, 14 cores 20 Threads)', '16GB DDR5 4800Mhz', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '512GB M.2 2280 NVMe SSD', '16\" WQXGA 2K IPS 165Hz 100% sRGB 518 nits', '4 Cells, 80Wh', 2.1, 'Đen', 'Windows 11 bản quyền', 1);
 
 -- --------------------------------------------------------
 
@@ -590,13 +600,6 @@ ALTER TABLE `chitietphieuxuat`
 ALTER TABLE `chitietquyen`
   ADD PRIMARY KEY (`manhomquyen`,`machucnang`,`hanhdong`) USING BTREE,
   ADD KEY `FK_CHITIETQUYEN_CHUCNANG` (`machucnang`);
-
---
--- Indexes for table `chitiettonkho`
---
-ALTER TABLE `chitiettonkho`
-  ADD PRIMARY KEY (`makho`,`masanpham`),
-  ADD KEY `FK_CHITIETTONKHO_SANPHAM` (`masanpham`);
 
 --
 -- Indexes for table `chucnang`
@@ -690,7 +693,7 @@ ALTER TABLE `nhacungcap`
 -- AUTO_INCREMENT for table `nhomquyen`
 --
 ALTER TABLE `nhomquyen`
-  MODIFY `manhomquyen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `manhomquyen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `phieunhap`
@@ -708,7 +711,7 @@ ALTER TABLE `phieuxuat`
 -- AUTO_INCREMENT for table `sanpham`
 --
 ALTER TABLE `sanpham`
-  MODIFY `masanpham` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `masanpham` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `trangthaiphieunhap`
@@ -748,13 +751,6 @@ ALTER TABLE `chitietphieuxuat`
 ALTER TABLE `chitietquyen`
   ADD CONSTRAINT `FK_CHITIETQUYEN_CHUCNANG` FOREIGN KEY (`machucnang`) REFERENCES `chucnang` (`machucnang`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_CHITIETQUYEN_NHOMQUYEN` FOREIGN KEY (`manhomquyen`) REFERENCES `nhomquyen` (`manhomquyen`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `chitiettonkho`
---
-ALTER TABLE `chitiettonkho`
-  ADD CONSTRAINT `FK_CHITIETTONKHO_KHO` FOREIGN KEY (`makho`) REFERENCES `kho` (`makho`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_CHITIETTONKHO_SANPHAM` FOREIGN KEY (`masanpham`) REFERENCES `sanpham` (`masanpham`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `nguoidung`
