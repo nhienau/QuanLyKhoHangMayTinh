@@ -392,14 +392,10 @@ public class AddProduct extends javax.swing.JDialog {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         // TODO add your handling code here:
 
+        String loaiMay = cbxloaisp.getSelectedItem().toString();
+        int maLoaiSP = loaiSanPhamDAO.getInstance().getIDOfType(loaiMay);
         String tenMay = txtTenSanPham.getText();
         int dongia = 0;
-        
-        try {
-            dongia = Integer.parseInt(txtDonGia.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn giá ở dạng số !");
-        }
         String manhinh = txtOcung.getText();
         String cpu = txtCPU.getText();
         String ram = txtRAM.getText();
@@ -408,18 +404,25 @@ public class AddProduct extends javax.swing.JDialog {
         String mausac = txtMauSac.getText();
         String os = txtOS.getText();
         String ocung = txtOcung.getText();
-        int trangThai = 1;
-        if (cbxloaisp.getSelectedItem().equals("Laptop")) {
- 
-            String dungluongpin = txtDungLuongPin.getText();
-            if ( tenMay.equals("") && cpu.equals("") && ram.equals("") && vga.equals("") && mausac.equals("") && ocung.equals("") && dungluongpin.equals("") && os.equals("") && manhinh.equals("")) {
+        String dungluongpin = txtDungLuongPin.getText();
+        
+        try {
+            dongia = Integer.parseInt(txtDonGia.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn giá ở dạng số !");
+        }
+        
+        
+        if ( loaiMay.equals("") || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || dungluongpin.equals("") || os.equals("") || manhinh.equals("") || txtTrongLuong.getText().equals("") || txtDonGia.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
-            } else {
+        } else {
                 SanPhamDTO spDTO = new SanPhamDTO();
+                spDTO.setLoaiSanPham(maLoaiSP);
                 spDTO.setTenSanPham(tenMay);
                 spDTO.setGiaXuat(dongia);
                 spDTO.setSoLuong(0);
                 spDTO.setManHinh(manhinh);
+                spDTO.setCpu(cpu);
                 spDTO.setOs(os);
                 spDTO.setPin(dungluongpin);
                 spDTO.setoCung(ocung);
@@ -437,7 +440,7 @@ public class AddProduct extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại !");
                 }
             }
-        }
+        
         
     }//GEN-LAST:event_btnAddProductActionPerformed
 

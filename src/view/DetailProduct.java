@@ -38,7 +38,7 @@ public class DetailProduct extends javax.swing.JDialog {
             SanPhamDTO mt = this.owner.getDetailSanPham();
             txtMaSanPham.setText(String.valueOf(mt.getMaSanPham()));
             txtTenSanPham.setText(mt.getTenSanPham());
-            txtThuongHieu.setText(loaiSanPhamDAO.getInstance().getNameOfType(mt.getMaSanPham()));
+            txtThuongHieu.setText(loaiSanPhamDAO.getInstance().getNameOfType(mt.getLoaiSanPham()));
             txtDonGia.setText(formatter.format(mt.getGiaXuat())+"đ");
             txtCPU.setText(mt.getCpu());
             txtRAM.setText(mt.getRam());

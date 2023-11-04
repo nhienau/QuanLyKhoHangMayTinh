@@ -136,22 +136,22 @@ public class SanPhamDAO {
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "INSERT INTO sanpham VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)";
+            String sql = "INSERT INTO sanpham( `maloaisanpham`, `tensanpham`, `soluong`, `gianhap`, `giaxuat`, `cpu`, `ram`, `vga`, `ocung`, `manhinh`, `pin`, `trongluong`, `mausac`, `os`, `trangthai`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)";
             PreparedStatement presttm = con.prepareStatement(sql);
-            presttm.setInt(1, sp.getMaSanPham());
+            presttm.setInt(1, sp.getLoaiSanPham());
             presttm.setString(2, sp.getTenSanPham());
-            presttm.setInt(3, sp.getLoaiSanPham());
-            presttm.setInt(4, sp.getSoLuong());
-            presttm.setInt(6, sp.getGiaXuat());
-            presttm.setString(7, sp.getCpu());
-            presttm.setString(8, sp.getRam());
-            presttm.setString(9, sp.getVga());
-            presttm.setString(10, sp.getoCung());
-            presttm.setString(11, sp.getManHinh());
-            presttm.setString(12, sp.getPin());
-            presttm.setFloat(13, sp.getTrongLuong());
-            presttm.setString(14, sp.getMauSac());
-            presttm.setString(15, sp.getOs());
+            presttm.setInt(3, sp.getSoLuong());
+            presttm.setInt(4, 0);
+            presttm.setInt(5, sp.getGiaXuat());
+            presttm.setString(6, sp.getCpu());
+            presttm.setString(7, sp.getRam());
+            presttm.setString(8, sp.getVga());
+            presttm.setString(9, sp.getoCung());
+            presttm.setString(10, sp.getManHinh());
+            presttm.setString(11, sp.getPin());
+            presttm.setFloat(12, sp.getTrongLuong());
+            presttm.setString(13, sp.getMauSac());
+            presttm.setString(14, sp.getOs());
             if(presttm.executeUpdate() >= 1){
                 result = true;
             }
