@@ -19,7 +19,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import view.DetailTonKho;
+import GUI.Dialog.DetailTonKho;
 
 
 public class TonKhoGUI extends javax.swing.JDialog  {
@@ -333,7 +333,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         String name = (String) modalCbbTenkho.getSelectedItem();
         khoDTO kho = khoDAO.getInstance().getWareHouseByName(name);
         txtMaKho.setText(String.valueOf(kho.getMaKho()));
-        txtDiaChi.setText(kho.getDiaDiem());
+        txtDiaChi.setText(kho.getDiaChi());
         int makho = Integer.parseInt(txtMaKho.getText());
         loadDataTotable(makho);
     }//GEN-LAST:event_cbbTenKhoActionPerformed

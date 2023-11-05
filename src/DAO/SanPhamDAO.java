@@ -5,14 +5,12 @@
 package DAO;
 
 import DTO.SanPhamDTO;
-import DTO.khoDTO;
 import database.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import org.apache.poi.poifs.crypt.CipherAlgorithm;
 
 /**
  *
@@ -27,12 +25,13 @@ public class SanPhamDAO {
         ArrayList<SanPhamDTO> list = new ArrayList<SanPhamDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM sanpham WHERE  trangthai = 1";
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 1";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 SanPhamDTO sp = new SanPhamDTO();
                 sp.setMaSanPham( rs.getInt("masanpham"));
+                sp.setMaLoaiSanPham(rs.getInt("maloaisanpham"));
                 sp.setTenSanPham(rs.getString("tensanpham"));
                 sp.setLoaiSanPham(rs.getInt("maloaisanpham"));
                 sp.setSoLuong( rs.getInt("soluong"));
@@ -57,32 +56,32 @@ public class SanPhamDAO {
     }
     
     public SanPhamDTO selectProductByID(int id){
-        SanPhamDTO spDTO = null ;
+        SanPhamDTO spDTO = null;
         
         try{
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and  masanpham = " + id  ;
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and masanpham = " + id  ;
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-
                 int maMay = id;
                 String tenMay = rs.getString("tensanpham");
                 int loaiSP = rs.getInt("maloaisanpham");
                 int soLuong = rs.getInt("soluong");
-                String tenCpu = rs.getString("cpu");
+                String cpu = rs.getString("cpu");
                 String ram = rs.getString("ram");
                 String vga = rs.getString("vga");
-                int gia = rs.getInt("giaxuat");
-                String kichThuocMan = rs.getString("manhinh");
-                String dungLuongPin = rs.getString("pin");
-                String mausac = rs.getString("mausac");
+                int giaXuat = rs.getInt("giaxuat");
+                String manHinh = rs.getString("manhinh");
+                String pin = rs.getString("pin");
+                String mauSac = rs.getString("mausac");
                 String os = rs.getString("os");
-                String ocung = rs.getString("ocung");
+                String oCung = rs.getString("ocung");
                 Float trongLuong = rs.getFloat("trongluong");
-                int nhacungcap = 1;
                 
-                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
+
+                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, giaXuat, cpu, ram, vga, oCung, manHinh, 
+                        pin, trongLuong, mauSac, os);
 
             }
             JDBCUtil.closeConnection(con);
@@ -92,18 +91,15 @@ public class SanPhamDAO {
         }
         return spDTO;
     }
-    
-    
+
     public SanPhamDTO selectProductByName(String name){
-        SanPhamDTO spDTO = null ;
-        
+        SanPhamDTO spDTO = null;
         try{
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and  tensanpham = '" + name + "'"  ;
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-
                 int maMay = rs.getInt("masanpham");
                 String tenMay = rs.getString("tensanpham");
                 int loaiSP = rs.getInt("maloaisanpham");
@@ -121,7 +117,6 @@ public class SanPhamDAO {
                 int nhacungcap = 1;
                 
                 spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
-
             }
             JDBCUtil.closeConnection(con);
         } catch(Exception e) {
@@ -131,9 +126,8 @@ public class SanPhamDAO {
         return spDTO;
     }
     
-    public boolean  addProduct(SanPhamDTO sp){
+    public boolean addProduct(SanPhamDTO sp){
         boolean result = false;
-        
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "INSERT INTO sanpham( `maloaisanpham`, `tensanpham`, `soluong`, `gianhap`, `giaxuat`, `cpu`, `ram`, `vga`, `ocung`, `manhinh`, `pin`, `trongluong`, `mausac`, `os`, `trangthai`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)";
@@ -168,7 +162,7 @@ public class SanPhamDAO {
         int ketQua = 0;
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE sanpham SET trangthai = 0  WHERE masanpham = ? ";
+            String sql = "UPDATE sanpham SET trangthai = 0 WHERE masanpham = ? ";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
             ketQua = pst.executeUpdate();
@@ -221,7 +215,5 @@ public class SanPhamDAO {
         }
         return name;
     }
-    
-    
     
 }

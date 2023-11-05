@@ -16,13 +16,13 @@ import java.util.ArrayList;
  *
  * @author trant
  */
-public class khoDAO  {
+public class khoDAO {
     
     public static khoDAO getInstance() {
         return new khoDAO();
     }
     
-    public ArrayList<khoDTO> getListWareHouse(){
+    public ArrayList<khoDTO> getListWareHouse() {
         ArrayList<khoDTO> listKho = new ArrayList<khoDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
@@ -33,7 +33,7 @@ public class khoDAO  {
                 khoDTO kho = new khoDTO();
                 kho.setMaKho(rs.getInt("makho"));
                 kho.setTenKho(rs.getString("tenkho"));
-                kho.setDiaDiem(rs.getString("diachi"));
+                kho.setDiaChi(rs.getString("diachi"));
                 listKho.add(kho);
             }
             JDBCUtil.closeConnection(con);
@@ -44,7 +44,7 @@ public class khoDAO  {
         return listKho;
     }
     
-    public boolean  addWareHouse(khoDTO kho){
+    public boolean addWareHouse(khoDTO kho){
         boolean result = false;
         
         try {
@@ -52,7 +52,7 @@ public class khoDAO  {
             String sql = "INSERT INTO kho(tenkho,diachi,trangthai) VALUES(?,?,1)";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, kho.getTenKho());
-            stmt.setString(2, kho.getDiaDiem());
+            stmt.setString(2, kho.getDiaChi());
             if(stmt.executeUpdate() >= 1){
                 result = true;
             }
@@ -69,7 +69,7 @@ public class khoDAO  {
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT diachi FROM kho WHERE trangthai = 1 and diachi = '" + kho.getDiaDiem() + "' and makho not in (" + kho.getMaKho() + ")";
+            String sql = "SELECT diachi FROM kho WHERE trangthai = 1 and diachi = '" + kho.getDiaChi() + "' and makho not in (" + kho.getMaKho() + ")";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
@@ -88,7 +88,7 @@ public class khoDAO  {
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "' and diachi = '" + kho.getDiaDiem() + "' WHERE makho = " + kho.getMaKho();
+            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "' and diachi = '" + kho.getDiaChi() + "' WHERE makho = " + kho.getMaKho();
             Statement stmt = con.createStatement();
             
             if(stmt.executeUpdate(sql) >= 1){
@@ -104,16 +104,16 @@ public class khoDAO  {
     
     public boolean deleteWareHouse(int makho){
         boolean result = false;
-        
+
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "UPDATE kho SET trangthai = 0   WHERE makho = " + makho;
             Statement stmt = con.createStatement();
-            
+
             if(stmt.executeUpdate(sql) >= 1){
                 result = true;
             }
-            
+
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,7 +130,7 @@ public class khoDAO  {
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
                 kho.setMaKho(rs.getInt("makho"));
-                kho.setDiaDiem(rs.getString("diachi"));
+                kho.setDiaChi(rs.getString("diachi"));
                 kho.setTenKho(rs.getString("tenkho"));
             }
             
@@ -169,7 +169,7 @@ public class khoDAO  {
             while(rs.next()){
                number = rs.getInt("soluong");
             }
-            
+
             JDBCUtil.closeConnection(con);
         } catch(Exception e) {
              e.printStackTrace();
@@ -181,39 +181,39 @@ public class khoDAO  {
         ArrayList<khoDTO> result = new ArrayList<>();
         ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
         for (var kho : allkho) {
-             
+
             if (kho.getTenKho().toLowerCase().contains(text.toLowerCase())
-                        || kho.getDiaDiem().toLowerCase().contains(text.toLowerCase())) {
+                        || kho.getDiaChi().toLowerCase().contains(text.toLowerCase())) {
                     result.add(kho);
             }
-            
+
         }
         return result;
     }
-    
+
     public ArrayList<khoDTO> searchTenKho(String text) {
         ArrayList<khoDTO> result = new ArrayList<>();
         ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
         for (var kho : allkho) {
-             
+
             if (kho.getTenKho().toLowerCase().contains(text.toLowerCase()))
             {
                     result.add(kho);
             }
-            
+
         }
         return result;
     }
-    
+
     public ArrayList<khoDTO> searchDiaDiem(String text) {
         ArrayList<khoDTO> result = new ArrayList<>();
         ArrayList<khoDTO> allkho = khoDAO.getInstance().getListWareHouse();
         for (var kho : allkho) {
-             
-            if (kho.getDiaDiem().toLowerCase().contains(text.toLowerCase())) {
+
+            if (kho.getDiaChi().toLowerCase().contains(text.toLowerCase())) {
                     result.add(kho);
             }
-            
+
         }
         return result;
     }

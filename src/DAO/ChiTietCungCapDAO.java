@@ -5,7 +5,6 @@
 package DAO;
 
 import DTO.ChiTietCungCapDTO;
-import OldDAO.DAOInterface;
 import database.JDBCUtil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

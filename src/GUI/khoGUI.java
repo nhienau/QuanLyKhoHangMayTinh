@@ -14,8 +14,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import view.addKho;
-import view.updateKho;
 
 
 /**
@@ -296,7 +294,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
         khoDTO kho = new khoDTO();
         kho.setMaKho(makho);
         kho.setTenKho(tenkho);
-        kho.setDiaDiem(diachi);
+        kho.setDiaChi(diachi);
         updateKho upkho = new updateKho(kho);
         upkho.setVisible(true);
 
@@ -372,7 +370,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
             int stt = i+1;
             int maKho = item.getMaKho();
             String tenKho = item.getTenKho();
-            String diaDiem = item.getDiaDiem();
+            String diaDiem = item.getDiaChi();
             Object row[] = {stt, maKho, tenKho, diaDiem};
             modelTbKho.addRow(row);
         }
@@ -406,7 +404,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
             for (khoDTO i : result) {
                 
                 modelTbKho.addRow(new Object[]{
-                    stt++,i.getMaKho(), i.getTenKho(), i.getDiaDiem()
+                    stt++,i.getMaKho(), i.getTenKho(), i.getDiaChi()
                 });
             }
         } catch (Exception e) {

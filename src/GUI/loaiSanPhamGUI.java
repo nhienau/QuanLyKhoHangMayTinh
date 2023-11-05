@@ -13,8 +13,8 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import view.updateLoaiSanPham;
-import view.addLoaiSanPham;
+import GUI.Dialog.updateLoaiSanPham;
+import GUI.Dialog.addLoaiSanPham;
 
 /**
  *
