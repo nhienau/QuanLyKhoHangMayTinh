@@ -8,6 +8,7 @@ import GUI.Chart.ModelChart;
 import GUI.Dialog.ChiTietLoaiSanPhamDialog;
 import GUI.Dialog.ChiTietSanPhamNhapDialog;
 import GUI.Dialog.SelectDateDialog;
+import helper.CustomTableCellRenderer;
 import helper.LoaiSanPhamTableModel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -20,10 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class ThongKeGUI extends javax.swing.JInternalFrame {
@@ -32,11 +31,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private DefaultTableModel dtmOverview;
     private DefaultTableModel dtmTonKho;
     private DefaultTableModel dtmSanPham;
-    private DefaultTableModel dtmLoaiSanPham;
-    private DefaultTableCellRenderer dtcrOverview;
-    private DefaultTableCellRenderer dtcrTonKho;
-    private DefaultTableCellRenderer dtcrSanPham;
-    private DefaultTableCellRenderer dtcrLoaiSanPham;
     private LoaiSanPhamTableModel tmLoaiSanPham;
     
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -50,7 +44,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final String CB_VALUE_LAST_30_DAYS = "30 ngày qua";
     private final String CB_VALUE_LAST_90_DAYS = "90 ngày qua";
     private final String CB_VALUE_LAST_365_DAYS = "365 ngày qua";
-    private final String CB_VALUE_LIFETIME = "Toàn thời gian";
+    public static final String CB_VALUE_LIFETIME = "Toàn thời gian";
     private final String CB_VALUE_CURRENT_YEAR = Integer.toString(curYear);
     private final String CB_VALUE_LAST_YEAR = Integer.toString(curYear - 1);
     private final String CB_VALUE_CURRENT_MONTH = "Tháng " + curMonth;
@@ -168,8 +162,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             }
         };
         tbOverview.setModel(dtmOverview);
-        dtcrOverview = new DefaultTableCellRenderer();
-        dtcrOverview.setHorizontalAlignment(SwingConstants.CENTER);
         
         dtmTonKho = new DefaultTableModel(
             new Object [][] {
@@ -189,8 +181,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         };
         tbTonKho.setModel(dtmTonKho);
         tbTonKho.getColumnModel().getColumn(1).setPreferredWidth(400);
-        dtcrTonKho = new DefaultTableCellRenderer();
-        dtcrTonKho.setHorizontalAlignment(SwingConstants.CENTER);
         
         dtmSanPham = new DefaultTableModel(
             new Object [][] {
@@ -211,28 +201,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         
         tbSanPham.setModel(dtmSanPham);
         tbSanPham.getColumnModel().getColumn(2).setPreferredWidth(400);
-        dtcrSanPham = new DefaultTableCellRenderer();
-        dtcrSanPham.setHorizontalAlignment(SwingConstants.CENTER);
-        
-//        dtmLoaiSanPham = new DefaultTableModel(
-//            new Object [][] {
-//
-//            },
-//            new String [] {
-//                "Mã", "Loại sản phẩm", "Số lượng xuất"
-//            }
-//        ) {
-//            boolean[] canEdit = new boolean [] {
-//                false, false, false
-//            };
-//
-//            public boolean isCellEditable(int rowIndex, int columnIndex) {
-//                return canEdit [columnIndex];
-//            }
-//        };
-        
-//        tbLoaiSanPham.setModel(dtmLoaiSanPham);
-//        tbLoaiSanPham.getColumnModel().removeColumn(tbLoaiSanPham.getColumnModel().getColumn(0));
 
         String[] tbLoaiSanPhamColumnNames = {"Mã", "Loại sản phẩm", "Số lượng xuất"};
         this.tmLoaiSanPham = new LoaiSanPhamTableModel(this.arrLoaiSanPham, tbLoaiSanPhamColumnNames);
@@ -241,8 +209,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         tbLoaiSanPham.getColumnModel().getColumn(0).setMaxWidth(0);
         tbLoaiSanPham.getColumnModel().getColumn(0).setWidth(0);
         tbLoaiSanPham.getColumnModel().getColumn(0).setPreferredWidth(0);
-        dtcrLoaiSanPham = new DefaultTableCellRenderer();
-        dtcrLoaiSanPham.setHorizontalAlignment(SwingConstants.CENTER);
     }
     
     private void initChart() {
@@ -308,15 +274,15 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     }
     
     private void displayDateRangeToLabel(DateRangeDTO dateRange, javax.swing.JLabel label) {
-        label.setText(dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            label.setText(CB_VALUE_LIFETIME); 
+        } else {
+            label.setText(dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
+        }
     }
 
     private void handleComboBoxChanged(String name, String value, DateRangeDTO dateRange, javax.swing.JLabel label) {
-        if (value.equals(CB_VALUE_LIFETIME)) {
-            // Reset 2 date range
-            label.setText(CB_VALUE_LIFETIME);
-            return;
-        } else if (value.equals(CB_VALUE_CUSTOM)) {
+        if (value.equals(CB_VALUE_CUSTOM)) {
             SelectDateDialog selectDate = new SelectDateDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, name, dateRange, 0, false);
             selectDate.setVisible(true);
             return;
@@ -333,6 +299,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         } else if (value.equals(CB_VALUE_LAST_365_DAYS)) {
             dateRange.setFromDate(nowDateTime.minusDays(364));
             dateRange.setToDate(nowDateTime);
+        } else if (value.equals(CB_VALUE_LIFETIME)) {
+            dateRange.setFromDate(null);
+            dateRange.setToDate(null);
         } else if (value.equals(CB_VALUE_CURRENT_YEAR)) {
             dateRange.setFromDate(LocalDateTime.of(curYear, 1, 1, 0, 0));
             dateRange.setToDate(nowDateTime);
@@ -425,7 +394,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         }
         
         for (int i = 0; i < tbOverview.getColumnCount(); ++i) {
-            tbOverview.getColumnModel().getColumn(i).setCellRenderer(dtcrOverview);
+            tbOverview.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
         }
     }
     
@@ -455,7 +424,16 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             dtmTonKho.addRow(row);
         }
         for (int i = 0; i < tbTonKho.getColumnCount(); ++i) {
-            tbTonKho.getColumnModel().getColumn(i).setCellRenderer(dtcrTonKho);
+            switch (i) {
+                case 0:
+                    tbTonKho.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 1:
+                    tbTonKho.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.LEFT);
+                    break;
+                default:
+                    tbTonKho.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+            }
         }
         setIsLoadingTonKho(false);
     }
@@ -484,7 +462,18 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             dtmSanPham.addRow(row);
         }
         for (int i = 0; i < tbSanPham.getColumnCount(); ++i) {
-            tbSanPham.getColumnModel().getColumn(i).setCellRenderer(dtcrSanPham);
+            switch (i) {
+                case 0:
+                    tbSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 1:
+                case 2:
+                    tbSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.LEFT);
+                    break;
+                case 3:
+                    tbSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+                    break;
+            }
         }
         setIsLoadingSanPham(false);
     }
@@ -524,7 +513,17 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 //            dtmLoaiSanPham.addRow(row);
 //        }
         for (int i = 0; i < tbLoaiSanPham.getColumnCount(); ++i) {
-            tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(dtcrLoaiSanPham);
+            switch (i) {
+                case 0:
+                    tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 1:
+                    tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.LEFT);
+                    break;
+                case 2:
+                    tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+                    break;
+            }
         }
         setIsLoadingLoaiSanPham(false);
     }
@@ -736,6 +735,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             .addComponent(chartOverview, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
         );
 
+        tbOverview.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbOverview.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -937,6 +937,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelTonKho1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbarDoanhThu.add(btnExportExcelTonKho1);
 
+        tbDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbDoanhThu.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -1170,6 +1171,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         });
         pFilterLoaiSanPham.add(btnReloadLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, -1));
 
+        tbLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbLoaiSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -1209,7 +1211,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pLoaiSanPhamLayout.createSequentialGroup()
                         .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(scrollPane5)))
+                        .addComponent(scrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pLoaiSanPhamLayout.setVerticalGroup(

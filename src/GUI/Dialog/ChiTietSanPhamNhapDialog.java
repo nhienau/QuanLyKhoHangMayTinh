@@ -5,40 +5,57 @@ import DTO.DateRangeDTO;
 import DTO.ThongKe.ChiTietSanPhamNhapDTO;
 import DTO.ThongKe.ThongKeSanPhamDTO;
 import GUI.Chart.PieChart.ModelPieChart;
+import GUI.ThongKeGUI;
 import com.formdev.flatlaf.FlatLightLaf;
 import helper.ChartColor;
+import helper.CustomTableCellRenderer;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
+public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private JInternalFrame parent;
-    private DefaultTableModel dtm;
-    private DefaultTableCellRenderer dtcr;
     private ArrayList<ChiTietSanPhamNhapDTO> arr;
     private ThongKeSanPhamDTO product;
     private DateRangeDTO dateRange;
+
+    public ArrayList<ChiTietSanPhamNhapDTO> getArr() {
+        return arr;
+    }
+
+    public void setArr(ArrayList<ChiTietSanPhamNhapDTO> arr) {
+        this.arr = arr;
+    }
+
+    public ThongKeSanPhamDTO getProduct() {
+        return product;
+    }
+
+    public void setProduct(ThongKeSanPhamDTO product) {
+        this.product = product;
+    }
+
+    public DateRangeDTO getDateRange() {
+        return dateRange;
+    }
+
+    public void setDateRange(DateRangeDTO dateRange) {
+        this.dateRange = dateRange;
+    }
     
     public ChiTietSanPhamNhapDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
-        initTable();
     }
     
     public ChiTietSanPhamNhapDialog(JInternalFrame parent, javax.swing.JFrame owner, boolean modal, DateRangeDTO dateRange, ThongKeSanPhamDTO product) {
         super(owner, modal);
-        initComponents();
-        setLocationRelativeTo(null);
-        this.parent = parent;
         this.product = product;
         this.dateRange = dateRange;
         initTable();
@@ -46,35 +63,16 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
         this.arr = thongKeChiTietSanPhamNhap(dateRange, product.getMaSanPham());
     }
     
-    private void initTable() {
-        dtm = new DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        };
-        table.setModel(dtm);
-        table.getColumnModel().getColumn(1).setPreferredWidth(400);
-        table.getColumnModel().removeColumn(table.getColumnModel().getColumn(0));
-        dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-    }
-    
     private void displayInfo(ThongKeSanPhamDTO product, DateRangeDTO dateRange) {
-        lblTenSanPham.setText("Tên sản phẩm: " + product.getTenSanPham());
-        lblLoaiSanPham.setText("Loại sản phẩm: " + product.getTenLoaiSanPham());
-        lblThoiGian.setText("Thời gian: " + dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
-        lblTongSoLuongNhap.setText("Tổng số lượng nhập: " + product.getSoLuongNhap());
+        super.setTitle("Chi tiết sản phẩm");
+        getLblPrimary().setText("Tên sản phẩm: " + product.getTenSanPham());
+        getLblSecondary().setText("Loại sản phẩm: " + product.getTenLoaiSanPham());
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
+        } else {
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
+        }
+        getLblAmount().setText("Tổng số lượng nhập: " + product.getSoLuongNhap());
     }
     
     private void addDataToChart(ArrayList<ChiTietSanPhamNhapDTO> arr) {
@@ -82,13 +80,13 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
         int valueOther = 0;
         for (int i = 0; i < arr.size(); ++i) {
             if (paintAll || i < 6) {
-                pieChart.addData(new ModelPieChart(arr.get(i).getTenNhaCungCap(), arr.get(i).getTongSoLuongNhap(), ChartColor.chartColor[i]));
+                getPieChart().addData(new ModelPieChart(arr.get(i).getTenNhaCungCap(), arr.get(i).getTongSoLuongNhap(), ChartColor.chartColor[i]));
             } else {
                 valueOther += arr.get(i).getTongSoLuongNhap();
             }
         }
         if (!paintAll) {
-            pieChart.addData(new ModelPieChart("Khác", valueOther, ChartColor.chartColor[ChartColor.chartColor.length - 1]));
+            getPieChart().addData(new ModelPieChart("Khác", valueOther, ChartColor.chartColor[ChartColor.chartColor.length - 1]));
         }
     }
     
@@ -105,20 +103,20 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
             e.printStackTrace();
             return arr;
         }
-        dtm.setRowCount(0);
-        if (arr.size() == 0) return arr;
-        
+        DefaultTableModel model = (DefaultTableModel) getTable().getModel();
+        model.setRowCount(0);
+        if (arr.isEmpty()) return arr;
+        setArr(arr);
         for (int i = 0; i < arr.size(); ++i) {
             ChiTietSanPhamNhapDTO ctspnDTO = arr.get(i);
             int maNhaCungCap = ctspnDTO.getMaNhaCungCap();
             String tenNhaCungCap = ctspnDTO.getTenNhaCungCap();
             int tongSoLuongNhap = ctspnDTO.getTongSoLuongNhap();
             Object [] row = {maNhaCungCap, tenNhaCungCap, tongSoLuongNhap};
-            dtm.addRow(row);
+            model.addRow(row);
         }
-        for (int i = 0; i < table.getColumnCount(); ++i) {
-            table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
-        }
+        getTable().getColumnModel().getColumn(0).setCellRenderer(CustomTableCellRenderer.LEFT);
+        getTable().getColumnModel().getColumn(1).setCellRenderer(CustomTableCellRenderer.RIGHT);
         addDataToChart(arr);
         return arr;
     }
@@ -132,121 +130,19 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pContainer = new javax.swing.JPanel();
-        scrollPane = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
-        lblTenSanPham = new javax.swing.JLabel();
-        lblLoaiSanPham = new javax.swing.JLabel();
-        lblTongSoLuongNhap = new javax.swing.JLabel();
-        lblThoiGian = new javax.swing.JLabel();
-        pieChart = new GUI.Chart.PieChart.PieChart();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Chi tiết nhập hàng");
         setResizable(false);
-
-        pContainer.setBackground(new java.awt.Color(255, 255, 255));
-
-        table.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableMouseClicked(evt);
-            }
-        });
-        scrollPane.setViewportView(table);
-        if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
-            table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setResizable(false);
-        }
-
-        lblTenSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblTenSanPham.setForeground(new java.awt.Color(0, 0, 0));
-        lblTenSanPham.setText("Tên sản phẩm: [tensanpham]");
-
-        lblLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblLoaiSanPham.setForeground(new java.awt.Color(0, 0, 0));
-        lblLoaiSanPham.setText("Loại sản phẩm: [loaisanpham]");
-
-        lblTongSoLuongNhap.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblTongSoLuongNhap.setForeground(new java.awt.Color(0, 0, 0));
-        lblTongSoLuongNhap.setText("Tổng số lượng nhập: xxxx");
-
-        lblThoiGian.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblThoiGian.setForeground(new java.awt.Color(0, 0, 0));
-        lblThoiGian.setText("Thời gian: dd/MM/yyyy - dd/MM/yyyy");
-
-        javax.swing.GroupLayout pContainerLayout = new javax.swing.GroupLayout(pContainer);
-        pContainer.setLayout(pContainerLayout);
-        pContainerLayout.setHorizontalGroup(
-            pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pContainerLayout.createSequentialGroup()
-                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pContainerLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pContainerLayout.createSequentialGroup()
-                                .addComponent(lblThoiGian)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                                .addComponent(lblTongSoLuongNhap)
-                                .addGap(60, 60, 60))
-                            .addGroup(pContainerLayout.createSequentialGroup()
-                                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblTenSanPham)
-                                    .addComponent(lblLoaiSanPham))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pContainerLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pieChart, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
-                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        pContainerLayout.setVerticalGroup(
-            pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
-                    .addGroup(pContainerLayout.createSequentialGroup()
-                        .addComponent(lblTenSanPham)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblLoaiSanPham)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblThoiGian)
-                            .addComponent(lblTongSoLuongNhap))
-                        .addGap(18, 18, 18)
-                        .addComponent(pieChart, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         pack();
@@ -258,14 +154,6 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
         chiTietGiaNhap.setVisible(true);
     }
     
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        // TODO add your handling code here:
-        if(evt.getClickCount() == 2 && table.getSelectedRow() != -1) {
-            int row = table.getSelectedRow();
-            handleViewGiaNhap(row);
-        }
-    }//GEN-LAST:event_tableMouseClicked
-
     /**
      * @param args the command line arguments
      */
@@ -310,13 +198,35 @@ public class ChiTietSanPhamNhapDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblLoaiSanPham;
-    private javax.swing.JLabel lblTenSanPham;
-    private javax.swing.JLabel lblThoiGian;
-    private javax.swing.JLabel lblTongSoLuongNhap;
-    private javax.swing.JPanel pContainer;
-    private GUI.Chart.PieChart.PieChart pieChart;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+    
+    @Override
+    public void initTable() {
+        getTable().setModel(new DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Mã nhà cung cấp", "Nhà cung cấp", "Số lượng nhập"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        getTable().getColumnModel().getColumn(1).setPreferredWidth(400);
+        getTable().getColumnModel().removeColumn(getTable().getColumnModel().getColumn(0));
+    }
+    
+    @Override
+    public void onClickTable(MouseEvent evt) {
+        if(evt.getClickCount() == 2 && getTable().getSelectedRow() != -1) {
+            int row = getTable().getSelectedRow();
+            handleViewGiaNhap(row);
+        }
+    }
 }

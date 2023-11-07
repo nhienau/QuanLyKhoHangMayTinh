@@ -5,8 +5,10 @@ import DTO.DateRangeDTO;
 import DTO.ThongKe.ChiTietLoaiSanPhamDTO;
 import DTO.ThongKe.ThongKeLoaiSanPhamDTO;
 import GUI.Chart.PieChart.ModelPieChart;
+import GUI.ThongKeGUI;
 import com.formdev.flatlaf.FlatLightLaf;
 import helper.ChartColor;
+import helper.CustomTableCellRenderer;
 import java.awt.event.MouseEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,10 +17,8 @@ import java.util.logging.Logger;
 import java.sql.SQLException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
@@ -59,7 +59,11 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
         super.setTitle("Chi tiết loại sản phẩm");
         getLblPrimary().setText("Loại sản phẩm: " + productType.getTenLoaiSanPham());
         getLblSecondary().setVisible(false);
-        getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
+        } else {
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));         
+        }
         getLblAmount().setText("Số lượng xuất: " + productType.getSoLuong());
     }
     
@@ -89,8 +93,9 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
             JOptionPane.showMessageDialog(ChiTietLoaiSanPhamDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-        getDefaultTableModel().setRowCount(0);
-        if (arr.size() == 0) return;
+        DefaultTableModel model = (DefaultTableModel) getTable().getModel();
+        model.setRowCount(0);
+        if (arr.isEmpty()) return;
         setArr(arr);
         for (int i = 0; i < arr.size(); ++i) {
             ChiTietLoaiSanPhamDTO ctlsp = arr.get(i);
@@ -98,11 +103,10 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
             String tenSanPham = ctlsp.getTenSanPham();
             int soLuong = ctlsp.getSoLuong();
             Object [] row = {maSanPham, tenSanPham, soLuong};
-            getDefaultTableModel().addRow(row);
+            model.addRow(row);
         }
-        for (int i = 0; i < getTable().getColumnCount(); ++i) {
-            getTable().getColumnModel().getColumn(i).setCellRenderer(getDefaultTableCellRenderer());
-        }
+        getTable().getColumnModel().getColumn(0).setCellRenderer(CustomTableCellRenderer.LEFT);
+        getTable().getColumnModel().getColumn(1).setCellRenderer(CustomTableCellRenderer.RIGHT);
         addDataToChart(arr);
     }
     
@@ -186,7 +190,7 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
 
     @Override
     public void initTable() {
-        setDefaultTableModel(new DefaultTableModel(
+        getTable().setModel(new DefaultTableModel(
             new Object [][] {
 
             },
@@ -202,11 +206,8 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
                 return canEdit [columnIndex];
             }
         });
-        getTable().setModel(getDefaultTableModel());
         getTable().getColumnModel().getColumn(1).setPreferredWidth(400);
         getTable().getColumnModel().removeColumn(getTable().getColumnModel().getColumn(0));
-        setDefaultTableCellRenderer(new DefaultTableCellRenderer());
-        getDefaultTableCellRenderer().setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     @Override

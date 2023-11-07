@@ -4,15 +4,14 @@ import BUS.ThongKeBUS;
 import DTO.DateRangeDTO;
 import DTO.ThongKe.ChiTietGiaXuatSPDTO;
 import DTO.ThongKe.ChiTietLoaiSanPhamDTO;
-import DTO.ThongKe.ThongKeLoaiSanPhamDTO;
+import GUI.ThongKeGUI;
+import helper.CustomTableCellRenderer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
@@ -20,12 +19,9 @@ public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private ArrayList<ChiTietGiaXuatSPDTO> arr;
-    private DefaultTableModel dtm;
-    private DefaultTableCellRenderer dtcr;
     
     public ChiTietGiaXuatSPDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
     }
     
     public ChiTietGiaXuatSPDialog(JDialog parent, boolean modal, ChiTietLoaiSanPhamDTO product, DateRangeDTO dateRange) {
@@ -47,7 +43,11 @@ public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
         super.setTitle("Chi tiết giá xuất sản phẩm");
         getLblPrimary().setText("Tên sản phẩm: " + product.getTenSanPham());
         getLblSecondary().setVisible(false);
-        getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(dateFormatter) + " - " + dateRange.getToDate().format(dateFormatter));
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
+        } else {
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(dateFormatter) + " - " + dateRange.getToDate().format(dateFormatter));         
+        }
     }
     
     private void getChiTietGiaXuatSanPham(int productId, DateRangeDTO dateRange) {
@@ -63,8 +63,9 @@ public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
             e.printStackTrace();
             return;
         }
-        getDefaultTableModel().setRowCount(0);
-        if (arr.size() == 0) return;
+        DefaultTableModel model = (DefaultTableModel) getTable().getModel();
+        model.setRowCount(0);
+        if (arr.isEmpty()) return;
         setArr(arr);
         for (int i = 0; i < arr.size(); ++i) {
             ChiTietGiaXuatSPDTO ctgx = arr.get(i);
@@ -74,10 +75,19 @@ public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
             int soLuongXuat = ctgx.getSoLuongXuat();
             Long donGiaXuat = ctgx.getDonGiaXuat();
             Object [] row = {maPhieuXuat, strThoiGianTao, soLuongXuat, donGiaXuat};
-            getDefaultTableModel().addRow(row);
+            model.addRow(row);
         }
         for (int i = 0; i < getTable().getColumnCount(); ++i) {
-            getTable().getColumnModel().getColumn(i).setCellRenderer(dtcr);
+            switch (i) {
+                case 0:
+                case 1:
+                    getTable().getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 2:
+                case 3:
+                    getTable().getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+                    break;
+            }
         }
     }
     
@@ -150,7 +160,7 @@ public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
 
     @Override
     public void initTable() {
-        setDefaultTableModel(new DefaultTableModel(
+        getTable().setModel(new DefaultTableModel(
             new Object [][] {
 
             },
@@ -166,9 +176,6 @@ public class ChiTietGiaXuatSPDialog extends PriceDetailDialog {
                 return canEdit [columnIndex];
             }
         });
-        getTable().setModel(getDefaultTableModel());
-        setDefaultTableCellRenderer(new DefaultTableCellRenderer());
-        getDefaultTableCellRenderer().setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
