@@ -4,8 +4,14 @@
  */
 package GUI;
 
- import DTO.PhieuXuatDTO;
- import BUS.PhieuXuatBUS;
+import BUS.ChiTietQuyenBUS;
+import DTO.PhieuXuatDTO;
+import BUS.PhieuXuatBUS;
+import DAO.ChiTietPhieuXuatDAO;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
+import DAO.PhieuXuatDAO;
+import DTO.ChiTietPhieuXuatDTO;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
@@ -33,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import model.Account;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -41,13 +48,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-
-
-
-
-
-
+//import view.PhieuXuatForm;
 
 /**
  *
@@ -58,36 +59,147 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
     /**
      * Creates new form PhieuXuatGUI
      */
-     private ArrayList<PhieuXuatDTO> list = new ArrayList<>();
-    
-    public PhieuXuatGUI() {
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
+    private DefaultTableModel tblModel;
+    DecimalFormat formatter = new DecimalFormat("###,###,###");
+    SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/YYYY HH:mm");
+
+    public DecimalFormat getFormatter() {
+        return formatter;
+    }
+
+    public SimpleDateFormat getFormatDate() {
+        return formatDate;
+    }
+
+    public PhieuXuatGUI(NguoiDungDTO user) {
         initComponents();
-          this.setLocationRelativeTo(null);
+//        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+//        ui.setNorthPane(null);
+        tblPhieuXuat.setDefaultEditor(Object.class, null);
+        initTable();
+        jDateChooserFrom.setDateFormatString("dd/MM/yyyy");
+        jDateChooserTo.setDateFormatString("dd/MM/yyyy");
+
+        // Authorization
+//        javax.swing.JButton[] buttons = {btnAdd};
+//        disableAllButtons(buttons);
+        authorizeAction(user);
+//   authorizeAction("nam");
+//        loadDataToTable();
+    }
+
+    public PhieuXuatGUI(Account accCur) {
+        initComponents();
+//        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+//        ui.setNorthPane(null);
+        tblPhieuXuat.setDefaultEditor(Object.class, null);
+        initTable();
+//        loadDataToTable();
+        jDateChooserFrom.setDateFormatString("dd/MM/yyyy");
+        jDateChooserTo.setDateFormatString("dd/MM/yyyy");
+        if (accCur.getRole().equals("Nhân viên xuất")) {
+//            btnDelete.setEnabled(false);
+//            btnEdit.setEnabled(false);
+       
+        }
+    }
+
+    protected ArrayList<PhieuXuatDTO> allPhieuXuat;
+    protected static int MaPhieuXuat;
+    protected static ArrayList<ChiTietPhieuXuatDTO> CTPhieuXuat;
+//    private NguoiDungDTO user;
+
+    public PhieuXuatGUI() {
+
+        initComponents();
+//        loadDataToTable();
+        initTable();
+
+        allPhieuXuat = PhieuXuatDAO.getInstance().selectAll();
+        // Định dạng độ rộng
+
+        loadDataToTable(allPhieuXuat);
+
+//        tblSanPham.setDefaultEditor(Object.class, null);
+//        tblNhapHang.setDefaultEditor(Object.class, null);
+//        MaPhieuXuat = createId(PhieuXuatDAO.getInstance().selectAll());
+//        txtMaPhieu.setText(String.valueOf(MaPhieuXuat));
+//
+        CTPhieuXuat = new ArrayList<ChiTietPhieuXuatDTO>();
+//        txtNguoiTao.setFocusable(false);
+//
+////        this.user = user;
+////        txtNguoiTao.setText(user.getHoTen());
+//        txtNguoiTao.setText("tram");
+    }
+
+    public ChiTietPhieuXuatDTO findCTPhieu(int maMay) {
+        if (maMay == ChiTietPhieuXuatDAO.getInstance().selectById(maMay).getMaPhieuXuat()) {
+            return ChiTietPhieuXuatDAO.getInstance().selectById(maMay);
+        }
+
+        return null;
+    }
+
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
         try {
-            PhieuXuatBUS phieuxuatbus = new PhieuXuatBUS();
-            list = phieuxuatbus.getList();
-            addRowToJTable(list);
-        } catch (SQLException ex) {
-          
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "phieuxuat");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(PhieuXuatGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(PhieuXuatGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+//                btnAdd.setEnabled(true);
+                continue;
+            }
+        }
+    }
+
+    public final void initTable() {
+        tblModel = new DefaultTableModel();
+        String[] headerTbl = new String[]{"STT", "Mã phiếu nhập", "Người tạo", "Thời gian tạo", "Tổng tiền"};
+        tblModel.setColumnIdentifiers(headerTbl);
+        tblPhieuXuat.setModel(tblModel);
+        tblPhieuXuat.getColumnModel().getColumn(0).setPreferredWidth(5);
+    }
+
+    public void loadDataToTable(ArrayList<PhieuXuatDTO> arrPX) {
+        try {
+            int stt = 1;
+            tblModel.setRowCount(0);
+            for (var i : arrPX) {
+//                System.out.println(i.getNguoiTao());
+                tblModel.addRow(new Object[]{
+                    stt++,
+                    i.getMaPhieuXuat(), i.getNguoiTao(), i.getThoiGianTao(), i.getTongTien() + " đ"
+
+//                    AccountDAO.getInstance().selectById(allPhieu.get(i).getNguoiTao()).getFullName(), 
+//                    formatDate.format(allPhieu.get(i).getThoiGianTao()),
+//                    formatter.format(allPhieu.get(i).getTongTien()) + "đ"              
+//                       i.getMaSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
+                });
+            }
+        } catch (Exception e) {
         }
 
     }
-    public void  addRowToJTable(ArrayList<PhieuXuatDTO> list) throws SQLException {
-//        list = PhieuXuatBUS.getList();
-         
-        DefaultTableModel model = (DefaultTableModel) tblPhieuXuat.getModel();
-        model.setRowCount(0);
-        Object rowData[] = new Object[5];
-        for (int i = 0; i < list.size(); i++) {
-             System.out.println(list.get(i).getMaPhieuXuat());
-            rowData[0] = list.get(i).getMaPhieuXuat();
-            rowData[1] = list.get(i).getThoiGianTao();
-            rowData[2] = list.get(i).getNguoiTao();
-            rowData[3] = list.get(i).getTongTien();
-            rowData[4] = list.get(i).getTrangThai();
-            model.addRow(rowData);
-        }
-    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,11 +213,8 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPhieuXuat = new javax.swing.JTable();
         jToolBar1 = new javax.swing.JToolBar();
-        btnAdd = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton6 = new javax.swing.JButton();
-        btnImportExcel = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jDateChooserFrom = new com.toedter.calendar.JDateChooser();
         jDateChooserTo = new com.toedter.calendar.JDateChooser();
@@ -119,7 +228,7 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jComboBoxS = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
-        jButton7 = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -140,19 +249,6 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
         jToolBar1.setRollover(true);
 
-        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
-        btnAdd.setText("Thêm");
-        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnAdd.setFocusable(false);
-        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnAdd);
-
         btnDetail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_eye_40px.png"))); // NOI18N
         btnDetail.setText("Xem chi tiết");
         btnDetail.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -166,31 +262,6 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnDetail);
         jToolBar1.add(jSeparator1);
-
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        jButton6.setText("Xuất Excel");
-        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton6);
-
-        btnImportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        btnImportExcel.setText("Nhập Excel");
-        btnImportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImportExcel.setFocusable(false);
-        btnImportExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnImportExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnImportExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnImportExcel);
 
         jPanel2.setBackground(java.awt.Color.white);
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm kiếm theo ngày", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -309,16 +380,16 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         });
         jPanel3.add(jTextFieldSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 30, 310, 40));
 
-        jButton7.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
-        jButton7.setText("Làm mới");
-        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnRefresh.setFont(new java.awt.Font("SF Pro Display", 0, 15)); // NOI18N
+        btnRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
+        btnRefresh.setText("Làm mới");
+        btnRefresh.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnRefreshActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 30, 140, 40));
+        jPanel3.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 30, 140, 40));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -336,7 +407,7 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 328, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -374,121 +445,68 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        // TODO add your handling code here:
-//        AddNhaCungCap a = new AddNhaCungCap(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-//        a.setVisible(true);
-
-
-    AddPhieuXuat a = new AddPhieuXuat();
-        a.setVisible(true);
-
-
-
-    }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         // TODO add your handling code here:
-//        if (tblPhieuXuat.getSelectedRow() == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu !");
-//        } else {
-//            CTPhieuXuat a = new CTPhieuXuat(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-//            a.setVisible(true);
-//        }
-    }//GEN-LAST:event_btnDetailActionPerformed
+        int i_row = tblPhieuXuat.getSelectedRow();
+        if (i_row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để xem !");
+        } else {
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-//        try {
-//            JFileChooser jFileChooser = new JFileChooser();
-//            jFileChooser.showSaveDialog(this);
-//            File saveFile = jFileChooser.getSelectedFile();
-//            if (saveFile != null) {
-//                saveFile = new File(saveFile.toString() + ".xlsx");
-//                Workbook wb = new XSSFWorkbook();
-//                Sheet sheet = wb.createSheet("Account");
+            ChiTietPhieuXuatDTO mtl = findCTPhieu((int) tblPhieuXuat.getValueAt(i_row, 1));
+            
+            MaPhieuXuat = mtl.getMaPhieuXuat();
+            
+            
+            
+            ChiTietPhieuXuatDTO ctp = new ChiTietPhieuXuatDTO(mtl.getMaPhieuXuat(), mtl.getMaSanPham(), mtl.getSoLuong(), mtl.getDonGia());
+            CTPhieuXuat.add(ctp);
+            XemChiTietPhieuXuatGUI a = new XemChiTietPhieuXuatGUI();
+            a.setVisible(true);
+            CTPhieuXuat.clear();
+////                            System.out.println(user);
+//                            //System.out.println(PhieuXuatDAO.getInstance().getAllPhieuXuat().size());
+//                            if (mtl != null) {
+////
+////                                System.out.println(findMayTinh((int) tblSanPham.getValueAt(i_row, 0)).getSoLuong());
 //
-//                Row rowCol = sheet.createRow(0);
-//                for (int i = 0; i < tblPhieuXuat.getColumnCount(); i++) {
-//                    Cell cell = rowCol.createCell(i);
-//                    cell.setCellValue(tblPhieuXuat.getColumnName(i));
-//                }
+//                                if (findMayTinh((int) tblSanPham.getValueAt(i_row, 0)).getSoLuong() < mtl.getSoLuong() + soluong) {
+//                                    JOptionPane.showMessageDialog(this, "Số lượng máy không đủ !");
 //
-//                for (int j = 0; j < tblPhieuXuat.getRowCount(); j++) {
-//                    Row row = sheet.createRow(j + 1);
-//                    for (int k = 0; k < tblPhieuXuat.getColumnCount(); k++) {
-//                        Cell cell = row.createCell(k);
-//                        if (tblPhieuXuat.getValueAt(j, k) != null) {
-//                            cell.setCellValue(tblPhieuXuat.getValueAt(j, k).toString());
+//                                } else {
+//
+//                                    mtl.setSoLuong(mtl.getSoLuong() + soluong);
+//                                }
+//                            } else {
+//                                SanPhamDTO mt = SanPhamDAO.getInstance().selectByIdPX((int) tblSanPham.getValueAt(i_row, 0));
+//                                ChiTietPhieuXuatDTO ctp = new ChiTietPhieuXuatDTO(MaPhieuXuat, mt.getMaSanPham(), soluong, mt.getGiaXuat());
+//                                CTPhieuXuat.add(ctp);
+//                            }
+//
+//                            loadDataToTableNhapHang();
+//
+//                            textTongTien.setText(formatter.format(tinhTongTien()) + "đ");
 //                        }
-//
+//                    } else {
+//                        JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng lớn hơn 0");
 //                    }
+//                } catch (Exception e) {
+//                    JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng ở dạng số nguyên!");
 //                }
-//                FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
-//                wb.write(out);
-//                wb.close();
-//                out.close();
-//                openFile(saveFile.toString());
 //            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }//GEN-LAST:event_jButton6ActionPerformed
+        }
 
-    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-        // TODO add your handling code here:
-//        File excelFile;
-//        FileInputStream excelFIS = null;
-//        BufferedInputStream excelBIS = null;
-//        XSSFWorkbook excelJTableImport = null;
-//        ArrayList<PhieuXuat> listAccExcel = new ArrayList<PhieuXuat>();
-//        JFileChooser jf = new JFileChooser();
-//        int result = jf.showOpenDialog(null);
-//        jf.setDialogTitle("Open file");
-//        Workbook workbook = null;
-//        DefaultTableModel table_acc = (DefaultTableModel) tblPhieuXuat.getModel();
-//        table_acc.setRowCount(0);
-//        if (result == JFileChooser.APPROVE_OPTION) {
-//            try {
-//                excelFile = jf.getSelectedFile();
-//                excelFIS = new FileInputStream(excelFile);
-//                excelBIS = new BufferedInputStream(excelFIS);
-//                excelJTableImport = new XSSFWorkbook(excelBIS);
-//                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
-//                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
-//                    XSSFRow excelRow = excelSheet.getRow(row);
-//                    String maPhieu = excelRow.getCell(1).getStringCellValue();
-//                    String nhaCungCap = excelRow.getCell(2).getStringCellValue();
-//                    String nguoiTao = excelRow.getCell(3).getStringCellValue();
-//                    String dateText = excelRow.getCell(4).getStringCellValue();
-//                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-//                    Date dateCheck = format.parse(dateText);
-//                    String giaFomat = excelRow.getCell(5).getStringCellValue().replaceAll(",", "");
-//                    int viTri = giaFomat.length() - 1;
-//                    String giaoke = giaFomat.substring(0, viTri) + giaFomat.substring(viTri + 1);
-//                    double donGia = Double.parseDouble(giaoke);
-//                    table_acc.addRow(new Object[]{
-//                        row, maPhieu, nhaCungCap, nguoiTao, formatDate.format(dateCheck), formatter.format(donGia) + "đ"
-//                    });
-//                }
-//            } catch (FileNotFoundException ex) {
-//                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IOException ex) {
-//                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (ParseException ex) {
-//                Logger.getLogger(PhieuXuatForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-    }//GEN-LAST:event_btnImportExcelActionPerformed
+
+    }//GEN-LAST:event_btnDetailActionPerformed
 
     private void jDateChooserFromPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooserFromPropertyChange
         // TODO add your handling code here:
-//        searchAllCheck();
+        searchAllCheck();
     }//GEN-LAST:event_jDateChooserFromPropertyChange
 
     private void jDateChooserToPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooserToPropertyChange
         // TODO add your handling code here:
-//        searchAllCheck();
+        searchAllCheck();
     }//GEN-LAST:event_jDateChooserToPropertyChange
 
     private void giaTuPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_giaTuPropertyChange
@@ -497,7 +515,7 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
 
     private void giaTuKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_giaTuKeyReleased
         // TODO add your handling code here:
-//        searchAllCheck();
+        searchAllCheck();
     }//GEN-LAST:event_giaTuKeyReleased
 
     private void giaDenMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_giaDenMouseReleased
@@ -506,24 +524,24 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
 
     private void giaDenKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_giaDenKeyReleased
         // TODO add your handling code here:
-//        searchAllCheck();
+        searchAllCheck();
     }//GEN-LAST:event_giaDenKeyReleased
 
     private void jTextFieldSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldSearchKeyReleased
         // TODO add your handling code here:
-//        searchAllCheck();
+        searchAllCheck();
     }//GEN-LAST:event_jTextFieldSearchKeyReleased
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         // TODO add your handling code here:
-//        loadDataToTable();
-//        jComboBoxS.setSelectedIndex(0);
-//        jTextFieldSearch.setText("");
-//        jDateChooserFrom.setCalendar(null);
-//        jDateChooserTo.setCalendar(null);
-//        giaDen.setText("");
-//        giaTu.setText("");
-    }//GEN-LAST:event_jButton7ActionPerformed
+        jComboBoxS.setSelectedIndex(0);
+        jTextFieldSearch.setText("");
+        jDateChooserFrom.setCalendar(null);
+        jDateChooserTo.setCalendar(null);
+        giaDen.setText("");
+        giaTu.setText("");
+        loadDataToTable(allPhieuXuat);
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -539,16 +557,24 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -556,19 +582,17 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+
                 new PhieuXuatGUI().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDetail;
-    private javax.swing.JButton btnImportExcel;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JTextField giaDen;
     private javax.swing.JTextField giaTu;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JComboBox<String> jComboBoxS;
     private com.toedter.calendar.JDateChooser jDateChooserFrom;
     private com.toedter.calendar.JDateChooser jDateChooserTo;
@@ -586,4 +610,204 @@ public class PhieuXuatGUI extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTable tblPhieuXuat;
     // End of variables declaration//GEN-END:variables
+
+    private void openFile(String file) {
+        try {
+            File path = new File(file);
+            Desktop.getDesktop().open(path);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public boolean checkDate(Date dateTest, Date star, Date end) {
+        return dateTest.getTime() >= star.getTime() && dateTest.getTime() <= end.getTime();
+    }
+
+    public Date ChangeFrom(Date date) throws ParseException {
+        SimpleDateFormat fm = new SimpleDateFormat("dd-MM-yyyy 00:00:00");
+        String dateText = fm.format(date);
+        SimpleDateFormat par = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        Date result = par.parse(dateText);
+        return result;
+    }
+
+    public Date ChangeTo(Date date) throws ParseException {
+        SimpleDateFormat fm = new SimpleDateFormat("dd-MM-yyyy 23:59:59");
+        String dateText = fm.format(date);
+        SimpleDateFormat par = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        Date result = par.parse(dateText);
+        return result;
+    }
+
+    public void searchAllCheck() {
+        String luaChon = jComboBoxS.getSelectedItem().toString();
+        String content = jTextFieldSearch.getText();
+        ArrayList<PhieuXuatDTO> result = null;
+        if (content.length() > 0) {
+            result = new ArrayList<>();
+            switch (luaChon) {
+                case "Tất cả":
+                    result = searchTatCa(content);
+                    break;
+                case "Mã phiếu":
+                    result = searchMaPhieu(content);
+                    break;
+                case "Người tạo":
+                    result = searchNguoiTao(content);
+                    break;
+            }
+        } else if (content.length() == 0) {
+            result = PhieuXuatDAO.getInstance().selectAll();
+        }
+
+        Iterator<PhieuXuatDTO> itr = result.iterator();
+
+        if (jDateChooserFrom.getDate() != null || jDateChooserTo.getDate() != null) {
+            Date from;
+            Date to;
+
+            if (jDateChooserFrom.getDate() != null && jDateChooserTo.getDate() == null) {
+                try {
+                    from = ChangeFrom(jDateChooserFrom.getDate());
+                    to = ChangeTo(new Date());
+                    while (itr.hasNext()) {
+                        PhieuXuatDTO phieu = itr.next();
+                        if (!checkDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(phieu.getThoiGianTao()), from, to)) {
+                            itr.remove();
+                        }
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(PhieuXuatGUI.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (jDateChooserTo.getDate() != null && jDateChooserFrom.getDate() == null) {
+                try {
+                    String sDate1 = "01/01/2002";
+                    from = ChangeFrom(new SimpleDateFormat("dd/MM/yyyy").parse(sDate1));
+                    to = ChangeTo(jDateChooserTo.getDate());
+                    while (itr.hasNext()) {
+                        PhieuXuatDTO phieu = itr.next();
+                        if (!checkDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(phieu.getThoiGianTao()), from, to)) {
+                            itr.remove();
+
+                        }
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(PhieuXuatGUI.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    from = ChangeFrom(jDateChooserFrom.getDate());
+                    to = ChangeTo(jDateChooserTo.getDate());
+                    if (from.getTime() > to.getTime()) {
+                        JOptionPane.showMessageDialog(this, "Thời gian không hợp lệ !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                        jDateChooserFrom.setCalendar(null);
+                        jDateChooserTo.setCalendar(null);
+                    } else {
+                        while (itr.hasNext()) {
+                            PhieuXuatDTO phieu = itr.next();
+                            if (!checkDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(phieu.getThoiGianTao()), from, to)) {
+                                itr.remove();
+
+                            }
+                        }
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(PhieuXuatGUI.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        ArrayList<PhieuXuatDTO> result1 = new ArrayList<>();
+
+        if (giaTu.getText().length() > 0 || giaDen.getText().length() > 0) {
+            double a;
+            double b;
+
+            if (giaTu.getText().length() > 0 && giaDen.getText().length() == 0) {
+                a = Double.parseDouble(giaTu.getText());
+                for (int i = 0; i < result.size(); i++) {
+                    if (result.get(i).getTongTien() >= a) {
+                        result1.add(result.get(i));
+                    }
+                }
+            } else if (giaTu.getText().length() == 0 && giaDen.getText().length() > 0) {
+                b = Double.parseDouble(giaDen.getText());
+                for (int i = 0; i < result.size(); i++) {
+                    if (result.get(i).getTongTien() <= b) {
+                        result1.add(result.get(i));
+                    }
+                }
+            } else if (giaTu.getText().length() > 0 && giaDen.getText().length() > 0) {
+                a = Double.parseDouble(giaTu.getText());
+                b = Double.parseDouble(giaDen.getText());
+                for (int i = 0; i < result.size(); i++) {
+                    if (result.get(i).getTongTien() >= a && result.get(i).getTongTien() <= b) {
+                        result1.add(result.get(i));
+                    }
+                }
+            }
+        }
+        if (giaTu.getText().length() > 0 || giaDen.getText().length() > 0) {
+            loadDataToTable(result1);
+        } else {
+            loadDataToTable(result);
+        }
+    }
+
+    private boolean isNumeric(String text) {
+        try {
+            Integer.parseInt(text);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public ArrayList<PhieuXuatDTO> searchTatCa(String text) {
+        ArrayList<PhieuXuatDTO> result = new ArrayList<>();
+
+        ArrayList<PhieuXuatDTO> armt = PhieuXuatDAO.getInstance().selectAll();
+
+        for (var phieu : armt) {
+            if (phieu.getNguoiTao().toLowerCase().contains(text.toLowerCase())) {
+                result.add(phieu);
+            }
+
+            if (!text.isEmpty() && isNumeric(text) && phieu.getMaPhieuXuat() == Integer.parseInt(text)) {
+                result.add(phieu);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<PhieuXuatDTO> searchMaPhieu(String text) {
+        ArrayList<PhieuXuatDTO> result = new ArrayList<>();
+        ArrayList<PhieuXuatDTO> armt = PhieuXuatDAO.getInstance().selectAll();
+        for (var phieu : armt) {
+//            if (phieu.getMaPhieuXuat() == Integer.valueOf(text)) {
+//                result.add(phieu);
+//            }
+            if (!text.isEmpty() && isNumeric(text) && phieu.getMaPhieuXuat() == Integer.parseInt(text)) {
+                result.add(phieu);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<PhieuXuatDTO> searchNguoiTao(String text) {
+        ArrayList<PhieuXuatDTO> result = new ArrayList<>();
+        ArrayList<PhieuXuatDTO> armt = PhieuXuatDAO.getInstance().selectAll();
+        for (var phieu : armt) {
+
+            if (phieu.getNguoiTao().toLowerCase().contains(text.toLowerCase())) {
+                result.add(phieu);
+            }
+
+        }
+        return result;
+    }
+
 }
