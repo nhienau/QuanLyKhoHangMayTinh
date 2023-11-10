@@ -5,63 +5,40 @@ import DTO.DateRangeDTO;
 import DTO.ThongKe.ChiTietGiaNhapNCCDTO;
 import DTO.ThongKe.ChiTietSanPhamNhapDTO;
 import DTO.ThongKe.ThongKeSanPhamDTO;
+import GUI.ThongKeGUI;
+import helper.CustomTableCellRenderer;
+import helper.DateHelper;
+import helper.NumberHelper;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class ChiTietGiaNhapNCCDialog extends javax.swing.JDialog {
+public class ChiTietGiaNhapNCCDialog extends PriceDetailDialog {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private DefaultTableModel dtm;
-    private DefaultTableCellRenderer dtcr;
     
     public ChiTietGiaNhapNCCDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
     }
     
     public ChiTietGiaNhapNCCDialog(JDialog parent, boolean modal, ThongKeSanPhamDTO product, ChiTietSanPhamNhapDTO provider, DateRangeDTO dateRange) {
-        super(parent, modal);
-        initComponents();
-        setLocationRelativeTo(null);
+        super(getOwnerFrame(parent), modal);
         initTable();
         displayInfo(product, provider, dateRange);
         getChiTietGiaNhap(product.getMaSanPham(), provider.getMaNhaCungCap(), dateRange);
     }
     
-    private void initTable() {
-        dtm = new DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Mã phiếu nhập", "Thời gian tạo", "Số lượng nhập", "Đơn giá nhập"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        };
-        table.setModel(dtm);
-        dtcr = new DefaultTableCellRenderer();
-        dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-    }
-    
     private void displayInfo(ThongKeSanPhamDTO product, ChiTietSanPhamNhapDTO provider, DateRangeDTO dateRange) {
-        lblTenSanPham.setText("Tên sản phẩm: " + product.getTenSanPham());
-        lblNhaCungCap.setText("Nhà cung cấp: " + provider.getTenNhaCungCap());
-        lblThoiGian.setText("Thời gian: " + dateRange.getFromDate().format(dateFormatter) + " - " + dateRange.getToDate().format(dateFormatter));
+        super.setTitle("Chi tiết giá nhập từ nhà cung cấp");
+        getLblPrimary().setText("Tên sản phẩm: " + product.getTenSanPham());
+        getLblSecondary().setText("Nhà cung cấp: " + provider.getTenNhaCungCap());
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
+        } else {
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));         
+        }
     }
     
     private void getChiTietGiaNhap(int productId, int providerId, DateRangeDTO dateRange) {
@@ -77,21 +54,31 @@ public class ChiTietGiaNhapNCCDialog extends javax.swing.JDialog {
             e.printStackTrace();
             return;
         }
-        dtm.setRowCount(0);
-        if (arr.size() == 0) return;
-        
+        DefaultTableModel model = (DefaultTableModel) getTable().getModel();
+        model.setRowCount(0);
+        if (arr.isEmpty()) return;
         for (int i = 0; i < arr.size(); ++i) {
             ChiTietGiaNhapNCCDTO ctgn = arr.get(i);
             int maPhieuNhap = ctgn.getMaPhieuNhap();
             LocalDateTime thoiGianTao = ctgn.getThoiGianTao();
-            String strThoiGianTao = thoiGianTao.format(dateTimeFormatter);
+            String strThoiGianTao = thoiGianTao.format(DateHelper.DATE_TIME_FORMATTER);
             int soLuongNhap = ctgn.getSoLuongNhap();
             Long donGiaNhap = ctgn.getDonGiaNhap();
-            Object [] row = {maPhieuNhap, strThoiGianTao, soLuongNhap, donGiaNhap};
-            dtm.addRow(row);
+            String strDonGiaNhap = NumberHelper.appendVND(NumberHelper.commafy(donGiaNhap));
+            Object [] row = {maPhieuNhap, strThoiGianTao, soLuongNhap, strDonGiaNhap};
+            model.addRow(row);
         }
-        for (int i = 0; i < table.getColumnCount(); ++i) {
-            table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+        for (int i = 0; i < getTable().getColumnCount(); ++i) {
+            switch (i) {
+                case 0:
+                case 1:
+                    getTable().getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 2:
+                case 3:
+                    getTable().getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+                    break;
+            }
         }
     }
     
@@ -104,95 +91,19 @@ public class ChiTietGiaNhapNCCDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pContainer = new javax.swing.JPanel();
-        lblTenSanPham = new javax.swing.JLabel();
-        lblNhaCungCap = new javax.swing.JLabel();
-        lblThoiGian = new javax.swing.JLabel();
-        scrollPane = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Chi tiết giá nhập");
         setResizable(false);
-
-        pContainer.setForeground(new java.awt.Color(255, 255, 255));
-
-        lblTenSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblTenSanPham.setForeground(new java.awt.Color(0, 0, 0));
-        lblTenSanPham.setText("Tên sản phẩm: ");
-
-        lblNhaCungCap.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblNhaCungCap.setForeground(new java.awt.Color(0, 0, 0));
-        lblNhaCungCap.setText("Nhà cung cấp: ");
-
-        lblThoiGian.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblThoiGian.setForeground(new java.awt.Color(0, 0, 0));
-        lblThoiGian.setText("Thời gian: ");
-
-        table.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Mã phiếu nhập", "Thời gian tạo", "Số lượng nhập", "Đơn giá nhập"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        scrollPane.setViewportView(table);
-        if (table.getColumnModel().getColumnCount() > 0) {
-            table.getColumnModel().getColumn(0).setResizable(false);
-            table.getColumnModel().getColumn(1).setResizable(false);
-            table.getColumnModel().getColumn(2).setResizable(false);
-            table.getColumnModel().getColumn(3).setResizable(false);
-        }
-
-        javax.swing.GroupLayout pContainerLayout = new javax.swing.GroupLayout(pContainer);
-        pContainer.setLayout(pContainerLayout);
-        pContainerLayout.setHorizontalGroup(
-            pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE)
-                    .addGroup(pContainerLayout.createSequentialGroup()
-                        .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblTenSanPham)
-                            .addComponent(lblNhaCungCap)
-                            .addComponent(lblThoiGian))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        pContainerLayout.setVerticalGroup(
-            pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblTenSanPham)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblNhaCungCap)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblThoiGian)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-                .addContainerGap())
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         pack();
@@ -242,11 +153,25 @@ public class ChiTietGiaNhapNCCDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblNhaCungCap;
-    private javax.swing.JLabel lblTenSanPham;
-    private javax.swing.JLabel lblThoiGian;
-    private javax.swing.JPanel pContainer;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void initTable() {
+        getTable().setModel(new DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Mã phiếu nhập", "Thời gian tạo", "Số lượng nhập", "Đơn giá nhập"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+    }
 }

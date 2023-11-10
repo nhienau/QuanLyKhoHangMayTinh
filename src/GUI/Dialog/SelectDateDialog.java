@@ -2,9 +2,9 @@ package GUI.Dialog;
 
 import DTO.DateRangeDTO;
 import GUI.ThongKeGUI;
+import helper.DateHelper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import javax.swing.JInternalFrame;
@@ -31,8 +31,10 @@ public class SelectDateDialog extends javax.swing.JDialog {
         this.initialDateRange = dateRange;
         this.canSelectAfterToday = canSelectAfterToday;
         setLocationRelativeTo(null);
-        dcFrom.setDate(Date.from(dateRange.getFromDate().atZone(ZoneId.systemDefault()).toInstant()));
-        dcTo.setDate(Date.from(dateRange.getToDate().atZone(ZoneId.systemDefault()).toInstant()));
+        if (dateRange.getFromDate() != null && dateRange.getToDate() != null) {
+            dcFrom.setDate(DateHelper.convertLDTToDateObj(dateRange.getFromDate()));
+            dcTo.setDate(DateHelper.convertLDTToDateObj(dateRange.getToDate()));
+        }
     }
     
     /**
@@ -163,10 +165,11 @@ public class SelectDateDialog extends javax.swing.JDialog {
             return;
         }
         
-        LocalDateTime localFromDate = dcFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime localToDate = dcTo.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+//        LocalDateTime localFromDate = dcFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime localFromDate = DateHelper.convertDateObjToLDT(fromDate);
+        LocalDateTime localToDate = DateHelper.convertDateObjToLDT(toDate);
         
-        if ((localFromDate.toLocalDate().isEqual(initialDateRange.getFromDate().toLocalDate())) && (localToDate.toLocalDate().isEqual(initialDateRange.getToDate().toLocalDate()))) {
+        if (initialDateRange.getFromDate() != null && initialDateRange.getToDate() != null && (localFromDate.toLocalDate().isEqual(initialDateRange.getFromDate().toLocalDate())) && (localToDate.toLocalDate().isEqual(initialDateRange.getToDate().toLocalDate()))) {
             this.dispose();
             return;
         }
@@ -191,7 +194,7 @@ public class SelectDateDialog extends javax.swing.JDialog {
         if (parent instanceof ThongKeGUI) {
             ThongKeGUI thongKeGUI = (ThongKeGUI) parent;
             thongKeGUI.setDateRange(this.dateRangeName, dateRange);
-            thongKeGUI.setIsLoadingTonKho(true);
+            thongKeGUI.setIsLoading(this.dateRangeName, true);
         }
         
         this.dispose();

@@ -3,50 +3,47 @@ package DTO.ThongKe;
 import java.util.Date;
 
 public class ThongKeDoanhThuDTO {
-    private Date ngay;
-    private Long chiPhi;
-    private Long doanhThu;
-    private Long loiNhuan;
-    
-    public ThongKeDoanhThuDTO() {
+    private Date timeline;
+    private Long expense;
+    private Long income;
+    private Long profit;
+
+    public ThongKeDoanhThuDTO(Date timeline, Long expense, Long income, Long profit) {
+        this.timeline = timeline;
+        this.expense = expense;
+        this.income = income;
+        this.profit = profit;
     }
 
-    public ThongKeDoanhThuDTO(Date ngay, Long chiPhi, Long doanhThu, Long loiNhuan) {
-        this.ngay = ngay;
-        this.chiPhi = chiPhi;
-        this.doanhThu = doanhThu;
-        this.loiNhuan = loiNhuan;
+    public Date getTimeline() {
+        return timeline;
     }
 
-    public Date getNgay() {
-        return ngay;
+    public void setTimeline(Date timeline) {
+        this.timeline = timeline;
     }
 
-    public void setNgay(Date ngay) {
-        this.ngay = ngay;
+    public Long getExpense() {
+        return expense;
     }
 
-    public Long getChiPhi() {
-        return chiPhi;
+    public void setExpense(Long expense) {
+        this.expense = expense;
     }
 
-    public void setChiPhi(Long chiPhi) {
-        this.chiPhi = chiPhi;
+    public Long getIncome() {
+        return income;
     }
 
-    public Long getDoanhThu() {
-        return doanhThu;
+    public void setIncome(Long income) {
+        this.income = income;
     }
 
-    public void setDoanhThu(Long doanhThu) {
-        this.doanhThu = doanhThu;
+    public Long getProfit() {
+        return profit;
     }
 
-    public Long getLoiNhuan() {
-        return loiNhuan;
-    }
-
-    public void setLoiNhuan(Long loiNhuan) {
-        this.loiNhuan = loiNhuan;
+    public void setProfit(Long profit) {
+        this.profit = profit;
     }
 }

@@ -3,18 +3,18 @@ package DAO;
 import DTO.DateRangeDTO;
 import DTO.ThongKe.*;
 import database.JDBCUtil;
+import helper.DateHelper;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ThongKeDAO {
-    private final DateTimeFormatter sqlDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public ThongKeDAO() {
     }
     
@@ -41,7 +41,7 @@ public class ThongKeDAO {
                            WHERE (TTPN.tentrangthai LIKE '%delivered%')
                               OR (TTPN.matrangthai IS NULL)
                            GROUP BY dates.date
-                           ORDER BY dates.date;
+                           ORDER BY dates.date DESC;
                            """;
             PreparedStatement ps = conn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
@@ -52,6 +52,8 @@ public class ThongKeDAO {
                 Long loiNhuan = doanhThu - chiPhi;
                 result.add(new ThongKeDoanhThuDTO(ngay, chiPhi, doanhThu, loiNhuan));
             }
+            ps.close();
+            rs.close();
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
             throw e;
@@ -60,9 +62,12 @@ public class ThongKeDAO {
     }
     
     public ArrayList<ThongKeTonKhoDTO> thongKeTonKho(DateRangeDTO dateRange, String productName) throws SQLException {
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            return thongKeTonKhoToanThoiGian(productName);
+        }
         ArrayList<ThongKeTonKhoDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
+        String fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        String toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         try {
             Connection conn = JDBCUtil.getConnection();
             String query = """
@@ -121,6 +126,53 @@ public class ThongKeDAO {
                 int tonCuoiKy = rs.getInt("toncuoiky");
                 result.add(new ThongKeTonKhoDTO(maSanPham, tenSanPham, tonDauKy, nhapTrongKy, xuatTrongKy, tonCuoiKy));
             }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public ArrayList<ThongKeTonKhoDTO> thongKeTonKhoToanThoiGian(String productName) throws SQLException {
+        ArrayList<ThongKeTonKhoDTO> result = new ArrayList<>();
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String query = """
+                            WITH nhaptrongky AS (
+                                SELECT masanpham, SUM(soluongnhap) AS soluongnhap
+                                FROM phieunhap PN JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap JOIN trangthaiphieunhap TTPN ON PN.trangthai = TTPN.matrangthai
+                                WHERE tentrangthai LIKE '%delivered%'
+                                GROUP BY masanpham
+                            ), xuattrongky AS (
+                                SELECT masanpham, SUM(soluong) AS soluongxuat
+                                FROM phieuxuat PX JOIN chitietphieuxuat CTPX ON PX.maphieuxuat = CTPX.maphieuxuat
+                                WHERE PX.trangthai = 1
+                                GROUP BY masanpham
+                            ), tonkho AS (
+                                SELECT SP.masanpham, tensanpham, COALESCE(NTK.soluongnhap, 0) AS nhaptrongky, COALESCE(XTK.soluongxuat, 0) AS xuattrongky, (COALESCE(NTK.soluongnhap, 0) - COALESCE(XTK.soluongxuat, 0)) AS toncuoiky
+                                FROM sanpham SP
+                                LEFT JOIN nhaptrongky NTK ON SP.masanpham = NTK.masanpham
+                                LEFT JOIN xuattrongky XTK ON SP.masanpham = XTK.masanpham
+                            )
+                            SELECT DISTINCT * FROM tonkho
+                            WHERE tensanpham LIKE ?
+                            ORDER BY masanpham
+                           """;
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, "%" + productName + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int maSanPham = rs.getInt("masanpham");
+                String tenSanPham = rs.getString("tensanpham");
+                int nhapTrongKy = rs.getInt("nhaptrongky");
+                int xuatTrongKy = rs.getInt("xuattrongky");
+                int tonCuoiKy = rs.getInt("toncuoiky");
+                result.add(new ThongKeTonKhoDTO(maSanPham, tenSanPham, 0, nhapTrongKy, xuatTrongKy, tonCuoiKy));
+            }
+            ps.close();
+            rs.close();
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
             throw e;
@@ -130,32 +182,52 @@ public class ThongKeDAO {
     
     public ArrayList<ThongKeSanPhamDTO> thongKeSanPham(DateRangeDTO dateRange, String productName) throws SQLException {
         ArrayList<ThongKeSanPhamDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+
+        if (!lifetime) {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
+            WITH slnhap AS (
+                SELECT masanpham, SUM(soluongnhap) AS soluongnhap
+                FROM phieunhap PN
+                JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
+                JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
+                WHERE tentrangthai LIKE '%delivered%'""");
+
+        if (!lifetime) {
+            queryBuilder.append(" AND DATE(PN.thoigiantao) BETWEEN ? AND ?");
+        }
+
+        queryBuilder.append("""
+            GROUP BY masanpham
+            ), temp_table AS (
+                SELECT SP.masanpham, tenloaisanpham, tensanpham, COALESCE(soluongnhap, 0) AS soluongnhap
+                FROM sanpham SP JOIN slnhap SLN ON SP.masanpham = SLN.masanpham
+                JOIN loaisanpham LSP ON SP.maloaisanpham = LSP.maloaisanpham
+            )
+            SELECT * FROM temp_table
+            WHERE tensanpham LIKE ?
+            ORDER BY soluongnhap DESC, masanpham""");
+        
         try {
             Connection conn = JDBCUtil.getConnection();
-            String query = """
-                           WITH slnhap AS (
-                               SELECT masanpham, SUM(soluongnhap) AS soluongnhap
-                               FROM phieunhap PN
-                               JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
-                               JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
-                               WHERE tentrangthai LIKE '%delivered%' AND DATE(PN.thoigiantao) BETWEEN ? AND ?
-                               GROUP BY masanpham
-                           ), temp_table AS (
-                               SELECT SP.masanpham, tenloaisanpham, tensanpham, COALESCE(soluongnhap, 0) AS soluongnhap
-                               FROM sanpham SP JOIN slnhap SLN ON SP.masanpham = SLN.masanpham
-                               JOIN loaisanpham LSP ON SP.maloaisanpham = LSP.maloaisanpham
-                           )
-                           SELECT * FROM temp_table
-                           WHERE tensanpham LIKE ?
-                           ORDER BY soluongnhap DESC, masanpham
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, "%" + productName + "%");
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            int paramIndex = 1;
+
+            if (!lifetime) {
+                ps.setString(paramIndex++, fromDate);
+                ps.setString(paramIndex++, toDate);
+            }
+
+            ps.setString(paramIndex, "%" + productName + "%");
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 int maSanPham = rs.getInt("masanpham");
                 String tenLoaiSanPham = rs.getString("tenloaisanpham");
@@ -163,39 +235,63 @@ public class ThongKeDAO {
                 int soLuongNhap = rs.getInt("soluongnhap");
                 result.add(new ThongKeSanPhamDTO(maSanPham, tenLoaiSanPham, tenSanPham, soLuongNhap));
             }
+
             JDBCUtil.closeConnection(conn);
+            ps.close();
+            rs.close();
         } catch (SQLException e) {
             throw e;
         }
+
         return result;
     }
     
     public ArrayList<ChiTietSanPhamNhapDTO> thongKeChiTietSanPhamNhap(DateRangeDTO dateRange, int productId) throws SQLException {
         ArrayList<ChiTietSanPhamNhapDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+
+        if (!lifetime) {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
+                                WITH tongnhap AS (
+                                    SELECT manhacungcap, SUM(soluongnhap) AS tongsoluongnhap
+                                    FROM phieunhap PN
+                                    JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
+                                    JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
+                                    WHERE tentrangthai LIKE '%delivered%' AND masanpham = ?
+                            """);
+        
+        if (!lifetime) {
+            queryBuilder.append("AND DATE(PN.thoigiantao) BETWEEN ? AND ?");
+        }
+        
+        queryBuilder.append("""
+                                    GROUP BY manhacungcap
+                                    ORDER BY tongsoluongnhap
+                                ), temp_table AS (
+                                        SELECT TN.manhacungcap, tennhacungcap, tongsoluongnhap
+                                    FROM tongnhap TN JOIN nhacungcap NCC ON NCC.manhacungcap = TN.manhacungcap
+                                )
+                                SELECT * FROM temp_table
+                                ORDER BY tongsoluongnhap DESC, manhacungcap
+                                    """);
+        
         try {
             Connection conn = JDBCUtil.getConnection();
-            String query = """
-                            WITH tongnhap AS (
-                                SELECT manhacungcap, SUM(soluongnhap) AS tongsoluongnhap
-                                FROM phieunhap PN
-                                JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
-                                JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
-                                WHERE tentrangthai LIKE '%delivered%' AND DATE(PN.thoigiantao) BETWEEN ? AND ? AND masanpham = ?
-                                GROUP BY manhacungcap
-                                ORDER BY tongsoluongnhap
-                            ), temp_table AS (
-                                    SELECT TN.manhacungcap, tennhacungcap, tongsoluongnhap
-                                FROM tongnhap TN JOIN nhacungcap NCC ON NCC.manhacungcap = TN.manhacungcap
-                            )
-                            SELECT * FROM temp_table
-                            ORDER BY tongsoluongnhap DESC, manhacungcap
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setInt(3, productId);
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, productId);
+            if (!lifetime) {
+                ps.setString(paramIndex++, fromDate);
+                ps.setString(paramIndex, toDate);
+            }
+            
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int maNhaCungCap = rs.getInt("manhacungcap");
@@ -203,6 +299,8 @@ public class ThongKeDAO {
                 int tongSoLuongNhap = rs.getInt("tongsoluongnhap");
                 result.add(new ChiTietSanPhamNhapDTO(maNhaCungCap, tenNhaCungCap, tongSoLuongNhap));
             }
+            ps.close();
+            rs.close();
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
             throw e;
@@ -212,23 +310,39 @@ public class ThongKeDAO {
     
     public ArrayList<ChiTietGiaNhapNCCDTO> chiTietGiaNhapNCC (int productId, int providerId, DateRangeDTO dateRange) throws SQLException {
         ArrayList<ChiTietGiaNhapNCCDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String query = """
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        
+        if (!lifetime) {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
                             SELECT CTPN.maphieunhap, PN.thoigiantao, soluongnhap, dongia AS dongianhap
                             FROM phieunhap PN
                             JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
                             JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
-                            WHERE tentrangthai LIKE '%delivered%' AND DATE(PN.thoigiantao) BETWEEN ? AND ? AND masanpham = ? AND CTPN.manhacungcap = ?
-                            ORDER BY thoigiantao DESC, soluongnhap DESC, dongia
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setInt(3, productId);
-            ps.setInt(4, providerId);
+                            WHERE tentrangthai LIKE '%delivered%' AND masanpham = ? AND CTPN.manhacungcap = ?
+                            """);
+        if (!lifetime) {
+            queryBuilder.append("AND DATE(PN.thoigiantao) BETWEEN ? AND ?");
+        }
+        
+        queryBuilder.append("ORDER BY thoigiantao DESC, soluongnhap DESC, dongia");
+        
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, productId);
+            ps.setInt(paramIndex++, providerId);
+            if (!lifetime) {
+                ps.setString(paramIndex++, fromDate);
+                ps.setString(paramIndex, toDate);
+            }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int maPhieuNhap = rs.getInt("maphieunhap");
@@ -249,24 +363,40 @@ public class ThongKeDAO {
     
     public ArrayList<ThongKeLoaiSanPhamDTO> thongKeLoaiSanPham(DateRangeDTO dateRange, String productType) throws SQLException {
         ArrayList<ThongKeLoaiSanPhamDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String query = """
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        
+        if (!lifetime) {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
                             SELECT LSP.maloaisanpham, tenloaisanpham, SUM(CTPX.soluong) AS soluong
                             FROM chitietphieuxuat CTPX
                             JOIN phieuxuat PX ON CTPX.maphieuxuat = PX.maphieuxuat
                             JOIN sanpham SP ON CTPX.masanpham = SP.masanpham
                             JOIN loaisanpham LSP ON LSP.maloaisanpham = SP.maloaisanpham
-                            WHERE PX.trangthai = 1 AND DATE(PX.thoigiantao) BETWEEN ? AND ? AND tenloaisanpham LIKE ?
+                            WHERE PX.trangthai = 1 AND tenloaisanpham LIKE ?
+                            """);
+        if (!lifetime) {
+            queryBuilder.append("AND DATE(PX.thoigiantao) BETWEEN ? AND ?");
+        }
+        queryBuilder.append("""
                             GROUP BY LSP.maloaisanpham
                             ORDER BY soluong DESC, maloaisanpham
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, "%" + productType + "%");
+                            """);
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            int paramIndex = 1;
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            ps.setString(paramIndex++, "%" + productType + "%");
+            if (!lifetime) {
+                ps.setString(paramIndex++, fromDate);
+                ps.setString(paramIndex, toDate);
+            }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int maLoaiSanPham = rs.getInt("maloaisanpham");
@@ -285,24 +415,41 @@ public class ThongKeDAO {
     
     public ArrayList<ChiTietLoaiSanPhamDTO> chiTietLoaiSanPham(DateRangeDTO dateRange, int productTypeId) throws SQLException {
         ArrayList<ChiTietLoaiSanPhamDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String query = """
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        
+        if (!lifetime) {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
                             SELECT CTPX.masanpham, tensanpham, SUM(CTPX.soluong) AS soluong
                             FROM chitietphieuxuat CTPX
                             JOIN phieuxuat PX ON CTPX.maphieuxuat = PX.maphieuxuat
                             JOIN sanpham SP ON SP.masanpham = CTPX.masanpham
                             JOIN loaisanpham LSP ON LSP.maloaisanpham = SP.maloaisanpham
-                            WHERE PX.trangthai = 1 AND DATE(PX.thoigiantao) BETWEEN ? AND ? AND LSP.maloaisanpham = ?
+                            WHERE PX.trangthai = 1 AND LSP.maloaisanpham = ?
+                            """);
+        if (!lifetime) {
+            queryBuilder.append(" AND DATE(PX.thoigiantao) BETWEEN ? AND ?");
+        }
+        queryBuilder.append("""
                             GROUP BY CTPX.masanpham
                             ORDER BY soluong DESC, masanpham DESC
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setInt(3, productTypeId);
+                            """);
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            int paramIndex = 1;
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            
+            ps.setInt(paramIndex++, productTypeId);
+            if (!lifetime) {
+                ps.setString(paramIndex++, fromDate);
+                ps.setString(paramIndex, toDate);
+            }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int maSanPham = rs.getInt("masanpham");
@@ -321,21 +468,38 @@ public class ThongKeDAO {
 
     public ArrayList<ChiTietGiaXuatSPDTO> chiTietGiaXuatSanPham (int productId, DateRangeDTO dateRange) throws SQLException {
         ArrayList<ChiTietGiaXuatSPDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String query = """
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        
+        if (!lifetime) {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
                             SELECT CTPX.maphieuxuat, thoigiantao, soluong AS soluongxuat, dongia AS dongiaxuat
                             FROM chitietphieuxuat CTPX
                             JOIN phieuxuat PX ON CTPX.maphieuxuat = PX.maphieuxuat
-                            WHERE PX.trangthai = 1 AND DATE(PX.thoigiantao) BETWEEN ? AND ? AND masanpham = ?
+                            WHERE PX.trangthai = 1 AND masanpham = ?
+                            """);
+        if (!lifetime) {
+            queryBuilder.append(" AND DATE(PX.thoigiantao) BETWEEN ? AND ?");
+        }
+        
+        queryBuilder.append("""
                             ORDER BY thoigiantao DESC, soluongxuat DESC, dongiaxuat
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setInt(3, productId);
+                            """);
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            int paramIndex = 1;
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            ps.setInt(paramIndex++, productId);
+            if (!lifetime) {
+                ps.setString(paramIndex++, fromDate);
+                ps.setString(paramIndex++, toDate);
+            }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int maPhieuXuat = rs.getInt("maphieuxuat");
@@ -344,6 +508,186 @@ public class ThongKeDAO {
                 int soLuongXuat = rs.getInt("soluongxuat");
                 Long donGiaXuat = rs.getLong("dongiaxuat");
                 result.add(new ChiTietGiaXuatSPDTO(maPhieuXuat, thoiGianTao, soLuongXuat, donGiaXuat));
+            }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) throws SQLException, ParseException {
+        ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
+        String queryTimeline = "";
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+
+        if (lifetime) {
+            return thongKeDoanhThuToanThoiGian(groupBy);
+        } else {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        switch (groupBy) {
+            case "date":
+                queryTimeline = "DR.date";
+                break;
+            case "month":
+                queryTimeline = "DATE_FORMAT(DR.date, '" + DateHelper.SQL_QUERY_MONTH_FORMAT + "')";
+                break;
+            case "year":
+                queryTimeline = "DATE_FORMAT(DR.date, '" + DateHelper.SQL_QUERY_YEAR_FORMAT + "')";
+                break;
+            default:
+                // throw new exception
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
+                            WITH RECURSIVE date_range AS (
+                                SELECT DATE(?) AS date
+                                UNION ALL
+                                SELECT DATE_ADD(date, INTERVAL 1 DAY)
+                                FROM date_range
+                                WHERE DATE_ADD(date, INTERVAL 1 DAY) <= ?
+                            ),
+                            temp_table AS (
+                                SELECT
+                            """);
+        queryBuilder.append(queryTimeline);
+        queryBuilder.append(" AS ");
+        queryBuilder.append(groupBy);
+        queryBuilder.append("""
+                                    ,
+                                    COALESCE(SUM(PN.tongtien), 0) AS expense,
+                                    COALESCE(SUM(PX.tongtien), 0) AS income
+                                FROM date_range DR
+                                LEFT JOIN phieunhap PN ON DR.date = DATE(PN.thoigiantao)
+                                LEFT JOIN phieuxuat PX ON DR.date = DATE(PX.thoigiantao)
+                                LEFT JOIN trangthaiphieunhap TTPN ON PN.trangthai = TTPN.matrangthai
+                                WHERE (TTPN.tentrangthai LIKE '%delivered%') OR (TTPN.matrangthai IS NULL)
+                                GROUP BY
+                            """);
+        queryBuilder.append(queryTimeline);
+        queryBuilder.append(" ORDER BY ");
+        queryBuilder.append(queryTimeline);
+        queryBuilder.append("""
+                             DESC
+                            )
+                            SELECT * FROM temp_table
+                            """);
+        
+        if (filter) {
+            queryBuilder.append("""
+                                WHERE expense <> 0 OR income <> 0
+                                """);
+        }
+        
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            ps.setString(1, fromDate);
+            ps.setString(2, toDate);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Date timeline = null;
+                switch (groupBy) {
+                    case "date":
+                        timeline = rs.getDate(groupBy);
+                        break;
+                    case "month":
+                        String timelineMonth = rs.getString(groupBy);
+                        timeline = DateHelper.SQL_ROW_MONTH_FORMATTER.parse(timelineMonth);
+                        break;
+                    case "year":
+                        String timelineYear = rs.getString(groupBy);
+                        timeline = DateHelper.SQL_ROW_YEAR_FORMATTER.parse(timelineYear);
+                        break;
+                    default:
+                        // throw new exception
+                }
+                Long expense = rs.getLong("expense");
+                Long income = rs.getLong("income");
+                Long profit = income - expense;
+                result.add(new ThongKeDoanhThuDTO(timeline, expense, income, profit));
+            }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThuToanThoiGian(String groupBy) throws SQLException, ParseException {
+        ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
+        String format = "";
+        
+        switch (groupBy) {
+            case "month":
+                format = DateHelper.SQL_QUERY_MONTH_FORMAT;
+                break;
+            case "year":
+                format = DateHelper.SQL_QUERY_YEAR_FORMAT;
+                break;
+            default:
+                // throw new exception
+        }
+        
+        String query = """
+                       WITH temp_table AS (
+                           SELECT
+                               DATE_FORMAT(thoigiantao, ?) AS timeline,
+                               COALESCE(SUM(tongtien), 0) AS expense,
+                               0 AS income
+                           FROM phieunhap
+                           LEFT JOIN trangthaiphieunhap ON phieunhap.trangthai = trangthaiphieunhap.matrangthai
+                           WHERE trangthaiphieunhap.tentrangthai LIKE '%delivered%' OR trangthaiphieunhap.matrangthai IS NULL
+                           GROUP BY timeline
+                       
+                           UNION ALL
+                       
+                           SELECT
+                               DATE_FORMAT(thoigiantao, ?) AS timeline,
+                               0 AS expense,
+                               COALESCE(SUM(tongtien), 0) AS income
+                           FROM phieuxuat
+                           GROUP BY timeline
+                       )
+                       SELECT timeline, SUM(expense) AS expense, SUM(income) AS income
+                       FROM temp_table
+                       GROUP BY timeline
+                       ORDER BY timeline DESC
+                       """;
+        
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, format);
+            ps.setString(2, format);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Date timeline = null;
+                switch (groupBy) {
+                    case "month":
+                        String timelineMonth = rs.getString("timeline");
+                        timeline = DateHelper.SQL_ROW_MONTH_FORMATTER.parse(timelineMonth);
+                        break;
+                    case "year":
+                        String timelineYear = rs.getString("timeline");
+                        timeline = DateHelper.SQL_ROW_YEAR_FORMATTER.parse(timelineYear);
+                        break;
+                    default:
+                }
+                Long expense = rs.getLong("expense");
+                Long income = rs.getLong("income");
+                Long profit = income - expense;
+                result.add(new ThongKeDoanhThuDTO(timeline, expense, income, profit));
             }
             ps.close();
             rs.close();

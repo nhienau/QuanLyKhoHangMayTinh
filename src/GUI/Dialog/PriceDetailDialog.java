@@ -5,35 +5,14 @@ import java.awt.Window;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 
 public abstract class PriceDetailDialog extends javax.swing.JDialog {
-    private DefaultTableModel defaultTableModel;
-    private DefaultTableCellRenderer defaultTableCellRenderer;
-    
     public PriceDetailDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
     }
-
-    public DefaultTableModel getDefaultTableModel() {
-        return defaultTableModel;
-    }
-
-    public void setDefaultTableModel(DefaultTableModel defaultTableModel) {
-        this.defaultTableModel = defaultTableModel;
-    }
-
-    public DefaultTableCellRenderer getDefaultTableCellRenderer() {
-        return defaultTableCellRenderer;
-    }
-
-    public void setDefaultTableCellRenderer(DefaultTableCellRenderer defaultTableCellRenderer) {
-        this.defaultTableCellRenderer = defaultTableCellRenderer;
-    }
-
+    
     public JLabel getLblPrimary() {
         return lblPrimary;
     }

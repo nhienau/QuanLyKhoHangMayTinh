@@ -4,6 +4,7 @@ import DAO.ThongKeDAO;
 import DTO.DateRangeDTO;
 import DTO.ThongKe.*;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class ThongKeBUS {
@@ -42,5 +43,9 @@ public class ThongKeBUS {
     
     public ArrayList<ChiTietGiaXuatSPDTO> chiTietGiaXuatSanPham (int productId, DateRangeDTO dateRange) throws SQLException {
         return tkDAO.chiTietGiaXuatSanPham(productId, dateRange);
+    }
+    
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) throws SQLException, ParseException {
+        return tkDAO.thongKeDoanhThu(dateRange, filter, groupBy);
     }
 }

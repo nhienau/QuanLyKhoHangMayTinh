@@ -4,26 +4,26 @@ import BUS.ThongKeBUS;
 import DTO.DateRangeDTO;
 import DTO.NguoiDungDTO;
 import DTO.ThongKe.*;
-import GUI.Chart.ModelChart;
 import GUI.Dialog.ChiTietLoaiSanPhamDialog;
 import GUI.Dialog.ChiTietSanPhamNhapDialog;
 import GUI.Dialog.SelectDateDialog;
+import helper.CustomTableCellRenderer;
+import helper.DateHelper;
 import helper.LoaiSanPhamTableModel;
+import helper.NumberHelper;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class ThongKeGUI extends javax.swing.JInternalFrame {
@@ -31,15 +31,10 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private ArrayList<ThongKeLoaiSanPhamDTO> arrLoaiSanPham;
     private DefaultTableModel dtmOverview;
     private DefaultTableModel dtmTonKho;
+    private DefaultTableModel dtmDoanhThu;
     private DefaultTableModel dtmSanPham;
-    private DefaultTableModel dtmLoaiSanPham;
-    private DefaultTableCellRenderer dtcrOverview;
-    private DefaultTableCellRenderer dtcrTonKho;
-    private DefaultTableCellRenderer dtcrSanPham;
-    private DefaultTableCellRenderer dtcrLoaiSanPham;
     private LoaiSanPhamTableModel tmLoaiSanPham;
     
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final LocalDateTime nowDateTime = LocalDateTime.now();
     private final LocalDateTime lastMonthDateTime = nowDateTime.minusMonths(1);
     private final LocalDateTime last2MonthDateTime = nowDateTime.minusMonths(2);
@@ -50,13 +45,18 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final String CB_VALUE_LAST_30_DAYS = "30 ngày qua";
     private final String CB_VALUE_LAST_90_DAYS = "90 ngày qua";
     private final String CB_VALUE_LAST_365_DAYS = "365 ngày qua";
-    private final String CB_VALUE_LIFETIME = "Toàn thời gian";
+    public static final String CB_VALUE_LIFETIME = "Toàn thời gian";
     private final String CB_VALUE_CURRENT_YEAR = Integer.toString(curYear);
     private final String CB_VALUE_LAST_YEAR = Integer.toString(curYear - 1);
     private final String CB_VALUE_CURRENT_MONTH = "Tháng " + curMonth;
     private final String CB_VALUE_LAST_MONTH = "Tháng " + lastMonthDateTime.getMonthValue() + (lastMonthDateTime.getYear() == curYear ? "" : "/" + lastMonthDateTime.getYear());
     private final String CB_VALUE_LAST_2_MONTHS = "Tháng " + last2MonthDateTime.getMonthValue() + (last2MonthDateTime.getYear() == curYear ? "" : "/" + last2MonthDateTime.getYear());
     private final String CB_VALUE_CUSTOM = "Tuỳ chỉnh";
+    
+    private final String CB_VALUE_GROUP_BY_DATE = "Ngày";
+    private final String CB_VALUE_GROUP_BY_MONTH = "Tháng";
+    private final String CB_VALUE_GROUP_BY_YEAR = "Năm";
+    private final int DT_QUERY_MAX_DATES = 90;
     
     private DateRangeDTO drTonKho;
     private DateRangeDTO drDoanhThu;
@@ -68,8 +68,12 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private String queryLoaiSanPham;
     
     private boolean isLoadingTonKho;
+    private boolean isLoadingDoanhThu;
     private boolean isLoadingSanPham;
     private boolean isLoadingLoaiSanPham;
+    
+    private boolean filterDoanhThu;
+    private String doanhThuGroupBy;
     
     /**
      * Creates new form ThongKeGUI
@@ -85,9 +89,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         setModelComboBox();
         initLoadingState();
         initQueryString();
+        initDoanhThuOption();
         
         thongKeDoanhThu7NgayQua();
         thongKeTonKho(drTonKho, queryTonKho);
+        thongKeDoanhThu(drDoanhThu, filterDoanhThu, doanhThuGroupBy);
         thongKeSanPham(drSanPham, querySanPham);
         thongKeLoaiSanPham(drLoaiSanPham, queryLoaiSanPham);
         // Authorize
@@ -114,6 +120,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         this.queryTonKho = queryTonKho;
     }
 
+    public boolean isIsLoadingDoanhThu() {
+        return isLoadingDoanhThu;
+    }
+
+    public void setIsLoadingDoanhThu(boolean isLoadingDoanhThu) {
+        this.isLoadingDoanhThu = isLoadingDoanhThu;
+    }
+    
     public String getQuerySanPham() {
         return querySanPham;
     }
@@ -145,6 +159,22 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     public void setIsLoadingLoaiSanPham(boolean isLoadingLoaiSanPham) {
         this.isLoadingLoaiSanPham = isLoadingLoaiSanPham;
     }
+
+    public boolean isFilterDoanhThu() {
+        return filterDoanhThu;
+    }
+
+    public void setFilterDoanhThu(boolean filterDoanhThu) {
+        this.filterDoanhThu = filterDoanhThu;
+    }
+
+    public String getDoanhThuGroupBy() {
+        return doanhThuGroupBy;
+    }
+
+    public void setDoanhThuGroupBy(String doanhThuGroupBy) {
+        this.doanhThuGroupBy = doanhThuGroupBy;
+    }
     
     private void initList() {
         this.arrLoaiSanPham = new ArrayList<>();
@@ -168,8 +198,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             }
         };
         tbOverview.setModel(dtmOverview);
-        dtcrOverview = new DefaultTableCellRenderer();
-        dtcrOverview.setHorizontalAlignment(SwingConstants.CENTER);
         
         dtmTonKho = new DefaultTableModel(
             new Object [][] {
@@ -189,8 +217,24 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         };
         tbTonKho.setModel(dtmTonKho);
         tbTonKho.getColumnModel().getColumn(1).setPreferredWidth(400);
-        dtcrTonKho = new DefaultTableCellRenderer();
-        dtcrTonKho.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        dtmDoanhThu = new DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "[]", "Chi phí", "Doanh thu", "Lợi nhuận"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
+        tbDoanhThu.setModel(dtmDoanhThu);
         
         dtmSanPham = new DefaultTableModel(
             new Object [][] {
@@ -211,28 +255,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         
         tbSanPham.setModel(dtmSanPham);
         tbSanPham.getColumnModel().getColumn(2).setPreferredWidth(400);
-        dtcrSanPham = new DefaultTableCellRenderer();
-        dtcrSanPham.setHorizontalAlignment(SwingConstants.CENTER);
-        
-//        dtmLoaiSanPham = new DefaultTableModel(
-//            new Object [][] {
-//
-//            },
-//            new String [] {
-//                "Mã", "Loại sản phẩm", "Số lượng xuất"
-//            }
-//        ) {
-//            boolean[] canEdit = new boolean [] {
-//                false, false, false
-//            };
-//
-//            public boolean isCellEditable(int rowIndex, int columnIndex) {
-//                return canEdit [columnIndex];
-//            }
-//        };
-        
-//        tbLoaiSanPham.setModel(dtmLoaiSanPham);
-//        tbLoaiSanPham.getColumnModel().removeColumn(tbLoaiSanPham.getColumnModel().getColumn(0));
 
         String[] tbLoaiSanPhamColumnNames = {"Mã", "Loại sản phẩm", "Số lượng xuất"};
         this.tmLoaiSanPham = new LoaiSanPhamTableModel(this.arrLoaiSanPham, tbLoaiSanPhamColumnNames);
@@ -241,8 +263,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         tbLoaiSanPham.getColumnModel().getColumn(0).setMaxWidth(0);
         tbLoaiSanPham.getColumnModel().getColumn(0).setWidth(0);
         tbLoaiSanPham.getColumnModel().getColumn(0).setPreferredWidth(0);
-        dtcrLoaiSanPham = new DefaultTableCellRenderer();
-        dtcrLoaiSanPham.setHorizontalAlignment(SwingConstants.CENTER);
     }
     
     private void initChart() {
@@ -269,10 +289,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                 CB_VALUE_LAST_2_MONTHS, CB_VALUE_CUSTOM }));
             cb.setSelectedIndex(0);
         }
+        
+        cbDoanhThuQueryGroupBy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { CB_VALUE_GROUP_BY_DATE, CB_VALUE_GROUP_BY_MONTH, 
+            CB_VALUE_GROUP_BY_YEAR }));
     }
 
     private void initLoadingState() {
         setIsLoadingTonKho(false);
+        setIsLoadingDoanhThu(false);
         setIsLoadingSanPham(false);
         setIsLoadingLoaiSanPham(false);
     }
@@ -281,6 +305,36 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         setQueryTonKho("");
         setQuerySanPham("");
         setQueryLoaiSanPham("");
+    }
+    
+    private void initDoanhThuOption() {
+        setFilterDoanhThu(false);
+        setDoanhThuGroupBy("date");
+    }
+    
+    private boolean handleDoanhThuOptionChanged() {
+        boolean modifiedUserOption = false;
+        
+        if (drDoanhThu.getFromDate() != null && drDoanhThu.getToDate() != null) {
+            long differenceInDays = ChronoUnit.DAYS.between(drDoanhThu.getFromDate(), drDoanhThu.getToDate());
+            if (differenceInDays <= DT_QUERY_MAX_DATES)
+                return modifiedUserOption;
+        }
+        
+        switch (String.valueOf(cbDoanhThuQueryGroupBy.getSelectedItem())) {
+            case CB_VALUE_GROUP_BY_DATE:
+                cbDoanhThuQueryGroupBy.setSelectedIndex(1);
+                setDoanhThuGroupBy("month");
+                modifiedUserOption = true;
+                break;
+            default:
+        }
+//        if (!checkBoxDoanhThuRowFilter.isSelected()) {
+//            setFilterDoanhThu(true);
+//            checkBoxDoanhThuRowFilter.setSelected(true);
+//            modifiedUserOption = true;
+//        }
+        return modifiedUserOption;
     }
     
     public void setDateRange(String dateRangeName, DateRangeDTO dateRange) {
@@ -293,13 +347,17 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         } else if (dateRangeName.equals("loaisanpham")) {
             drLoaiSanPham = dateRange;
             displayDateRangeToLabel(drLoaiSanPham, lblLoaiSanPhamDate);
+        } else if (dateRangeName.equals("doanhthu")) {
+            drDoanhThu = dateRange;
+            displayDateRangeToLabel(drDoanhThu, lblDoanhThuDate);
         }
-        // else if..
     }
     
-    private void setIsLoading(String name, boolean value) {
+    public void setIsLoading(String name, boolean value) {
         if (name.equals("tonkho")) {
             setIsLoadingTonKho(value);
+        } else if (name.equals("doanhthu")) {
+            setIsLoadingDoanhThu(value);
         } else if (name.equals("sanpham")) {
             setIsLoadingSanPham(value);
         } else if (name.equals("loaisanpham")) {
@@ -308,15 +366,15 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     }
     
     private void displayDateRangeToLabel(DateRangeDTO dateRange, javax.swing.JLabel label) {
-        label.setText(dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
+        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            label.setText(CB_VALUE_LIFETIME); 
+        } else {
+            label.setText(dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));
+        }
     }
 
     private void handleComboBoxChanged(String name, String value, DateRangeDTO dateRange, javax.swing.JLabel label) {
-        if (value.equals(CB_VALUE_LIFETIME)) {
-            // Reset 2 date range
-            label.setText(CB_VALUE_LIFETIME);
-            return;
-        } else if (value.equals(CB_VALUE_CUSTOM)) {
+        if (value.equals(CB_VALUE_CUSTOM)) {
             SelectDateDialog selectDate = new SelectDateDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, name, dateRange, 0, false);
             selectDate.setVisible(true);
             return;
@@ -333,6 +391,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         } else if (value.equals(CB_VALUE_LAST_365_DAYS)) {
             dateRange.setFromDate(nowDateTime.minusDays(364));
             dateRange.setToDate(nowDateTime);
+        } else if (value.equals(CB_VALUE_LIFETIME)) {
+            dateRange.setFromDate(null);
+            dateRange.setToDate(null);
         } else if (value.equals(CB_VALUE_CURRENT_YEAR)) {
             dateRange.setFromDate(LocalDateTime.of(curYear, 1, 1, 0, 0));
             dateRange.setToDate(nowDateTime);
@@ -415,17 +476,19 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         dtmOverview.setRowCount(0);
         for (int i = 0; i < arr.size(); ++i) {
             ThongKeDoanhThuDTO tkdtDTO = arr.get(i);
-            Date ngay = tkdtDTO.getNgay();
-            Long chiPhi = tkdtDTO.getChiPhi();
-            Long doanhThu = tkdtDTO.getDoanhThu();
-            Long loiNhuan = tkdtDTO.getLoiNhuan();
-            Object [] row = {ngay, chiPhi, doanhThu, loiNhuan};
+            Date timeline = tkdtDTO.getTimeline();
+            LocalDateTime localDateTime = DateHelper.convertDateObjToLDT(timeline);
+            String strTimeline = localDateTime.format(DateHelper.DATE_FORMATTER);
+            String expense = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getExpense()));
+            String income = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getIncome()));
+            String profit = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getProfit()));
+            Object [] row = {strTimeline, expense, income, profit};
             dtmOverview.addRow(row);
-            chartOverview.addData(new ModelChart(ngay.toString(), new double[]{chiPhi, doanhThu, loiNhuan}));
+            // add to chart
         }
         
         for (int i = 0; i < tbOverview.getColumnCount(); ++i) {
-            tbOverview.getColumnModel().getColumn(i).setCellRenderer(dtcrOverview);
+            tbOverview.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
         }
     }
     
@@ -455,7 +518,16 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             dtmTonKho.addRow(row);
         }
         for (int i = 0; i < tbTonKho.getColumnCount(); ++i) {
-            tbTonKho.getColumnModel().getColumn(i).setCellRenderer(dtcrTonKho);
+            switch (i) {
+                case 0:
+                    tbTonKho.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 1:
+                    tbTonKho.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.LEFT);
+                    break;
+                default:
+                    tbTonKho.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+            }
         }
         setIsLoadingTonKho(false);
     }
@@ -484,7 +556,18 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             dtmSanPham.addRow(row);
         }
         for (int i = 0; i < tbSanPham.getColumnCount(); ++i) {
-            tbSanPham.getColumnModel().getColumn(i).setCellRenderer(dtcrSanPham);
+            switch (i) {
+                case 0:
+                    tbSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 1:
+                case 2:
+                    tbSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.LEFT);
+                    break;
+                case 3:
+                    tbSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+                    break;
+            }
         }
         setIsLoadingSanPham(false);
     }
@@ -492,6 +575,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private void thongKe(String name, DateRangeDTO dateRange, String query) {
         if (name.equals("tonkho")) {
             thongKeTonKho(dateRange, query);
+        } else if (name.equals("doanhthu")) {
+            btnThongKeDoanhThuActionPerformed(null);
         } else if (name.equals("sanpham")) {
             thongKeSanPham(dateRange, query);
         } else if (name.equals("loaisanpham")) {
@@ -524,9 +609,84 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 //            dtmLoaiSanPham.addRow(row);
 //        }
         for (int i = 0; i < tbLoaiSanPham.getColumnCount(); ++i) {
-            tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(dtcrLoaiSanPham);
+            switch (i) {
+                case 0:
+                    tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+                    break;
+                case 1:
+                    tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.LEFT);
+                    break;
+                case 2:
+                    tbLoaiSanPham.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.RIGHT);
+                    break;
+            }
         }
         setIsLoadingLoaiSanPham(false);
+    }
+    
+    private void thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) {
+        // dateRange: get data from start_date to end_date
+        // filter: filter out dates with no expense and income
+        // groupBy: group results by date/month/year
+        ArrayList<ThongKeDoanhThuDTO> arr = new ArrayList<>();
+        try {
+            arr = tkBUS.thongKeDoanhThu(dateRange, filter, groupBy);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        String timelineColumnName = "";
+        switch (groupBy) {
+            case "date":
+                timelineColumnName = CB_VALUE_GROUP_BY_DATE;
+                break;
+            case "month":
+                timelineColumnName = CB_VALUE_GROUP_BY_MONTH;
+                break;
+            case "year":
+                timelineColumnName = CB_VALUE_GROUP_BY_YEAR;
+                break;
+        }
+        
+        // Change column name
+        tbDoanhThu.getColumnModel().getColumn(0).setHeaderValue(timelineColumnName);
+        tbDoanhThu.getTableHeader().repaint();
+        
+        dtmDoanhThu.setRowCount(0);
+        for (int i = 0; i < arr.size(); ++i) {
+            ThongKeDoanhThuDTO tkdtDTO = arr.get(i);
+            Date timeline = tkdtDTO.getTimeline();
+            LocalDateTime localDateTime = DateHelper.convertDateObjToLDT(timeline);
+            String expense = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getExpense()));
+            String income = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getIncome()));
+            String profit = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getProfit()));
+            String strTimeline = "";
+            switch (groupBy) {
+                case "date":
+                    strTimeline = localDateTime.format(DateHelper.DATE_FORMATTER);
+                    break;
+                case "month":
+                    strTimeline = localDateTime.format(DateHelper.MONTH_FORMATTER);
+                    break;
+                case "year":
+                    strTimeline = localDateTime.format(DateHelper.YEAR_FORMATTER);
+                    break;
+            }
+            Object [] row = {strTimeline, expense, income, profit};
+            dtmDoanhThu.addRow(row);
+//            chartOverview.addData(new ModelChart(timeline.toString(), new double[]{expense, income, profit}));
+        }
+        
+        for (int i = 0; i < tbOverview.getColumnCount(); ++i) {
+            tbDoanhThu.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+        }
+        setIsLoadingDoanhThu(false);
     }
     
     /**
@@ -569,15 +729,21 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         scrollPane2 = new javax.swing.JScrollPane();
         tbTonKho = new javax.swing.JTable();
         pDoanhThu = new javax.swing.JPanel();
+        pChartContainer = new javax.swing.JPanel();
+        lblNoChartData = new javax.swing.JLabel();
         pFilterDoanhThu = new javax.swing.JPanel();
-        cbDoanhThuDate = new javax.swing.JComboBox<>();
         lblDoanhThuDate = new javax.swing.JLabel();
-        toolbarDoanhThu = new javax.swing.JToolBar();
-        btnReloadTonKho1 = new javax.swing.JButton();
-        btnExportExcelTonKho1 = new javax.swing.JButton();
+        cbDoanhThuDate = new javax.swing.JComboBox<>();
+        cbDoanhThuQueryGroupBy = new javax.swing.JComboBox<>();
+        checkBoxDoanhThuRowFilter = new javax.swing.JCheckBox();
+        btnThongKeDoanhThu = new javax.swing.JButton();
+        btnReloadDoanhThu = new javax.swing.JButton();
+        btnExportExcelDoanhThu = new javax.swing.JButton();
+        lblDoanhThuQueryGroupBy1 = new javax.swing.JLabel();
+        spMessageOptionChanged = new javax.swing.JScrollPane();
+        taOptionChanged = new javax.swing.JTextArea();
         scrollPane3 = new javax.swing.JScrollPane();
         tbDoanhThu = new javax.swing.JTable();
-        chartDoanhThu = new GUI.Chart.Chart();
         pSanPham = new javax.swing.JPanel();
         pFilterSanPham = new javax.swing.JPanel();
         lblSearchSanPham = new javax.swing.JLabel();
@@ -736,6 +902,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             .addComponent(chartOverview, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
         );
 
+        tbOverview.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbOverview.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -908,35 +1075,122 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
         pDoanhThu.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblNoChartData.setText("Không có dữ liệu");
+
+        javax.swing.GroupLayout pChartContainerLayout = new javax.swing.GroupLayout(pChartContainer);
+        pChartContainer.setLayout(pChartContainerLayout);
+        pChartContainerLayout.setHorizontalGroup(
+            pChartContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pChartContainerLayout.createSequentialGroup()
+                .addContainerGap(539, Short.MAX_VALUE)
+                .addComponent(lblNoChartData)
+                .addGap(539, 539, 539))
+        );
+        pChartContainerLayout.setVerticalGroup(
+            pChartContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pChartContainerLayout.createSequentialGroup()
+                .addGap(162, 162, 162)
+                .addComponent(lblNoChartData)
+                .addContainerGap(162, Short.MAX_VALUE))
+        );
+
         pFilterDoanhThu.setBackground(new java.awt.Color(255, 255, 255));
-        pFilterDoanhThu.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
+        pFilterDoanhThu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pFilterDoanhThu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pFilterDoanhThu.add(cbDoanhThuDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 50, 210, -1));
 
         lblDoanhThuDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         lblDoanhThuDate.setForeground(new java.awt.Color(0, 0, 0));
         lblDoanhThuDate.setText("dd/mm/yyyy - dd/mm/yyyy");
-        pFilterDoanhThu.add(lblDoanhThuDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, -1));
+        pFilterDoanhThu.add(lblDoanhThuDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        toolbarDoanhThu.setBackground(new java.awt.Color(255, 255, 255));
-        toolbarDoanhThu.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
-        toolbarDoanhThu.setRollover(true);
+        cbDoanhThuDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbDoanhThuDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbDoanhThuDateActionPerformed(evt);
+            }
+        });
+        pFilterDoanhThu.add(cbDoanhThuDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 280, -1));
 
-        btnReloadTonKho1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
-        btnReloadTonKho1.setText("Làm mới");
-        btnReloadTonKho1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReloadTonKho1.setFocusable(false);
-        btnReloadTonKho1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnReloadTonKho1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbarDoanhThu.add(btnReloadTonKho1);
+        cbDoanhThuQueryGroupBy.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbDoanhThuQueryGroupBy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbDoanhThuQueryGroupByActionPerformed(evt);
+            }
+        });
+        pFilterDoanhThu.add(cbDoanhThuQueryGroupBy, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 280, -1));
 
-        btnExportExcelTonKho1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        btnExportExcelTonKho1.setText("Xuất Excel");
-        btnExportExcelTonKho1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExportExcelTonKho1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnExportExcelTonKho1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbarDoanhThu.add(btnExportExcelTonKho1);
+        checkBoxDoanhThuRowFilter.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        checkBoxDoanhThuRowFilter.setForeground(new java.awt.Color(0, 0, 0));
+        checkBoxDoanhThuRowFilter.setText("Lọc các kết quả không có thu nhập");
+        checkBoxDoanhThuRowFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxDoanhThuRowFilterActionPerformed(evt);
+            }
+        });
+        pFilterDoanhThu.add(checkBoxDoanhThuRowFilter, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
 
+        btnThongKeDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnThongKeDoanhThu.setText("Thống kê");
+        btnThongKeDoanhThu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnThongKeDoanhThu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnThongKeDoanhThu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnThongKeDoanhThu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThongKeDoanhThuActionPerformed(evt);
+            }
+        });
+        pFilterDoanhThu.add(btnThongKeDoanhThu, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 90, -1));
+
+        btnReloadDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnReloadDoanhThu.setText("Làm mới");
+        btnReloadDoanhThu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReloadDoanhThu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnReloadDoanhThu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnReloadDoanhThu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReloadDoanhThuActionPerformed(evt);
+            }
+        });
+        pFilterDoanhThu.add(btnReloadDoanhThu, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, -1, -1));
+
+        btnExportExcelDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnExportExcelDoanhThu.setText("Xuất Excel");
+        btnExportExcelDoanhThu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnExportExcelDoanhThu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnExportExcelDoanhThu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pFilterDoanhThu.add(btnExportExcelDoanhThu, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, -1));
+
+        lblDoanhThuQueryGroupBy1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblDoanhThuQueryGroupBy1.setForeground(new java.awt.Color(0, 0, 0));
+        lblDoanhThuQueryGroupBy1.setText("Nhóm các kết quả theo");
+        pFilterDoanhThu.add(lblDoanhThuQueryGroupBy1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
+
+        spMessageOptionChanged.setBackground(new java.awt.Color(255, 255, 255));
+        spMessageOptionChanged.setBorder(null);
+        spMessageOptionChanged.setForeground(new java.awt.Color(255, 255, 255));
+        spMessageOptionChanged.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        spMessageOptionChanged.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        spMessageOptionChanged.setOpaque(false);
+
+        taOptionChanged.setEditable(false);
+        taOptionChanged.setBackground(new java.awt.Color(255, 255, 255));
+        taOptionChanged.setColumns(20);
+        taOptionChanged.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        taOptionChanged.setForeground(new java.awt.Color(0, 0, 0));
+        taOptionChanged.setLineWrap(true);
+        taOptionChanged.setRows(5);
+        taOptionChanged.setText("Do thống kê theo khoảng thời gian dài, kết quả thống kê mặc định sẽ được nhóm theo tháng.");
+        taOptionChanged.setWrapStyleWord(true);
+        taOptionChanged.setFocusable(false);
+        taOptionChanged.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        taOptionChanged.setOpaque(false);
+        spMessageOptionChanged.setViewportView(taOptionChanged);
+
+        pFilterDoanhThu.add(spMessageOptionChanged, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 280, 60));
+        spMessageOptionChanged.getViewport().setOpaque(false);
+        spMessageOptionChanged.setVisible(false);
+
+        tbDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbDoanhThu.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -966,29 +1220,26 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pDoanhThu.setLayout(pDoanhThuLayout);
         pDoanhThuLayout.setHorizontalGroup(
             pDoanhThuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDoanhThuLayout.createSequentialGroup()
+            .addGroup(pDoanhThuLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pDoanhThuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(scrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pDoanhThuLayout.createSequentialGroup()
-                        .addComponent(pFilterDoanhThu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(toolbarDoanhThu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(chartDoanhThu, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(pDoanhThuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pChartContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pDoanhThuLayout.createSequentialGroup()
+                        .addComponent(pFilterDoanhThu, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(scrollPane3)))
                 .addContainerGap())
         );
         pDoanhThuLayout.setVerticalGroup(
             pDoanhThuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pDoanhThuLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDoanhThuLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(pChartContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pDoanhThuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(toolbarDoanhThu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pFilterDoanhThu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chartDoanhThu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                .addContainerGap())
+                    .addComponent(pFilterDoanhThu, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                    .addComponent(scrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Doanh thu", pDoanhThu);
@@ -1170,6 +1421,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         });
         pFilterLoaiSanPham.add(btnReloadLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, -1));
 
+        tbLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbLoaiSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -1209,7 +1461,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pLoaiSanPhamLayout.createSequentialGroup()
                         .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(scrollPane5)))
+                        .addComponent(scrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pLoaiSanPhamLayout.setVerticalGroup(
@@ -1352,24 +1605,67 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tbLoaiSanPhamMouseClicked
 
+    private void cbDoanhThuDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDoanhThuDateActionPerformed
+        // TODO add your handling code here:
+        spMessageOptionChanged.setVisible(false);
+        handleComboBoxChanged("doanhthu", String.valueOf(cbDoanhThuDate.getSelectedItem()), drDoanhThu, lblDoanhThuDate);
+    }//GEN-LAST:event_cbDoanhThuDateActionPerformed
+
+    private void btnReloadDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadDoanhThuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnReloadDoanhThuActionPerformed
+
+    private void checkBoxDoanhThuRowFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxDoanhThuRowFilterActionPerformed
+        // TODO add your handling code here:
+        spMessageOptionChanged.setVisible(false);
+        setFilterDoanhThu(checkBoxDoanhThuRowFilter.isSelected());
+    }//GEN-LAST:event_checkBoxDoanhThuRowFilterActionPerformed
+
+    private void cbDoanhThuQueryGroupByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDoanhThuQueryGroupByActionPerformed
+        // TODO add your handling code here:
+        spMessageOptionChanged.setVisible(false);
+        switch (String.valueOf(cbDoanhThuQueryGroupBy.getSelectedItem())) {
+            case CB_VALUE_GROUP_BY_DATE:
+                setDoanhThuGroupBy("date");
+                break;
+            case CB_VALUE_GROUP_BY_MONTH:
+                setDoanhThuGroupBy("month");
+                break;
+            case CB_VALUE_GROUP_BY_YEAR:
+                setDoanhThuGroupBy("year");
+                break;
+            default:
+        }
+    }//GEN-LAST:event_cbDoanhThuQueryGroupByActionPerformed
+
+    private void btnThongKeDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThongKeDoanhThuActionPerformed
+        // TODO add your handling code here:
+        if (handleDoanhThuOptionChanged()) {
+            spMessageOptionChanged.setVisible(true);
+        }
+        thongKeDoanhThu(drDoanhThu, filterDoanhThu, doanhThuGroupBy);
+    }//GEN-LAST:event_btnThongKeDoanhThuActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChiTietLoaiSanPham;
     private javax.swing.JButton btnChiTietSanPham;
+    private javax.swing.JButton btnExportExcelDoanhThu;
     private javax.swing.JButton btnExportExcelLoaiSanPham;
     private javax.swing.JButton btnExportExcelSanPham;
     private javax.swing.JButton btnExportExcelTonKho;
-    private javax.swing.JButton btnExportExcelTonKho1;
+    private javax.swing.JButton btnReloadDoanhThu;
     private javax.swing.JButton btnReloadLoaiSanPham;
     private javax.swing.JButton btnReloadSanPham;
     private javax.swing.JButton btnReloadTonKho;
-    private javax.swing.JButton btnReloadTonKho1;
+    private javax.swing.JButton btnThongKeDoanhThu;
     private javax.swing.JComboBox<String> cbDoanhThuDate;
+    private javax.swing.JComboBox<String> cbDoanhThuQueryGroupBy;
     private javax.swing.JComboBox<String> cbLoaiSanPhamDate;
     private javax.swing.JComboBox<String> cbSanPhamDate;
     private javax.swing.JComboBox<String> cbTonKhoDate;
-    private GUI.Chart.Chart chartDoanhThu;
     private GUI.Chart.Chart chartLoaiSanPham;
     private GUI.Chart.Chart chartOverview;
+    private javax.swing.JCheckBox checkBoxDoanhThuRowFilter;
     private javax.swing.JLabel iconSanPham;
     private javax.swing.JLabel iconSanPham1;
     private javax.swing.JLabel iconSanPham2;
@@ -1377,8 +1673,10 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JTextField inputSanPham;
     private javax.swing.JTextField inputTonKho;
     private javax.swing.JLabel lblDoanhThuDate;
+    private javax.swing.JLabel lblDoanhThuQueryGroupBy1;
     private javax.swing.JLabel lblLoaiSanPhamDate;
     private javax.swing.JLabel lblNhap;
+    private javax.swing.JLabel lblNoChartData;
     private javax.swing.JLabel lblSanPhamDate;
     private javax.swing.JLabel lblSearchLoaiSanPham;
     private javax.swing.JLabel lblSearchSanPham;
@@ -1387,6 +1685,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblTonKho;
     private javax.swing.JLabel lblTonKhoDate;
     private javax.swing.JLabel lblXuat;
+    private javax.swing.JPanel pChartContainer;
     private javax.swing.JPanel pChartOverview;
     private javax.swing.JPanel pContainer;
     private javax.swing.JPanel pDoanhThu;
@@ -1406,13 +1705,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane scrollPane3;
     private javax.swing.JScrollPane scrollPane4;
     private javax.swing.JScrollPane scrollPane5;
+    private javax.swing.JScrollPane spMessageOptionChanged;
+    private javax.swing.JTextArea taOptionChanged;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTable tbDoanhThu;
     private javax.swing.JTable tbLoaiSanPham;
     private javax.swing.JTable tbOverview;
     private javax.swing.JTable tbSanPham;
     private javax.swing.JTable tbTonKho;
-    private javax.swing.JToolBar toolbarDoanhThu;
     private javax.swing.JLabel txtSoLuongNhap;
     private javax.swing.JLabel txtSoLuongXuat;
     private javax.swing.JLabel txtTonKho;

@@ -6,35 +6,14 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 
 public abstract class StatDetailDialog extends javax.swing.JDialog {
-    private DefaultTableModel defaultTableModel;
-    private DefaultTableCellRenderer defaultTableCellRenderer;
-    
     public StatDetailDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
     }
-
-    public DefaultTableModel getDefaultTableModel() {
-        return defaultTableModel;
-    }
-
-    public void setDefaultTableModel(DefaultTableModel defaultTableModel) {
-        this.defaultTableModel = defaultTableModel;
-    }
-
-    public DefaultTableCellRenderer getDefaultTableCellRenderer() {
-        return defaultTableCellRenderer;
-    }
-
-    public void setDefaultTableCellRenderer(DefaultTableCellRenderer defaultTableCellRenderer) {
-        this.defaultTableCellRenderer = defaultTableCellRenderer;
-    }
-
+    
     public JLabel getLblAmount() {
         return lblAmount;
     }
