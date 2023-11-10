@@ -251,7 +251,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&#x110;&#x1a1;n gi&#xe1;"/>
+            <Property name="text" type="java.lang.String" value="Gi&#xe1; xu&#x1ea5;t"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtDonGia">

@@ -76,7 +76,7 @@ public class AddProduct extends javax.swing.JDialog {
 
         jLabel3.setText("Tên sản phẩm");
 
-        jLabel4.setText("Đơn giá");
+        jLabel4.setText("Giá xuất");
 
         jLabel6.setText("CPU");
 
@@ -380,8 +380,7 @@ public class AddProduct extends javax.swing.JDialog {
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         // TODO add your handling code here:
 
-        String loaiMay = cbxloaisp.getSelectedItem().toString();
-        int maLoaiSP = loaiSanPhamDAO.getInstance().getIDOfType(loaiMay);
+        
         String tenMay = txtTenSanPham.getText();
         int dongia = 0;
         String manhinh = txtKichThuocMan1.getText();
@@ -394,7 +393,7 @@ public class AddProduct extends javax.swing.JDialog {
         String ocung = txtOcung.getText();
         String dungluongpin = txtDungLuongPin.getText();
         
-        if ( loaiMay.equals("") || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || tluong.equals("") || txtDonGia.getText().equals("")) {
+        if ( cbxloaisp.getSelectedItem() == null || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || tluong.equals("") || txtDonGia.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
                 return ;
         }
@@ -423,7 +422,8 @@ public class AddProduct extends javax.swing.JDialog {
             return ;
         }
         
-
+                String loaiMay = cbxloaisp.getSelectedItem().toString();
+                int maLoaiSP = loaiSanPhamDAO.getInstance().getIDOfType(loaiMay);
                 float trongluong = Float.parseFloat(tluong);
                 SanPhamDTO spDTO = new SanPhamDTO();
                 spDTO.setLoaiSanPham(maLoaiSP);
