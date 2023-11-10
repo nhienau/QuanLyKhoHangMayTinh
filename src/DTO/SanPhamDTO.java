@@ -2,9 +2,8 @@ package DTO;
 
 public class SanPhamDTO {
     private int maSanPham;
-    private int maLoaiSanPham;
-    private String tenSanPham;
     private int loaiSanPham;
+    private String tenSanPham;
     private int soLuong;
     private int giaXuat;
     private String cpu;
@@ -16,14 +15,13 @@ public class SanPhamDTO {
     private float trongLuong;
     private String mauSac;
     private String os;
-    private int trangThai;
+
     
     public SanPhamDTO() {
     }
 
     public SanPhamDTO(int maSanPham, String tenSanPham, int loaiSanPham, int soLuong, int giaXuat, String cpu, String ram, String vga, String oCung, String manHinh, String pin, float trongLuong, String mauSac, String os) {
         this.maSanPham = maSanPham;
-        this.maLoaiSanPham = maLoaiSanPham;
         this.tenSanPham = tenSanPham;
         this.loaiSanPham = loaiSanPham;
         this.soLuong = soLuong;
@@ -37,7 +35,7 @@ public class SanPhamDTO {
         this.trongLuong = trongLuong;
         this.mauSac = mauSac;
         this.os = os;
-        this.trangThai = trangThai;
+
     }
     
     public int getMaSanPham() {
@@ -48,13 +46,6 @@ public class SanPhamDTO {
         this.maSanPham = maSanPham;
     }
 
-    public int getMaLoaiSanPham() {
-        return maLoaiSanPham;
-    }
-
-    public void setMaLoaiSanPham(int maLoaiSanPham) {
-        this.maLoaiSanPham = maLoaiSanPham;
-    }
 
     public String getTenSanPham() {
         return tenSanPham;
@@ -162,11 +153,5 @@ public class SanPhamDTO {
         this.os = os;
     }
 
-    public int getTrangThai() {
-        return trangThai;
-    }
 
-    public void setTrangThai(int trangThai) {
-        this.trangThai = trangThai;
-    }
 }

@@ -83,12 +83,30 @@ public class khoDAO {
         return result;
     }
     
+    public boolean updateNameWareHouse(khoDTO kho){
+        boolean result = false;
+        
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT tenkho FROM kho WHERE trangthai = 1 and tenkho = '" + kho.getTenKho()+ "' and makho not in (" + kho.getMaKho() + ")";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                result = true;
+            }
+            
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     public boolean updateWareHouse(khoDTO kho){
         boolean result = false;
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "' and diachi = '" + kho.getDiaChi() + "' WHERE makho = " + kho.getMaKho();
+            String sql = "UPDATE kho SET tenkho = '" + kho.getTenKho() + "', diachi = '" + kho.getDiaChi() + "' WHERE trangthai =1 and makho = " + kho.getMaKho();
             Statement stmt = con.createStatement();
             
             if(stmt.executeUpdate(sql) >= 1){

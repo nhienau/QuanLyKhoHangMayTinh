@@ -21,13 +21,15 @@ public class updateKho extends javax.swing.JFrame {
      */
     
     khoDTO kho = new khoDTO();
-    public updateKho(khoDTO khoData) {
+    khoGUI parent;
+    public updateKho(khoGUI frame, khoDTO khoData) {
         initComponents();
         kho.setMaKho( khoData.getMaKho());
 
         txtDiaDiem.setText(khoData.getDiaChi());
         txtTenKho.setText(khoData.getTenKho());
              
+        parent = frame;
     }
 
     /**
@@ -49,12 +51,14 @@ public class updateKho extends javax.swing.JFrame {
         txtDiaDiem = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("  ");
+        setResizable(false);
 
         jPanel2.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
 
         jLabel1.setFont(new java.awt.Font("SF Pro Display", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("CẬP NHẬT KHO");
+        jLabel1.setText("CHỈNH SỬA KHO");
         jPanel2.add(jLabel1);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -64,6 +68,7 @@ public class updateKho extends javax.swing.JFrame {
         jLabel2.setText("Tên kho: ");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, 90, -1));
 
+        txtTenKho.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtTenKho.setText(" ");
         jPanel3.add(txtTenKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, 290, 40));
 
@@ -71,7 +76,9 @@ public class updateKho extends javax.swing.JFrame {
         jLabel3.setText("Địa điểm:");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 130, 90, -1));
 
+        btnSua.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         btnSua.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnSua.setForeground(new java.awt.Color(255, 255, 255));
         btnSua.setText("CẬP NHẬT");
         btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -80,6 +87,7 @@ public class updateKho extends javax.swing.JFrame {
         });
         jPanel3.add(btnSua, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 190, 180, 40));
 
+        txtDiaDiem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtDiaDiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDiaDiemActionPerformed(evt);
@@ -119,6 +127,7 @@ public class updateKho extends javax.swing.JFrame {
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
+       
         String name = txtTenKho.getText();
         String address = txtDiaDiem.getText().trim();
                 
@@ -127,16 +136,23 @@ public class updateKho extends javax.swing.JFrame {
 
         if(name.trim().equals("") || address.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");
+            return;
         }
         
-        
-        if(khoDAO.getInstance().updateAddressWareHouse(kho) == true) {
+        if(khoDAO.getInstance().updateNameWareHouse(kho)){
+            JOptionPane.showMessageDialog(this, "Tên kho đã tồn tại, vui lòng thêm tên kho khác!");
+            return;
+        }
+        if(khoDAO.getInstance().updateAddressWareHouse(kho)) {
             JOptionPane.showMessageDialog(this, "Địa chỉ kho đã tồn tại, vui lòng thêm địa chỉ khác!");
-        }else {
-
-            khoDAO.getInstance().updateWareHouse(kho);
+            return ;
+        }
+        if(khoDAO.getInstance().updateWareHouse(kho)){      
+            this.dispose();
             JOptionPane.showMessageDialog(this, "Cập nhật kho mới thành công!");
-            
+            parent.loadDataWareHouse();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật kho mới thất bại!");
         }
     }//GEN-LAST:event_btnSuaActionPerformed
 

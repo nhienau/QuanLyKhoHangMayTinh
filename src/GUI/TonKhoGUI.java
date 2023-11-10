@@ -64,7 +64,6 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         tbTonKho = new javax.swing.JTable();
 
         setTitle("Tồn kho");
-        setPreferredSize(new java.awt.Dimension(1180, 774));
 
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
@@ -136,12 +135,16 @@ public class TonKhoGUI extends javax.swing.JDialog  {
 
         jLabel2.setText("Mã kho: ");
 
+        txtMaKho.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtMaKho.setText(" ");
+        txtMaKho.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         txtMaKho.setEnabled(false);
 
         jLabel3.setText("Địa chỉ: ");
 
+        txtDiaChi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtDiaChi.setText(" ");
+        txtDiaChi.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         txtDiaChi.setEnabled(false);
         txtDiaChi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,8 +168,8 @@ public class TonKhoGUI extends javax.swing.JDialog  {
                 .addGap(47, 47, 47)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(201, Short.MAX_VALUE))
+                .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(119, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -176,9 +179,9 @@ public class TonKhoGUI extends javax.swing.JDialog  {
                     .addComponent(jLabel1)
                     .addComponent(cbbTenKho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(txtMaKho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMaKho, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -189,13 +192,28 @@ public class TonKhoGUI extends javax.swing.JDialog  {
             new String [] {
                 "STT", "Tên sản phẩm", "Số lượng"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tbTonKho.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbTonKhoMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tbTonKho);
+        if (tbTonKho.getColumnModel().getColumnCount() > 0) {
+            tbTonKho.getColumnModel().getColumn(0).setResizable(false);
+            tbTonKho.getColumnModel().getColumn(0).setPreferredWidth(1);
+            tbTonKho.getColumnModel().getColumn(1).setResizable(false);
+            tbTonKho.getColumnModel().getColumn(2).setResizable(false);
+            tbTonKho.getColumnModel().getColumn(2).setPreferredWidth(10);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -203,13 +221,10 @@ public class TonKhoGUI extends javax.swing.JDialog  {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(21, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,7 +233,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

@@ -57,7 +57,7 @@ public class AddProduct extends javax.swing.JDialog {
         laptop = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         txtMauSac = new javax.swing.JTextField();
-        txtDungLuongPin1 = new javax.swing.JTextField();
+        txtVGA = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         txtOcung = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
@@ -79,6 +79,12 @@ public class AddProduct extends javax.swing.JDialog {
         jLabel4.setText("Đơn giá");
 
         jLabel6.setText("CPU");
+
+        txtCPU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCPUActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("RAM");
 
@@ -111,8 +117,9 @@ public class AddProduct extends javax.swing.JDialog {
         });
 
         btnAddProduct.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        btnAddProduct.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAddProduct.setForeground(new java.awt.Color(255, 255, 255));
-        btnAddProduct.setText("Thêm sản phẩm");
+        btnAddProduct.setText("THÊM");
         btnAddProduct.setBorder(null);
         btnAddProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
@@ -122,8 +129,9 @@ public class AddProduct extends javax.swing.JDialog {
         });
 
         btnCancel.setBackground(new java.awt.Color(255, 0, 0));
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancel.setText("Huỷ bỏ");
+        btnCancel.setText("HỦY");
         btnCancel.setBorder(null);
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -185,9 +193,9 @@ public class AddProduct extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(261, 261, 261)
+                .addGap(229, 229, 229)
                 .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
+                .addGap(111, 111, 111)
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -233,7 +241,7 @@ public class AddProduct extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(99, 99, 99)
-                        .addComponent(txtDungLuongPin1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtVGA, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -281,9 +289,7 @@ public class AddProduct extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtOS, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -308,32 +314,28 @@ public class AddProduct extends javax.swing.JDialog {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtDungLuongPin1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtVGA, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel12)
-                                        .addGap(15, 15, 15)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(txtDungLuongPin, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(7, 7, 7)
-                                        .addComponent(jLabel15)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel9)
-                                        .addComponent(jLabel16))
-                                    .addComponent(jLabel17))))
+                                .addComponent(jLabel12)
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtDungLuongPin, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(7, 7, 7)
+                                .addComponent(jLabel15)))
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel16))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtOcung, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(txtTrongLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(txtOcung, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(txtOS, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(97, Short.MAX_VALUE))))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 880, 400));
@@ -368,10 +370,7 @@ public class AddProduct extends javax.swing.JDialog {
 
     private void cbxloaispItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxloaispItemStateChanged
         // TODO add your handling code here:
-        if (cbxloaisp.getSelectedItem().equals("Laptop")) {
-            CardLayout productCategory = (CardLayout) jPanel3.getLayout();
-            productCategory.first(jPanel3);
-        }
+
     }//GEN-LAST:event_cbxloaispItemStateChanged
 
     private void cbxloaispActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxloaispActionPerformed
@@ -385,26 +384,47 @@ public class AddProduct extends javax.swing.JDialog {
         int maLoaiSP = loaiSanPhamDAO.getInstance().getIDOfType(loaiMay);
         String tenMay = txtTenSanPham.getText();
         int dongia = 0;
-        String manhinh = txtOcung.getText();
+        String manhinh = txtKichThuocMan1.getText();
         String cpu = txtCPU.getText();
         String ram = txtRAM.getText();
-        String vga = txtOS.getText();
-        float trongluong = Float.parseFloat(txtTrongLuong.getText());
+        String vga = txtVGA.getText();
+        String tluong = txtTrongLuong.getText();
         String mausac = txtMauSac.getText();
         String os = txtOS.getText();
         String ocung = txtOcung.getText();
         String dungluongpin = txtDungLuongPin.getText();
         
+        if ( loaiMay.equals("") || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || tluong.equals("") || txtDonGia.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
+                return ;
+        }
+        
         try {
             dongia = Integer.parseInt(txtDonGia.getText());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn giá ở dạng số !");
+            return;
         }
         
+        if(Integer.parseInt(txtDonGia.getText()) <= 0 ){
+            JOptionPane.showMessageDialog(this, "Giá xuất không hợp lệ. Vui lòng kiểm tra lại!");
+            return ;
+        }
         
-        if ( loaiMay.equals("") || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || dungluongpin.equals("") || os.equals("") || manhinh.equals("") || txtTrongLuong.getText().equals("") || txtDonGia.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
-        } else {
+        try {
+            Float.parseFloat(tluong);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập trọng lượng ở dạng số !");
+            return;
+        }
+        
+        if( Float.parseFloat(tluong) <= 0){
+            JOptionPane.showMessageDialog(this, "Trọng lượng máy không hợp lệ. Vui lòng kiểm tra lại!");
+            return ;
+        }
+        
+
+                float trongluong = Float.parseFloat(tluong);
                 SanPhamDTO spDTO = new SanPhamDTO();
                 spDTO.setLoaiSanPham(maLoaiSP);
                 spDTO.setTenSanPham(tenMay);
@@ -428,7 +448,7 @@ public class AddProduct extends javax.swing.JDialog {
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại !");
                 }
-            }
+            
         
         
     }//GEN-LAST:event_btnAddProductActionPerformed
@@ -451,6 +471,10 @@ public class AddProduct extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtOSActionPerformed
 
+    private void txtCPUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCPUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCPUActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -462,6 +486,7 @@ public class AddProduct extends javax.swing.JDialog {
             loaiSanPhamDTO item = lsp.get(i);
             modalCbb.addElement(item.getTenLoaiSanPham());
         }
+        cbxloaisp.setSelectedIndex(-1);
     }
 
 
@@ -537,7 +562,6 @@ public class AddProduct extends javax.swing.JDialog {
     private javax.swing.JTextField txtCPU;
     private javax.swing.JTextField txtDonGia;
     private javax.swing.JTextField txtDungLuongPin;
-    private javax.swing.JTextField txtDungLuongPin1;
     private javax.swing.JTextField txtKichThuocMan1;
     private javax.swing.JTextField txtMauSac;
     private javax.swing.JTextField txtOS;
@@ -545,5 +569,6 @@ public class AddProduct extends javax.swing.JDialog {
     private javax.swing.JTextField txtRAM;
     private javax.swing.JTextField txtTenSanPham;
     private javax.swing.JTextField txtTrongLuong;
+    private javax.swing.JTextField txtVGA;
     // End of variables declaration//GEN-END:variables
 }

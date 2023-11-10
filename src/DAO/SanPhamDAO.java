@@ -9,6 +9,7 @@ import database.JDBCUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ public class SanPhamDAO {
         return new SanPhamDAO();
     }
     public ArrayList<SanPhamDTO> getlistProduct(){
-        ArrayList<SanPhamDTO> list = new ArrayList<SanPhamDTO>();
+        ArrayList<SanPhamDTO> list = new ArrayList<>();
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM sanpham WHERE trangthai = 1";
@@ -31,9 +32,8 @@ public class SanPhamDAO {
             while (rs.next()) {
                 SanPhamDTO sp = new SanPhamDTO();
                 sp.setMaSanPham( rs.getInt("masanpham"));
-                sp.setMaLoaiSanPham(rs.getInt("maloaisanpham"));
-                sp.setTenSanPham(rs.getString("tensanpham"));
                 sp.setLoaiSanPham(rs.getInt("maloaisanpham"));
+                sp.setTenSanPham(rs.getString("tensanpham"));
                 sp.setSoLuong( rs.getInt("soluong"));
                 sp.setGiaXuat(rs.getInt("giaxuat"));
                 sp.setCpu(rs.getString("cpu"));
@@ -48,9 +48,8 @@ public class SanPhamDAO {
                 list.add(sp);
             }
             JDBCUtil.closeConnection(con);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println(e);
-            e.printStackTrace();
         }
         return list;
     }
@@ -179,7 +178,7 @@ public class SanPhamDAO {
         int ketqua = 0;
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE sanpham SET tensanpham = ? , maloaisanpham = ?, giaxuat = ? , cpu = ?, ram = ?, mausac = ?, manhinh=  ?, vga = ?, ocung = ?, trongluong = ? WHERE masanpham=?";
+            String sql = "UPDATE sanpham SET tensanpham = ? , maloaisanpham = ?, giaxuat = ? , cpu = ?, ram = ?, mausac = ?, manhinh=  ?, vga = ?, ocung = ?, trongluong = ? , os = ? WHERE masanpham=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, sp.getTenSanPham());
             pst.setInt(2, sp.getLoaiSanPham());
@@ -191,7 +190,8 @@ public class SanPhamDAO {
             pst.setString(8, sp.getVga());
             pst.setString(9, sp.getoCung());
             pst.setFloat(10, sp.getTrongLuong());
-            pst.setInt(11, sp.getMaSanPham());
+            pst.setString(11, sp.getOs());
+            pst.setInt(12, sp.getMaSanPham());
             ketqua = pst.executeUpdate();
             JDBCUtil.closeConnection(con);
         } catch (Exception ex) {

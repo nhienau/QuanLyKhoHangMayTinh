@@ -65,9 +65,10 @@ public class DetailTonKho extends javax.swing.JDialog {
         tbChiTiet = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        jLabel1.setText("KHO");
+        jLabel1.setText("Kho");
 
         txtTenKho.setText(" ");
         txtTenKho.setDisabledTextColor(new java.awt.Color(0, 0, 0));

@@ -12,6 +12,7 @@ import DTO.SanPhamDTO;
 import DAO.SanPhamDAO;
 import GUI.loaiSanPhamGUI;
 import BUS.SearchProduct;
+import DAO.loaiSanPhamDAO;
 import OldDAO.LaptopDAO;
 import OldDAO.MayTinhDAO;
 import OldDAO.PCDAO;
@@ -30,12 +31,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import java.util.*;
+import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
@@ -148,7 +145,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 return false;
             }
         };
-        String[] headerTbl = new String[]{"Mã máy", "Tên máy", "Số lượng", "Đơn giá"};
+        String[] headerTbl = new String[]{"Mã máy", "Tên máy", "Số lượng", "Giá xuất"};
         tblModel.setColumnIdentifiers(headerTbl);
         tblSanPham.setModel(tblModel);
         tblSanPham.getColumnModel().getColumn(0).setPreferredWidth(5);
@@ -483,7 +480,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnXuatExcelActionPerformed
 
     private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
-        // TODO add your handling code here:
+         
 //        File excelFile;
 //        FileInputStream excelFIS = null;
 //        BufferedInputStream excelBIS = null;
@@ -502,8 +499,10 @@ public class ProductForm extends javax.swing.JInternalFrame {
 //                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
 //                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
 //                    XSSFRow excelRow = excelSheet.getRow(row);
-//                    String maMay = excelRow.getCell(0).getStringCellValue();
-//                    String tenMay = excelRow.getCell(1).getStringCellValue();
+//                    
+//                    String tenMay = excelRow.getCell(0).getStringCellValue();
+//                    String loaiSanPham = excelRow.getCell(1).getStringCellValue();
+//                    int maLoaiSanPham = loaiSanPhamDAO.getInstance().getIDOfType(loaiSanPham);
 //                    int soLuong = (int) excelRow.getCell(2).getNumericCellValue();
 //                    String giaFomat = excelRow.getCell(3).getStringCellValue().replaceAll(",", "");
 //                    int viTri = giaFomat.length() - 1;
@@ -512,7 +511,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
 //                    String boXuLi = excelRow.getCell(4).getStringCellValue();
 //                    String ram = excelRow.getCell(5).getStringCellValue();
 //                    String boNho = excelRow.getCell(6).getStringCellValue();
-//                    MayTinh mt = new MayTinh(maMay, tenMay, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
+//                    SanPhamDTO sp = new SanPhamDTO(null, tenMay,maLoaiSanPham, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
 //                    listAccExcel.add(mt);
 //                    DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
 //                    table_acc.setRowCount(0);
@@ -526,19 +525,27 @@ public class ProductForm extends javax.swing.JInternalFrame {
 //        }
 //        for (int i = 0; i < listAccExcel.size(); i++) {
 //            SanPhamDTO spDTO = listAccExcel.get(i);
-//            if (mayTinh.getMaMay().contains("LP")) {
-//                Laptop lapNew = new Laptop(0, "", mayTinh.getMaMay(),
-//                        mayTinh.getTenMay(), mayTinh.getSoLuong(), mayTinh.getGia(), mayTinh.getTenCpu(),
-//                        mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(), mayTinh.getRom(), 1);
-//                LaptopDAO.getInstance().insert(lapNew);
-//            } else if (mayTinh.getMaMay().contains("PC")) {
-//                PC pcNew = new PC("", 0, mayTinh.getMaMay(), mayTinh.getTenMay(), mayTinh.getSoLuong(),
-//                        mayTinh.getGia(), mayTinh.getTenCpu(), mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(),
-//                        mayTinh.getRom(), mayTinh.getTrangThai());
-//                PCDAO.getInstance().insert(pcNew);
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Mã máy " + mayTinh.getMaMay() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+//            SanPhamDTO item = new SanPhamDTO();
+//            item.setTenSanPham(spDTO.getTenSanPham());
+//            item.setMaLoaiSanPham(spDTO.getMaLoaiSanPham());
+//            item.setGiaXuat(spDTO.getGiaXuat());
+//            item.setCpu(spDTO.getCpu());
+//            item.setRam(spDTO.getRam());
+//            item.setPin(spDTO.getPin());
+//            item.setMauSac(spDTO.getMauSac());
+//            item.setManHinh(spDTO.getManHinh());
+//            item.setVga(spDTO.getVga());
+//            item.setoCung(spDTO.getoCung());
+//            item.setTrongLuong(spDTO.getTrongLuong());
+//            item.setOs(spDTO.getOs());
+//                
+//            SanPhamDAO.getInstance().addProduct(item);
+//            
+//            if( SanPhamDAO.getInstance().addProduct(item) == false){
+//                JOptionPane.showMessageDialog(this, "Sản phẩm " + item.getTenSanPham() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
 //            }
+//                
+//            
 //        }
     }//GEN-LAST:event_btnNhapExcelActionPerformed
 

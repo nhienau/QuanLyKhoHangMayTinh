@@ -84,7 +84,7 @@ public class SearchProduct {
             
 
                 if (text.length() != 0) {
-                    if (sp.getGiaXuat() > Integer.parseInt(text)) {
+                    if (sp.getGiaXuat() == Integer.parseInt(text) || sp.getGiaXuat() > Integer.parseInt(text)) {
                         result.add(sp);
                     }
                 }

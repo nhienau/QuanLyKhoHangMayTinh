@@ -41,8 +41,11 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         txtTenThuongHieu = new javax.swing.JTextField();
         btnChange = new javax.swing.JButton();
+        btnHuy = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sửa thương hiệu sản phẩm");
+        setResizable(false);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Tên thương hiệu:");
@@ -53,10 +56,23 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
             }
         });
 
-        btnChange.setText("SỬA THƯƠNG HIỆU");
+        btnChange.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        btnChange.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnChange.setForeground(new java.awt.Color(255, 255, 255));
+        btnChange.setText("SỬA ");
         btnChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChangeActionPerformed(evt);
+            }
+        });
+
+        btnHuy.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Red"));
+        btnHuy.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnHuy.setForeground(new java.awt.Color(255, 255, 255));
+        btnHuy.setText("HỦY");
+        btnHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHuyActionPerformed(evt);
             }
         });
 
@@ -66,13 +82,15 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                 .addGap(38, 38, 38)
                 .addComponent(txtTenThuongHieu, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(170, 170, 170)
-                .addComponent(btnChange, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(111, 111, 111)
+                .addComponent(btnChange, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(93, 93, 93)
+                .addComponent(btnHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -82,9 +100,11 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTenThuongHieu, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(btnChange, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnChange, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -92,16 +112,16 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(16, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -119,12 +139,16 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên thương hiệu bạn muốn sửa thành!");
             return;
         }
-
+        if(loaiSanPhamDAO.getInstance().getNameOfType(masanpham).equals(name) ){
+            JOptionPane.showMessageDialog(this, "Tên thương hiệu chưa được thay đổi. Vui lòng kiểm tra lại!");
+            return ;
+        }
         if(loaiSanPhamDAO.getInstance().hasTypeOfProductEdit(name, masanpham ) == true){
             JOptionPane.showMessageDialog(this, "Tên thương hiệu đã tồn tại. Vui lòng thêm tên khác!");
         } else {
             boolean rs = loaiSanPhamDAO.getInstance().editTypeOfProduct(name, masanpham);
             if(rs == true){
+                this.dispose();
                 JOptionPane.showMessageDialog(this, "Sửa thương hiệu thành công!", "Sửa thương hiệu",JOptionPane.INFORMATION_MESSAGE);
                 parent.loadDataToTable();
                 
@@ -135,6 +159,11 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
         
     }//GEN-LAST:event_btnChangeActionPerformed
 
+    private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btnHuyActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -142,6 +171,7 @@ public class updateLoaiSanPham extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChange;
+    private javax.swing.JButton btnHuy;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtTenThuongHieu;

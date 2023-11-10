@@ -288,6 +288,10 @@ public class khoGUI extends javax.swing.JInternalFrame {
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
         int row = tbKho.getSelectedRow();
+        if(row == -1){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn kho muốn sửa!");
+            return;
+        }
         int makho = Integer.parseInt(tbKho.getValueAt(row, 1).toString());
         String tenkho = tbKho.getValueAt(row, 2).toString();
         String diachi = tbKho.getValueAt(row, 3).toString();
@@ -295,7 +299,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
         kho.setMaKho(makho);
         kho.setTenKho(tenkho);
         kho.setDiaChi(diachi);
-        updateKho upkho = new updateKho(kho);
+        updateKho upkho = new updateKho(this,kho);
         upkho.setVisible(true);
 
     }//GEN-LAST:event_btnEditActionPerformed
@@ -312,7 +316,8 @@ public class khoGUI extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Kho vẫn còn sản phẩm, vui lòng không xoá kho!");
             return;
         }
-        int dialog = JOptionPane.showConfirmDialog (null, "Bạn có chắc muốn xóa kho?" ,"WARNING", JOptionPane.YES_NO_OPTION) ;
+        String tenKho = khoDAO.getInstance().getWareHouseByID(makho);
+        int dialog = JOptionPane.showConfirmDialog (null, "Bạn có chắc muốn xóa kho " + tenKho + "?" ,"WARNING", JOptionPane.YES_NO_OPTION) ;
         if(dialog == JOptionPane.YES_OPTION){
             if(khoDAO.getInstance().deleteWareHouse(makho)){
                 JOptionPane.showMessageDialog(this, "Xóa kho thành công!");
