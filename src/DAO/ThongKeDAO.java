@@ -3,18 +3,18 @@ package DAO;
 import DTO.DateRangeDTO;
 import DTO.ThongKe.*;
 import database.JDBCUtil;
+import helper.DateHelper;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ThongKeDAO {
-    private final DateTimeFormatter sqlDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public ThongKeDAO() {
     }
     
@@ -41,7 +41,7 @@ public class ThongKeDAO {
                            WHERE (TTPN.tentrangthai LIKE '%delivered%')
                               OR (TTPN.matrangthai IS NULL)
                            GROUP BY dates.date
-                           ORDER BY dates.date;
+                           ORDER BY dates.date DESC;
                            """;
             PreparedStatement ps = conn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
@@ -66,8 +66,8 @@ public class ThongKeDAO {
             return thongKeTonKhoToanThoiGian(productName);
         }
         ArrayList<ThongKeTonKhoDTO> result = new ArrayList<>();
-        String fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-        String toDate = dateRange.getToDate().format(sqlDateFormatter);
+        String fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        String toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         try {
             Connection conn = JDBCUtil.getConnection();
             String query = """
@@ -187,8 +187,8 @@ public class ThongKeDAO {
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
 
         if (!lifetime) {
-            fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-            toDate = dateRange.getToDate().format(sqlDateFormatter);
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         }
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -253,8 +253,8 @@ public class ThongKeDAO {
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
 
         if (!lifetime) {
-            fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-            toDate = dateRange.getToDate().format(sqlDateFormatter);
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         }
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -315,8 +315,8 @@ public class ThongKeDAO {
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
         
         if (!lifetime) {
-            fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-            toDate = dateRange.getToDate().format(sqlDateFormatter);
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         }
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -368,8 +368,8 @@ public class ThongKeDAO {
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
         
         if (!lifetime) {
-            fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-            toDate = dateRange.getToDate().format(sqlDateFormatter);
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         }
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -420,8 +420,8 @@ public class ThongKeDAO {
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
         
         if (!lifetime) {
-            fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-            toDate = dateRange.getToDate().format(sqlDateFormatter);
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         }
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -473,8 +473,8 @@ public class ThongKeDAO {
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
         
         if (!lifetime) {
-            fromDate = dateRange.getFromDate().format(sqlDateFormatter);
-            toDate = dateRange.getToDate().format(sqlDateFormatter);
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         }
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -508,6 +508,186 @@ public class ThongKeDAO {
                 int soLuongXuat = rs.getInt("soluongxuat");
                 Long donGiaXuat = rs.getLong("dongiaxuat");
                 result.add(new ChiTietGiaXuatSPDTO(maPhieuXuat, thoiGianTao, soLuongXuat, donGiaXuat));
+            }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) throws SQLException, ParseException {
+        ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
+        String queryTimeline = "";
+        String fromDate = null;
+        String toDate = null;
+        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+
+        if (lifetime) {
+            return thongKeDoanhThuToanThoiGian(groupBy);
+        } else {
+            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        }
+        
+        switch (groupBy) {
+            case "date":
+                queryTimeline = "DR.date";
+                break;
+            case "month":
+                queryTimeline = "DATE_FORMAT(DR.date, '" + DateHelper.SQL_QUERY_MONTH_FORMAT + "')";
+                break;
+            case "year":
+                queryTimeline = "DATE_FORMAT(DR.date, '" + DateHelper.SQL_QUERY_YEAR_FORMAT + "')";
+                break;
+            default:
+                // throw new exception
+        }
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
+                            WITH RECURSIVE date_range AS (
+                                SELECT DATE(?) AS date
+                                UNION ALL
+                                SELECT DATE_ADD(date, INTERVAL 1 DAY)
+                                FROM date_range
+                                WHERE DATE_ADD(date, INTERVAL 1 DAY) <= ?
+                            ),
+                            temp_table AS (
+                                SELECT
+                            """);
+        queryBuilder.append(queryTimeline);
+        queryBuilder.append(" AS ");
+        queryBuilder.append(groupBy);
+        queryBuilder.append("""
+                                    ,
+                                    COALESCE(SUM(PN.tongtien), 0) AS expense,
+                                    COALESCE(SUM(PX.tongtien), 0) AS income
+                                FROM date_range DR
+                                LEFT JOIN phieunhap PN ON DR.date = DATE(PN.thoigiantao)
+                                LEFT JOIN phieuxuat PX ON DR.date = DATE(PX.thoigiantao)
+                                LEFT JOIN trangthaiphieunhap TTPN ON PN.trangthai = TTPN.matrangthai
+                                WHERE (TTPN.tentrangthai LIKE '%delivered%') OR (TTPN.matrangthai IS NULL)
+                                GROUP BY
+                            """);
+        queryBuilder.append(queryTimeline);
+        queryBuilder.append(" ORDER BY ");
+        queryBuilder.append(queryTimeline);
+        queryBuilder.append("""
+                             DESC
+                            )
+                            SELECT * FROM temp_table
+                            """);
+        
+        if (filter) {
+            queryBuilder.append("""
+                                WHERE expense <> 0 OR income <> 0
+                                """);
+        }
+        
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            ps.setString(1, fromDate);
+            ps.setString(2, toDate);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Date timeline = null;
+                switch (groupBy) {
+                    case "date":
+                        timeline = rs.getDate(groupBy);
+                        break;
+                    case "month":
+                        String timelineMonth = rs.getString(groupBy);
+                        timeline = DateHelper.SQL_ROW_MONTH_FORMATTER.parse(timelineMonth);
+                        break;
+                    case "year":
+                        String timelineYear = rs.getString(groupBy);
+                        timeline = DateHelper.SQL_ROW_YEAR_FORMATTER.parse(timelineYear);
+                        break;
+                    default:
+                        // throw new exception
+                }
+                Long expense = rs.getLong("expense");
+                Long income = rs.getLong("income");
+                Long profit = income - expense;
+                result.add(new ThongKeDoanhThuDTO(timeline, expense, income, profit));
+            }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThuToanThoiGian(String groupBy) throws SQLException, ParseException {
+        ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
+        String format = "";
+        
+        switch (groupBy) {
+            case "month":
+                format = DateHelper.SQL_QUERY_MONTH_FORMAT;
+                break;
+            case "year":
+                format = DateHelper.SQL_QUERY_YEAR_FORMAT;
+                break;
+            default:
+                // throw new exception
+        }
+        
+        String query = """
+                       WITH temp_table AS (
+                           SELECT
+                               DATE_FORMAT(thoigiantao, ?) AS timeline,
+                               COALESCE(SUM(tongtien), 0) AS expense,
+                               0 AS income
+                           FROM phieunhap
+                           LEFT JOIN trangthaiphieunhap ON phieunhap.trangthai = trangthaiphieunhap.matrangthai
+                           WHERE trangthaiphieunhap.tentrangthai LIKE '%delivered%' OR trangthaiphieunhap.matrangthai IS NULL
+                           GROUP BY timeline
+                       
+                           UNION ALL
+                       
+                           SELECT
+                               DATE_FORMAT(thoigiantao, ?) AS timeline,
+                               0 AS expense,
+                               COALESCE(SUM(tongtien), 0) AS income
+                           FROM phieuxuat
+                           GROUP BY timeline
+                       )
+                       SELECT timeline, SUM(expense) AS expense, SUM(income) AS income
+                       FROM temp_table
+                       GROUP BY timeline
+                       ORDER BY timeline DESC
+                       """;
+        
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, format);
+            ps.setString(2, format);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Date timeline = null;
+                switch (groupBy) {
+                    case "month":
+                        String timelineMonth = rs.getString("timeline");
+                        timeline = DateHelper.SQL_ROW_MONTH_FORMATTER.parse(timelineMonth);
+                        break;
+                    case "year":
+                        String timelineYear = rs.getString("timeline");
+                        timeline = DateHelper.SQL_ROW_YEAR_FORMATTER.parse(timelineYear);
+                        break;
+                    default:
+                }
+                Long expense = rs.getLong("expense");
+                Long income = rs.getLong("income");
+                Long profit = income - expense;
+                result.add(new ThongKeDoanhThuDTO(timeline, expense, income, profit));
             }
             ps.close();
             rs.close();

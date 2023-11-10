@@ -9,10 +9,10 @@ import GUI.ThongKeGUI;
 import com.formdev.flatlaf.FlatLightLaf;
 import helper.ChartColor;
 import helper.CustomTableCellRenderer;
+import helper.DateHelper;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -21,7 +21,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private ArrayList<ChiTietSanPhamNhapDTO> arr;
     private ThongKeSanPhamDTO product;
     private DateRangeDTO dateRange;
@@ -70,7 +69,7 @@ public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
         if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
         } else {
-            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));
         }
         getLblAmount().setText("Tổng số lượng nhập: " + product.getSoLuongNhap());
     }

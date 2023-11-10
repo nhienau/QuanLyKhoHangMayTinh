@@ -9,8 +9,8 @@ import GUI.ThongKeGUI;
 import com.formdev.flatlaf.FlatLightLaf;
 import helper.ChartColor;
 import helper.CustomTableCellRenderer;
+import helper.DateHelper;
 import java.awt.event.MouseEvent;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +23,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private ArrayList<ChiTietLoaiSanPhamDTO> arr;
     private DateRangeDTO dateRange;
     
@@ -62,7 +61,7 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
         if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
         } else {
-            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter));         
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));         
         }
         getLblAmount().setText("Số lượng xuất: " + productType.getSoLuong());
     }

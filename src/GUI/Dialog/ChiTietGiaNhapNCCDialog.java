@@ -7,18 +7,17 @@ import DTO.ThongKe.ChiTietSanPhamNhapDTO;
 import DTO.ThongKe.ThongKeSanPhamDTO;
 import GUI.ThongKeGUI;
 import helper.CustomTableCellRenderer;
+import helper.DateHelper;
+import helper.NumberHelper;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class ChiTietGiaNhapNCCDialog extends PriceDetailDialog {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     
     public ChiTietGiaNhapNCCDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -38,7 +37,7 @@ public class ChiTietGiaNhapNCCDialog extends PriceDetailDialog {
         if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
         } else {
-            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(dateFormatter) + " - " + dateRange.getToDate().format(dateFormatter));         
+            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));         
         }
     }
     
@@ -62,10 +61,11 @@ public class ChiTietGiaNhapNCCDialog extends PriceDetailDialog {
             ChiTietGiaNhapNCCDTO ctgn = arr.get(i);
             int maPhieuNhap = ctgn.getMaPhieuNhap();
             LocalDateTime thoiGianTao = ctgn.getThoiGianTao();
-            String strThoiGianTao = thoiGianTao.format(dateTimeFormatter);
+            String strThoiGianTao = thoiGianTao.format(DateHelper.DATE_TIME_FORMATTER);
             int soLuongNhap = ctgn.getSoLuongNhap();
             Long donGiaNhap = ctgn.getDonGiaNhap();
-            Object [] row = {maPhieuNhap, strThoiGianTao, soLuongNhap, donGiaNhap};
+            String strDonGiaNhap = NumberHelper.appendVND(NumberHelper.commafy(donGiaNhap));
+            Object [] row = {maPhieuNhap, strThoiGianTao, soLuongNhap, strDonGiaNhap};
             model.addRow(row);
         }
         for (int i = 0; i < getTable().getColumnCount(); ++i) {
