@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import model.Account;
+import GUI.*;
 
 public class MainLayout extends javax.swing.JFrame {
     Color DefaultColor, ClickedColor;
@@ -607,7 +608,7 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void XuatHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XuatHangMouseClicked
         // TODO add your handling code here:
-        XuatHangForm xuatHangForm = new XuatHangForm(user);
+        XuatHangGUI xuatHangForm = new XuatHangGUI(user);
 //        xh.setNguoiTao(this.currentAcc.getFullName());
         pMainContent.removeAll();
         pMainContent.add(xuatHangForm).setVisible(true);

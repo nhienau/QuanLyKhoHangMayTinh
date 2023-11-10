@@ -216,4 +216,62 @@ public class SanPhamDAO {
         return name;
     }
     
+    
+    
+    
+    public SanPhamDTO selectByIdPX(int t) {
+        SanPhamDTO ketQua = null;
+        ArrayList<SanPhamDTO> list = new ArrayList<SanPhamDTO>();
+
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM sanpham WHERE masanpham = " + t;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+
+                int setMaSanPham = rs.getInt("masanpham");
+                int setMaLoaiSanPham = rs.getInt("maloaisanpham");
+                String setTenSanPham = rs.getString("tensanpham");
+                int setLoaiSanPham = rs.getInt("maloaisanpham");
+                int setSoLuong = rs.getInt("soluong");
+                int setGiaXuat = rs.getInt("giaxuat");
+                String setCpu = rs.getString("cpu");
+                String setRam = rs.getString("ram");
+                String setVga = rs.getString("vga");
+                String setoCung = rs.getString("ocung");
+                String setManHinh = rs.getString("manhinh");
+                String setPin = rs.getString("pin");
+                String setMauSac = rs.getString("mausac");
+                float setTrongLuong = rs.getFloat("trongluong");
+                String setOs = rs.getString("os");
+
+                ketQua = new SanPhamDTO(setMaSanPham, setMaLoaiSanPham, setTenSanPham, setLoaiSanPham, setSoLuong, setGiaXuat, setCpu, setRam, setVga, setoCung, setManHinh, setPin, setTrongLuong, setMauSac, setOs);
+            }
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
+    
+      public int updateSoLuongPX(int maMay, int soluong) {
+        int ketQua = 0;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            //String sql = "INSERT INTO MayTinh (maMay, tenMay, soLuong, tenCpu, ram, cardManHinh, gia, dungLuongPin, dungLuongPin, dungLuongPin, loaiMay, rom) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "UPDATE sanpham SET soluong=? WHERE masanpham=? ";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, soluong);
+            pst.setInt(2, maMay);
+            ketQua = pst.executeUpdate();
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
+    
+    
 }
