@@ -4,6 +4,7 @@ import BUS.ThongKeBUS;
 import DTO.DateRangeDTO;
 import DTO.NguoiDungDTO;
 import DTO.ThongKe.*;
+import GUI.Chart.ModelChart;
 import GUI.Dialog.ChiTietLoaiSanPhamDialog;
 import GUI.Dialog.ChiTietSanPhamNhapDialog;
 import GUI.Dialog.SelectDateDialog;
@@ -597,6 +598,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             e.printStackTrace();
             return;
         }
+        addDataToChartLoaiSanPham(arr);
         tmLoaiSanPham.setData(arr);
         tmLoaiSanPham.fireTableDataChanged();
 //        dtmLoaiSanPham.setRowCount(0);
@@ -622,6 +624,31 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             }
         }
         setIsLoadingLoaiSanPham(false);
+    }
+    
+    private void addDataToChartLoaiSanPham(ArrayList<ThongKeLoaiSanPhamDTO> arr) {
+        pLoaiSanPhamChartContainer.remove(chartLoaiSanPham);
+        chartLoaiSanPham = new GUI.Chart.Chart();
+        chartLoaiSanPham.addLegend("Số lượng xuất", new Color(245, 189, 135));
+        if (!arr.isEmpty()) {
+            boolean paintAll = arr.size() <= 12;
+            int valueOther = 0;
+            for (int i = 0; i < arr.size(); ++i) {
+                if (paintAll || i < 11) {
+                    chartLoaiSanPham.addData(new ModelChart(arr.get(i).getTenLoaiSanPham(), new double[] {arr.get(i).getSoLuong()}));
+                } else {
+                    valueOther += arr.get(i).getSoLuong();
+                }
+            }
+            if (!paintAll) {
+                chartLoaiSanPham.addData(new ModelChart("Khác", new double[] {valueOther}));
+            }
+        }
+        chartLoaiSanPham.repaint();
+        chartLoaiSanPham.validate();
+        pLoaiSanPhamChartContainer.add(chartLoaiSanPham);
+        pLoaiSanPhamChartContainer.repaint();
+        pLoaiSanPhamChartContainer.validate();
     }
     
     private void thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) {
@@ -756,6 +783,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         scrollPane4 = new javax.swing.JScrollPane();
         tbSanPham = new javax.swing.JTable();
         pLoaiSanPham = new javax.swing.JPanel();
+        pLoaiSanPhamChartContainer = new javax.swing.JPanel();
         chartLoaiSanPham = new GUI.Chart.Chart();
         pFilterLoaiSanPham = new javax.swing.JPanel();
         lblSearchLoaiSanPham = new javax.swing.JLabel();
@@ -995,7 +1023,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterTonKho.add(cbTonKhoDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 280, -1));
 
         lblSearchTonKho.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblSearchTonKho.setForeground(new java.awt.Color(0, 0, 0));
         lblSearchTonKho.setText("Tìm kiếm sản phẩm");
         pFilterTonKho.add(lblSearchTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
@@ -1019,7 +1046,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterTonKho.add(btnExportExcelTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, -1));
 
         lblTonKhoDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblTonKhoDate.setForeground(new java.awt.Color(0, 0, 0));
         lblTonKhoDate.setText("dd/mm/yyyy - dd/mm/yyyy");
         pFilterTonKho.add(lblTonKhoDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
@@ -1099,7 +1125,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterDoanhThu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblDoanhThuDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblDoanhThuDate.setForeground(new java.awt.Color(0, 0, 0));
         lblDoanhThuDate.setText("dd/mm/yyyy - dd/mm/yyyy");
         pFilterDoanhThu.add(lblDoanhThuDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
@@ -1120,7 +1145,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterDoanhThu.add(cbDoanhThuQueryGroupBy, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 280, -1));
 
         checkBoxDoanhThuRowFilter.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        checkBoxDoanhThuRowFilter.setForeground(new java.awt.Color(0, 0, 0));
         checkBoxDoanhThuRowFilter.setText("Lọc các kết quả không có thu nhập");
         checkBoxDoanhThuRowFilter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1161,7 +1185,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterDoanhThu.add(btnExportExcelDoanhThu, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, -1));
 
         lblDoanhThuQueryGroupBy1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblDoanhThuQueryGroupBy1.setForeground(new java.awt.Color(0, 0, 0));
         lblDoanhThuQueryGroupBy1.setText("Nhóm các kết quả theo");
         pFilterDoanhThu.add(lblDoanhThuQueryGroupBy1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
 
@@ -1176,7 +1199,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         taOptionChanged.setBackground(new java.awt.Color(255, 255, 255));
         taOptionChanged.setColumns(20);
         taOptionChanged.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        taOptionChanged.setForeground(new java.awt.Color(0, 0, 0));
         taOptionChanged.setLineWrap(true);
         taOptionChanged.setRows(5);
         taOptionChanged.setText("Do thống kê theo khoảng thời gian dài, kết quả thống kê mặc định sẽ được nhóm theo tháng.");
@@ -1251,7 +1273,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterSanPham.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblSearchSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblSearchSanPham.setForeground(new java.awt.Color(0, 0, 0));
         lblSearchSanPham.setText("Tìm kiếm sản phẩm");
         pFilterSanPham.add(lblSearchSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
@@ -1263,7 +1284,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterSanPham.add(inputSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 280, 40));
 
         lblSanPhamDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblSanPhamDate.setForeground(new java.awt.Color(0, 0, 0));
         lblSanPhamDate.setText("dd/mm/yyyy - dd/mm/yyyy");
         pFilterSanPham.add(lblSanPhamDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
@@ -1361,12 +1381,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
         pLoaiSanPham.setBackground(new java.awt.Color(255, 255, 255));
 
+        pLoaiSanPhamChartContainer.setLayout(new java.awt.BorderLayout());
+        pLoaiSanPhamChartContainer.add(chartLoaiSanPham, java.awt.BorderLayout.CENTER);
+
         pFilterLoaiSanPham.setBackground(new java.awt.Color(255, 255, 255));
         pFilterLoaiSanPham.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pFilterLoaiSanPham.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblSearchLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblSearchLoaiSanPham.setForeground(new java.awt.Color(0, 0, 0));
         lblSearchLoaiSanPham.setText("Tìm kiếm loại sản phẩm");
         pFilterLoaiSanPham.add(lblSearchLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
@@ -1378,7 +1400,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterLoaiSanPham.add(inputLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 280, 40));
 
         lblLoaiSanPhamDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblLoaiSanPhamDate.setForeground(new java.awt.Color(0, 0, 0));
         lblLoaiSanPhamDate.setText("dd/mm/yyyy - dd/mm/yyyy");
         pFilterLoaiSanPham.add(lblLoaiSanPhamDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
@@ -1457,8 +1478,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             .addGroup(pLoaiSanPhamLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chartLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 1168, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pLoaiSanPhamLayout.createSequentialGroup()
+                    .addComponent(pLoaiSanPhamChartContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 1168, Short.MAX_VALUE)
+                    .addGroup(pLoaiSanPhamLayout.createSequentialGroup()
                         .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(scrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1469,7 +1490,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pLoaiSanPhamLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chartLoaiSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pLoaiSanPhamChartContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pLoaiSanPhamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pFilterLoaiSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
@@ -1694,6 +1715,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JPanel pFilterSanPham;
     private javax.swing.JPanel pFilterTonKho;
     private javax.swing.JPanel pLoaiSanPham;
+    private javax.swing.JPanel pLoaiSanPhamChartContainer;
     private javax.swing.JPanel pOverview;
     private javax.swing.JPanel pSanPham;
     private javax.swing.JPanel pSoLuongNhap;
