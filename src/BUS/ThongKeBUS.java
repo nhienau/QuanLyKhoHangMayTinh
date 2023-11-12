@@ -5,6 +5,7 @@ import DTO.DateRangeDTO;
 import DTO.ThongKe.*;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ThongKeBUS {
@@ -45,7 +46,11 @@ public class ThongKeBUS {
         return tkDAO.chiTietGiaXuatSanPham(productId, dateRange);
     }
     
-    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) throws SQLException, ParseException {
-        return tkDAO.thongKeDoanhThu(dateRange, filter, groupBy);
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, String groupBy) throws SQLException, ParseException {
+        return tkDAO.thongKeDoanhThu(dateRange, groupBy);
+    }
+    
+    public LocalDateTime getOldestDate() throws SQLException {
+        return tkDAO.getOldestDate();
     }
 }

@@ -518,20 +518,12 @@ public class ThongKeDAO {
         return result;
     }
     
-    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, boolean filter, String groupBy) throws SQLException, ParseException {
+    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, String groupBy) throws SQLException, ParseException {
         ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
         String queryTimeline = "";
-        String fromDate = null;
-        String toDate = null;
-        boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        String fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        String toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
 
-        if (lifetime) {
-            return thongKeDoanhThuToanThoiGian(groupBy);
-        } else {
-            fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
-            toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
-        }
-        
         switch (groupBy) {
             case "date":
                 queryTimeline = "DR.date";
@@ -581,12 +573,6 @@ public class ThongKeDAO {
                             SELECT * FROM temp_table
                             """);
         
-        if (filter) {
-            queryBuilder.append("""
-                                WHERE expense <> 0 OR income <> 0
-                                """);
-        }
-        
         try {
             Connection conn = JDBCUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
@@ -624,70 +610,16 @@ public class ThongKeDAO {
         return result;
     }
     
-    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThuToanThoiGian(String groupBy) throws SQLException, ParseException {
-        ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
-        String format = "";
-        
-        switch (groupBy) {
-            case "month":
-                format = DateHelper.SQL_QUERY_MONTH_FORMAT;
-                break;
-            case "year":
-                format = DateHelper.SQL_QUERY_YEAR_FORMAT;
-                break;
-            default:
-                // throw new exception
-        }
-        
-        String query = """
-                       WITH temp_table AS (
-                           SELECT
-                               DATE_FORMAT(thoigiantao, ?) AS timeline,
-                               COALESCE(SUM(tongtien), 0) AS expense,
-                               0 AS income
-                           FROM phieunhap
-                           LEFT JOIN trangthaiphieunhap ON phieunhap.trangthai = trangthaiphieunhap.matrangthai
-                           WHERE trangthaiphieunhap.tentrangthai LIKE '%delivered%' OR trangthaiphieunhap.matrangthai IS NULL
-                           GROUP BY timeline
-                       
-                           UNION ALL
-                       
-                           SELECT
-                               DATE_FORMAT(thoigiantao, ?) AS timeline,
-                               0 AS expense,
-                               COALESCE(SUM(tongtien), 0) AS income
-                           FROM phieuxuat
-                           GROUP BY timeline
-                       )
-                       SELECT timeline, SUM(expense) AS expense, SUM(income) AS income
-                       FROM temp_table
-                       GROUP BY timeline
-                       ORDER BY timeline DESC
-                       """;
-        
+    public LocalDateTime getOldestDate() throws SQLException {
+        LocalDateTime oldestDate = null;
         try {
             Connection conn = JDBCUtil.getConnection();
+            String query = "SELECT DATE(MIN(thoigiantao)) AS oldest_date FROM (SELECT thoigiantao FROM phieunhap UNION SELECT thoigiantao FROM phieuxuat) AS combined";
             PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, format);
-            ps.setString(2, format);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Date timeline = null;
-                switch (groupBy) {
-                    case "month":
-                        String timelineMonth = rs.getString("timeline");
-                        timeline = DateHelper.SQL_ROW_MONTH_FORMATTER.parse(timelineMonth);
-                        break;
-                    case "year":
-                        String timelineYear = rs.getString("timeline");
-                        timeline = DateHelper.SQL_ROW_YEAR_FORMATTER.parse(timelineYear);
-                        break;
-                    default:
-                }
-                Long expense = rs.getLong("expense");
-                Long income = rs.getLong("income");
-                Long profit = income - expense;
-                result.add(new ThongKeDoanhThuDTO(timeline, expense, income, profit));
+            if (rs.next()) {
+                Date result = rs.getDate("oldest_date");
+                oldestDate = DateHelper.convertDateObjToLDT(result);
             }
             ps.close();
             rs.close();
@@ -695,6 +627,6 @@ public class ThongKeDAO {
         } catch (SQLException e) {
             throw e;
         }
-        return result;
+        return oldestDate;
     }
 }
