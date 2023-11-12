@@ -16,13 +16,14 @@ public class SelectDateDialog extends javax.swing.JDialog {
     private String dateRangeName;
     private DateRangeDTO initialDateRange;
     private boolean canSelectAfterToday; // Cho phép chọn thời gian sau ngày hôm nay không
+    private LocalDateTime oldestDate;
     
     public SelectDateDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
     
-    public SelectDateDialog(JInternalFrame parent, javax.swing.JFrame owner, boolean modal, String dateRangeName, DateRangeDTO dateRange, int dateRangeLength, boolean canSelectAfterToday) {
+    public SelectDateDialog(JInternalFrame parent, javax.swing.JFrame owner, boolean modal, String dateRangeName, DateRangeDTO dateRange, int dateRangeLength, boolean canSelectAfterToday, LocalDateTime oldestDate) {
         super(owner, modal);
         initComponents();
         this.parent = parent;
@@ -30,6 +31,7 @@ public class SelectDateDialog extends javax.swing.JDialog {
         this.dateRangeName = dateRangeName;
         this.initialDateRange = dateRange;
         this.canSelectAfterToday = canSelectAfterToday;
+        this.oldestDate = oldestDate;
         setLocationRelativeTo(null);
         if (dateRange.getFromDate() != null && dateRange.getToDate() != null) {
             dcFrom.setDate(DateHelper.convertLDTToDateObj(dateRange.getFromDate()));
@@ -178,6 +180,11 @@ public class SelectDateDialog extends javax.swing.JDialog {
         
         if (dateRangeLength != 0 && differenceInDays > dateRangeLength) {
             JOptionPane.showMessageDialog(SelectDateDialog.this, "Khoảng thời gian tìm kiếm không được vượt quá " + dateRangeLength + " ngày, vui lòng chọn lại", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (oldestDate.toLocalDate().isAfter(localFromDate.toLocalDate()) || oldestDate.toLocalDate().isAfter(localToDate.toLocalDate())) {
+            JOptionPane.showMessageDialog(SelectDateDialog.this, "Không được chọn khoảng thời gian trước " + oldestDate.format(DateHelper.DATE_FORMATTER), "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         

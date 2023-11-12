@@ -15,8 +15,6 @@ import DTO.NguoiDungDTO;
 import DTO.SanPhamDTO;
 import DTO.PhieuXuatDTO;
 import DTO.ChiTietPhieuXuatDTO;
-import controller.SearchProduct;
-import controller.WritePDF;
 
 import java.io.BufferedInputStream;
 import java.io.File;
