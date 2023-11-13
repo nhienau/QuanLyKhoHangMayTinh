@@ -1598,6 +1598,12 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
     private void btnChiTietLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChiTietLoaiSanPhamActionPerformed
         // TODO add your handling code here:
+        int row = tbLoaiSanPham.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm");
+            return;
+        }
+        handleViewProductTypeDetail(row);
     }//GEN-LAST:event_btnChiTietLoaiSanPhamActionPerformed
 
     private void btnReloadLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadLoaiSanPhamActionPerformed
@@ -1621,6 +1627,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
     private void btnReloadDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadDoanhThuActionPerformed
         // TODO add your handling code here:
+        handleReload(btnReloadDoanhThu, "doanhthu", null, null);
     }//GEN-LAST:event_btnReloadDoanhThuActionPerformed
 
     private void cbDoanhThuQueryGroupByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDoanhThuQueryGroupByActionPerformed
