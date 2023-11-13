@@ -5,7 +5,6 @@ import DAO.loaiSanPhamDAO;
 import DAO.SanPhamDAO;
 import DTO.loaiSanPhamDTO;
 import DTO.SanPhamDTO;
-import java.awt.CardLayout;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
@@ -182,7 +181,7 @@ public class AddProduct extends javax.swing.JDialog {
 
         jLabel16.setText("OS");
 
-        jLabel11.setText("Kích thước màn");
+        jLabel11.setText("Kích thước màn hình");
 
         jLabel12.setText("Dung lượng PIN");
 
@@ -255,9 +254,9 @@ public class AddProduct extends javax.swing.JDialog {
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel11)
                                             .addComponent(txtDungLuongPin, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(txtKichThuocMan1))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -393,15 +392,15 @@ public class AddProduct extends javax.swing.JDialog {
         String ocung = txtOcung.getText();
         String dungluongpin = txtDungLuongPin.getText();
         
-        if ( cbxloaisp.getSelectedItem() == null || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || tluong.equals("") || txtDonGia.getText().equals("")) {
+        if ( cbxloaisp.getSelectedItem() == null || tenMay.equals("") || cpu.equals("") || ram.equals("") || vga.equals("") || mausac.equals("")|| ocung.equals("") || tluong.equals("") || os.equals("") || dungluongpin.equals("") ||txtDonGia.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin !");
                 return ;
         }
         
         try {
             dongia = Integer.parseInt(txtDonGia.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn giá ở dạng số !");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập giá xuất ở dạng số !");
             return;
         }
         
@@ -411,8 +410,8 @@ public class AddProduct extends javax.swing.JDialog {
         }
         
         try {
-            Float.parseFloat(tluong);
-        } catch (Exception e) {
+            Float.valueOf(tluong);
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập trọng lượng ở dạng số !");
             return;
         }
@@ -420,6 +419,11 @@ public class AddProduct extends javax.swing.JDialog {
         if( Float.parseFloat(tluong) <= 0){
             JOptionPane.showMessageDialog(this, "Trọng lượng máy không hợp lệ. Vui lòng kiểm tra lại!");
             return ;
+        }
+        
+        if(SanPhamDAO.getInstance().selectProductByName(tenMay) != null){
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại. Vui lòng thêm tên sản phẩm khác!");
+            return;
         }
         
                 String loaiMay = cbxloaisp.getSelectedItem().toString();

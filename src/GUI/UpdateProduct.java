@@ -340,7 +340,7 @@ public class UpdateProduct extends javax.swing.JDialog {
         try {
              Integer.valueOf(txtDonGia.getText());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn giá ở dạng số nguyên !");
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập giá xuất ở dạng số nguyên !");
             return;
         }
         
@@ -357,6 +357,11 @@ public class UpdateProduct extends javax.swing.JDialog {
         }
         if(Integer.parseInt(txtDonGia.getText()) <= 0){
             JOptionPane.showMessageDialog(this, "Giá xuất không hợp lệ. Vui lòng kiểm tra lại!");
+            return ;
+        }
+        
+        if(SanPhamDAO.getInstance().getNameExceptThisID(tenMay,idProduct)){
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại. Vui lòng chọn tên sản phẩm khác!");
             return ;
         }
         

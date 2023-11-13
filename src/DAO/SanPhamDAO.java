@@ -216,6 +216,21 @@ public class SanPhamDAO {
         return name;
     }
     
+    public boolean getNameExceptThisID(String tensanpham,int masanpham) {
+        boolean result = false ;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 1 AND tensanpham = '" +tensanpham + "' AND masanpham not in (" + masanpham + ")";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next()){
+                result = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     
     
     

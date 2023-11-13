@@ -66,7 +66,24 @@ public class SearchProduct {
         for (var sp : allsp) {
             
                 if (text.length() != 0) {
-                    if (sp.getSoLuong() > Integer.parseInt(text)) {
+                    if (sp.getSoLuong() >= Integer.parseInt(text)) {
+                        result.add(sp);
+                    }
+                } else {
+                    result.add(sp);
+                }
+            
+        }
+        return result;
+    }
+    
+        public ArrayList<SanPhamDTO> searchTrongLuong(String text) {
+        ArrayList<SanPhamDTO> result = new ArrayList<>();
+        ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getlistProduct();
+        for (var sp : allsp) {
+            
+                if (text.length() != 0) {
+                    if (sp.getTrongLuong() <= Integer.parseInt(text)) {
                         result.add(sp);
                     }
                 } else {
@@ -106,7 +123,29 @@ public class SearchProduct {
         }
         return result;
     }
+    
+    public ArrayList<SanPhamDTO> searchOCung(String text) {
+        ArrayList<SanPhamDTO> result = new ArrayList<>();
+        ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getlistProduct();
+        for (var sp : allsp) {
+            if (sp.getoCung().toLowerCase().contains(text.toLowerCase())) {
+                result.add(sp);
+            }
+        }
+        return result;
+    }
 
+    public ArrayList<SanPhamDTO> searchOS(String text) {
+        ArrayList<SanPhamDTO> result = new ArrayList<>();
+        ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getlistProduct();
+        for (var sp : allsp) {
+            if (sp.getOs().toLowerCase().contains(text.toLowerCase())) {
+                result.add(sp);
+            }
+        }
+        return result;
+    }
+        
     public ArrayList<SanPhamDTO> searchCpu(String text) {
         ArrayList<SanPhamDTO> result = new ArrayList<>();
         ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getlistProduct();
@@ -164,6 +203,7 @@ public class SearchProduct {
         }
         return result;
     }
+
 
     public MayTinh searchId(String text) {
         SanPhamDTO result = new SanPhamDTO();

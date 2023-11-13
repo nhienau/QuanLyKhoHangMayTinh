@@ -320,7 +320,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jComboBoxLuaChon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã máy", "Tên máy", "Số lượng", "Đơn giá", "Thương hiệu", "RAM", "CPU", "Dung lượng", "Card màn hình", "Màu sắc", "Pin" }));
+        jComboBoxLuaChon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Số lượng", "Giá xuất", "Thương hiệu", "RAM", "CPU", "VGA", "Trọng lượng", "Ổ cứng", "Màu sắc", "Dung lượng Pin", "Kích thước màn hình", "OS" }));
         jComboBoxLuaChon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxLuaChonActionPerformed(evt);
@@ -620,10 +620,10 @@ public class ProductForm extends javax.swing.JInternalFrame {
             case "Tất cả":
                 result = searchPr.searchTatCa(content);
                 break;
-            case "Mã máy":
+            case "Mã sản phẩm":
                 result = searchPr.searchMaSanPham(content);
                 break;
-            case "Tên máy":
+            case "Tên sản phẩm":
                 result = searchPr.searchTenSanPham(content);
                 break;
             case "Thương hiệu":
@@ -632,7 +632,10 @@ public class ProductForm extends javax.swing.JInternalFrame {
             case "Số lượng":
                 result = searchPr.searchSoLuong(content);
                 break;
-            case "Đơn giá":
+            case "Trọng lượng":
+                result = searchPr.searchTrongLuong(content);
+                break;
+            case "Giá xuất":
                 result = searchPr.searchDonGia(content);
                 break;
             case "RAM":
@@ -641,10 +644,10 @@ public class ProductForm extends javax.swing.JInternalFrame {
             case "CPU":
                 result = searchPr.searchCpu(content);
                 break;
-            case "Pin":
+            case "Dung lượng Pin":
                 result = searchPr.searchPin(content);
                 break;
-            case "Card màn hình":
+            case "Kích thước màn hình":
                 result = searchPr.searchManHinh(content);
                 break;
             case "Màu sắc":
@@ -652,6 +655,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 break;
             case "VGA":
                 result = searchPr.searchVGA(content);
+                break;
+            case "Ổ cứng":
+                result = searchPr.searchOCung(content);
+                break;
+            case "OS":
+                result = searchPr.searchOS(content);
         }
         return result;
     }
