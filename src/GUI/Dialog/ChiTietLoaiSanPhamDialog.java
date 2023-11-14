@@ -1,13 +1,12 @@
 package GUI.Dialog;
 
+import GUI.Dialog.Chart.ChiTietLoaiSanPhamChart;
 import BUS.ThongKeBUS;
 import DTO.DateRangeDTO;
 import DTO.ThongKe.ChiTietLoaiSanPhamDTO;
 import DTO.ThongKe.ThongKeLoaiSanPhamDTO;
-import GUI.Chart.PieChart.ModelPieChart;
 import GUI.ThongKeGUI;
 import com.formdev.flatlaf.FlatLightLaf;
-import helper.ChartColor;
 import helper.CustomTableCellRenderer;
 import helper.DateHelper;
 import java.awt.event.MouseEvent;
@@ -25,6 +24,7 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
     private ArrayList<ChiTietLoaiSanPhamDTO> arr;
     private DateRangeDTO dateRange;
+    private ThongKeLoaiSanPhamDTO productType;
     
     public ChiTietLoaiSanPhamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -33,6 +33,7 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
     public ChiTietLoaiSanPhamDialog(JInternalFrame parent, javax.swing.JFrame owner, boolean modal, DateRangeDTO dateRange, ThongKeLoaiSanPhamDTO productType) {
         super(owner, modal);
         this.dateRange = dateRange;
+        this.productType = productType;
         initTable();
         displayInfo(productType, dateRange);
         getChiTietLoaiSanPham(productType, dateRange);
@@ -66,21 +67,6 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
         getLblAmount().setText("Số lượng xuất: " + productType.getSoLuong());
     }
     
-    private void addDataToChart(ArrayList<ChiTietLoaiSanPhamDTO> arr) {
-        boolean paintAll = arr.size() <= 7;
-        int valueOther = 0;
-        for (int i = 0; i < arr.size(); ++i) {
-            if (paintAll || i < 6) {
-                getPieChart().addData(new ModelPieChart(arr.get(i).getTenSanPham(), arr.get(i).getSoLuong(), ChartColor.chartColor[i]));
-            } else {
-                valueOther += arr.get(i).getSoLuong();
-            }
-        }
-        if (!paintAll) {
-            getPieChart().addData(new ModelPieChart("Khác", valueOther, ChartColor.chartColor[ChartColor.chartColor.length - 1]));
-        }
-    }
-
     private void getChiTietLoaiSanPham(ThongKeLoaiSanPhamDTO productType, DateRangeDTO dateRange) {
         ArrayList<ChiTietLoaiSanPhamDTO> arr = new ArrayList<>();
         try {
@@ -106,7 +92,6 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
         }
         getTable().getColumnModel().getColumn(0).setCellRenderer(CustomTableCellRenderer.LEFT);
         getTable().getColumnModel().getColumn(1).setCellRenderer(CustomTableCellRenderer.RIGHT);
-        addDataToChart(arr);
     }
     
     private void handleViewGiaXuat(int row) {
@@ -215,6 +200,21 @@ public class ChiTietLoaiSanPhamDialog extends StatDetailDialog {
             int row = getTable().getSelectedRow();
             handleViewGiaXuat(row);
         }
+    }
+
+    @Override
+    public void handleOpenChart() {
+        new ChiTietLoaiSanPhamChart(this, this.productType.getTenLoaiSanPham(), this.arr, this.dateRange).setVisible(true);
+    }
+
+    @Override
+    public void handleOpenPriceDetailDialog() {
+        int row = getTable().getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm");
+            return;
+        }
+        handleViewGiaXuat(row);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

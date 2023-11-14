@@ -4,10 +4,9 @@ import BUS.ThongKeBUS;
 import DTO.DateRangeDTO;
 import DTO.ThongKe.ChiTietSanPhamNhapDTO;
 import DTO.ThongKe.ThongKeSanPhamDTO;
-import GUI.Chart.PieChart.ModelPieChart;
+import GUI.Dialog.Chart.ChiTietSanPhamChart;
 import GUI.ThongKeGUI;
 import com.formdev.flatlaf.FlatLightLaf;
-import helper.ChartColor;
 import helper.CustomTableCellRenderer;
 import helper.DateHelper;
 import java.awt.event.MouseEvent;
@@ -74,21 +73,6 @@ public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
         getLblAmount().setText("Tổng số lượng nhập: " + product.getSoLuongNhap());
     }
     
-    private void addDataToChart(ArrayList<ChiTietSanPhamNhapDTO> arr) {
-        boolean paintAll = arr.size() <= 7;
-        int valueOther = 0;
-        for (int i = 0; i < arr.size(); ++i) {
-            if (paintAll || i < 6) {
-                getPieChart().addData(new ModelPieChart(arr.get(i).getTenNhaCungCap(), arr.get(i).getTongSoLuongNhap(), ChartColor.chartColor[i]));
-            } else {
-                valueOther += arr.get(i).getTongSoLuongNhap();
-            }
-        }
-        if (!paintAll) {
-            getPieChart().addData(new ModelPieChart("Khác", valueOther, ChartColor.chartColor[ChartColor.chartColor.length - 1]));
-        }
-    }
-    
     private ArrayList<ChiTietSanPhamNhapDTO> thongKeChiTietSanPhamNhap(DateRangeDTO dateRange, int productId) {
         ArrayList<ChiTietSanPhamNhapDTO> arr = new ArrayList<>();
         try {
@@ -116,7 +100,6 @@ public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
         }
         getTable().getColumnModel().getColumn(0).setCellRenderer(CustomTableCellRenderer.LEFT);
         getTable().getColumnModel().getColumn(1).setCellRenderer(CustomTableCellRenderer.RIGHT);
-        addDataToChart(arr);
         return arr;
     }
     
@@ -227,5 +210,20 @@ public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
             int row = getTable().getSelectedRow();
             handleViewGiaNhap(row);
         }
+    }
+
+    @Override
+    public void handleOpenChart() {
+        new ChiTietSanPhamChart(this, this.product.getTenSanPham(), this.arr, this.dateRange).setVisible(true);
+    }
+
+    @Override
+    public void handleOpenPriceDetailDialog() {
+        int row = getTable().getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm");
+            return;
+        }
+        handleViewGiaNhap(row);
     }
 }
