@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Dialog.Chart;
 
 import DTO.ThongKe.ThongKeDoanhThuDTO;
 import java.awt.BorderLayout;
