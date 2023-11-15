@@ -579,8 +579,9 @@ public class PhieuXuatForm extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        AddNhaCungCap a = new AddNhaCungCap((JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-        a.setVisible(true);
+      //  AddNhaCungCap a = new AddNhaCungCap(this,(JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
+
+       // a.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
     public PhieuXuat getPhieuXuatSelect() {
