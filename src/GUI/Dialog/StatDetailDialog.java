@@ -1,7 +1,7 @@
 package GUI.Dialog;
 
-import GUI.Chart.PieChart.PieChart;
 import com.formdev.flatlaf.FlatLightLaf;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -45,15 +45,15 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
     public void setLblTime(JLabel lblTime) {
         this.lblTime = lblTime;
     }
-
-    public PieChart getPieChart() {
-        return pieChart;
+    
+    public JButton getBtnOpenChart() {
+        return btnOpenChart;
     }
 
-    public void setPieChart(PieChart pieChart) {
-        this.pieChart = pieChart;
+    public void setBtnOpenChart(JButton btnOpenChart) {
+        this.btnOpenChart = btnOpenChart;
     }
-
+    
     public JTable getTable() {
         return table;
     }
@@ -61,9 +61,19 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
     public void setTable(JTable table) {
         this.table = table;
     }
+
+    public JButton getBtnPriceDetail() {
+        return btnPriceDetail;
+    }
+
+    public void setBtnPriceDetail(JButton btnPriceDetail) {
+        this.btnPriceDetail = btnPriceDetail;
+    }
     
     public abstract void initTable();
     public abstract void onClickTable(java.awt.event.MouseEvent evt);
+    public abstract void handleOpenChart();
+    public abstract void handleOpenPriceDetailDialog();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,11 +85,13 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pContainer = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         lblPrimary = new javax.swing.JLabel();
         lblSecondary = new javax.swing.JLabel();
-        lblAmount = new javax.swing.JLabel();
         lblTime = new javax.swing.JLabel();
-        pieChart = new GUI.Chart.PieChart.PieChart();
+        lblAmount = new javax.swing.JLabel();
+        btnOpenChart = new javax.swing.JButton();
+        btnPriceDetail = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
 
@@ -87,17 +99,65 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
 
         pContainer.setBackground(new java.awt.Color(255, 255, 255));
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
         lblPrimary.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblPrimary.setForeground(new java.awt.Color(0, 0, 0));
 
         lblSecondary.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblSecondary.setForeground(new java.awt.Color(0, 0, 0));
-
-        lblAmount.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblAmount.setForeground(new java.awt.Color(0, 0, 0));
 
         lblTime.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblTime.setForeground(new java.awt.Color(0, 0, 0));
+
+        lblAmount.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+
+        btnOpenChart.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnOpenChart.setText("Xem biểu đồ");
+        btnOpenChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenChartActionPerformed(evt);
+            }
+        });
+
+        btnPriceDetail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnPriceDetail.setText("Chi tiết");
+        btnPriceDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPriceDetailActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSecondary)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblTime)
+                        .addGap(128, 128, 128)
+                        .addComponent(lblAmount))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnOpenChart)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPriceDetail))
+                    .addComponent(lblPrimary))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(lblPrimary)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblSecondary)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTime)
+                    .addComponent(lblAmount))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnOpenChart)
+                    .addComponent(btnPriceDetail)))
+        );
 
         table.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -119,47 +179,21 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
         pContainer.setLayout(pContainerLayout);
         pContainerLayout.setHorizontalGroup(
             pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pContainerLayout.createSequentialGroup()
-                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pContainerLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pContainerLayout.createSequentialGroup()
-                                .addComponent(lblTime)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 460, Short.MAX_VALUE)
-                                .addComponent(lblAmount)
-                                .addGap(110, 110, 110))
-                            .addGroup(pContainerLayout.createSequentialGroup()
-                                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblPrimary)
-                                    .addComponent(lblSecondary))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 570, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pContainerLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pieChart, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)))
-                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pContainerLayout.setVerticalGroup(
             pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pContainerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pContainerLayout.createSequentialGroup()
-                        .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(pContainerLayout.createSequentialGroup()
-                        .addComponent(lblPrimary)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblSecondary)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblTime)
-                            .addComponent(lblAmount))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pieChart, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32))))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -180,6 +214,16 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
         onClickTable(evt);
     }//GEN-LAST:event_tableMouseClicked
+
+    private void btnOpenChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenChartActionPerformed
+        // TODO add your handling code here:
+        handleOpenChart();
+    }//GEN-LAST:event_btnOpenChartActionPerformed
+
+    private void btnPriceDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPriceDetailActionPerformed
+        // TODO add your handling code here:
+        handleOpenPriceDetailDialog();
+    }//GEN-LAST:event_btnPriceDetailActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,6 +267,16 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
                     public void onClickTable(java.awt.event.MouseEvent evt) {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
+
+                    @Override
+                    public void handleOpenChart() {
+                        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                    }
+
+                    @Override
+                    public void handleOpenPriceDetailDialog() {
+                        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                    }
                 };
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
@@ -236,12 +290,14 @@ public abstract class StatDetailDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOpenChart;
+    private javax.swing.JButton btnPriceDetail;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAmount;
     private javax.swing.JLabel lblPrimary;
     private javax.swing.JLabel lblSecondary;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel pContainer;
-    private GUI.Chart.PieChart.PieChart pieChart;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables

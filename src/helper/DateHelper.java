@@ -1,5 +1,6 @@
 package helper;
 
+import DTO.DateRangeDTO;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,5 +28,9 @@ public class DateHelper {
     
     public static Date convertLDTToDateObj(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+    
+    public static String dateRangeToString(DateRangeDTO dateRange, DateTimeFormatter formatter) {
+        return dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter);
     }
 }
