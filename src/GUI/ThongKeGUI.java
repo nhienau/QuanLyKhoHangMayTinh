@@ -13,6 +13,7 @@ import helper.CustomTableCellRenderer;
 import helper.DateHelper;
 import helper.LoaiSanPhamTableModel;
 import helper.NumberHelper;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -21,9 +22,11 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.ToolTipManager;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 
@@ -83,6 +86,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         ui.setNorthPane(null);
         initList();
         initTable();
+        setToolTip();
         getOldestDate();
         initDoanhThuOption();
         initDateRange();
@@ -274,6 +278,20 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         setQueryTonKho("");
         setQuerySanPham("");
         setQueryLoaiSanPham("");
+    }
+    
+    private void setToolTip() {
+        String groupByToolTipText = """
+                                    <html>
+                                    Khi thống kê trong khoảng thời gian trên 90 ngày,
+                                    <br>
+                                    kết quả thống kê mặc định sẽ được nhóm theo tháng.
+                                    </html>
+                                    """;
+        iconInfo.setToolTipText(groupByToolTipText);
+        ToolTipManager.sharedInstance().registerComponent(iconInfo);
+        ToolTipManager.sharedInstance().setInitialDelay(0);
+        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
     }
     
     private void initDoanhThuOption() {
@@ -671,6 +689,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelDoanhThu = new javax.swing.JButton();
         spMessageOptionChanged = new javax.swing.JScrollPane();
         taOptionChanged = new javax.swing.JTextArea();
+        iconInfo = new javax.swing.JLabel();
         scrollPane3 = new javax.swing.JScrollPane();
         tbDoanhThu = new javax.swing.JTable();
         pSanPham = new javax.swing.JPanel();
@@ -894,6 +913,15 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterDoanhThu.add(spMessageOptionChanged, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 280, 60));
         spMessageOptionChanged.getViewport().setOpaque(false);
         spMessageOptionChanged.setVisible(false);
+
+        ImageIcon imageIcon = new ImageIcon("/icon/icon-info-2.png");
+        Image image = imageIcon.getImage();
+        Image newimg = image.getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(newimg);
+        iconInfo.setIcon(imageIcon);
+        iconInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon-info.png"))); // NOI18N
+        iconInfo.setPreferredSize(new java.awt.Dimension(24, 24));
+        pFilterDoanhThu.add(iconInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, -1, -1));
 
         tbDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbDoanhThu.setModel(new javax.swing.table.DefaultTableModel(
@@ -1386,6 +1414,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> cbLoaiSanPhamDate;
     private javax.swing.JComboBox<String> cbSanPhamDate;
     private javax.swing.JComboBox<String> cbTonKhoDate;
+    private javax.swing.JLabel iconInfo;
     private javax.swing.JTextField inputLoaiSanPham;
     private javax.swing.JTextField inputSanPham;
     private javax.swing.JTextField inputTonKho;
