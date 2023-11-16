@@ -17,12 +17,14 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -627,8 +629,18 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         tbDoanhThu.getTableHeader().repaint();
         
         dtmDoanhThu.setRowCount(0);
+        
+        Long totalExpense = 0L;
+        Long totalIncome = 0L;
+        Long totalProfit = 0L;
+
         for (int i = 0; i < arr.size(); ++i) {
             ThongKeDoanhThuDTO tkdtDTO = arr.get(i);
+            
+            totalExpense += tkdtDTO.getExpense();
+            totalIncome += tkdtDTO.getIncome();
+            totalProfit += tkdtDTO.getProfit();
+            
             Date timeline = tkdtDTO.getTimeline();
             LocalDateTime localDateTime = DateHelper.convertDateObjToLDT(timeline);
             String expense = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getExpense()));
@@ -650,8 +662,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             dtmDoanhThu.addRow(row);
         }
         
+        String totalExpenseString = NumberHelper.appendVND(NumberHelper.commafy(totalExpense));
+        String totalIncomeString = NumberHelper.appendVND(NumberHelper.commafy(totalIncome));
+        String totalProfitString = NumberHelper.appendVND(NumberHelper.commafy(totalProfit));
+        Object[] totalRow = {"Tổng", totalExpenseString, totalIncomeString, totalProfitString};
+        dtmDoanhThu.insertRow(0, totalRow);
+        
         for (int i = 0; i < tbDoanhThu.getColumnCount(); ++i) {
-            tbDoanhThu.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+            tbDoanhThu.getColumnModel().getColumn(i).setCellRenderer(i != 0 ? CustomTableCellRenderer.RIGHT : CustomTableCellRenderer.CENTER);
         }
         setIsLoadingDoanhThu(false);
     }
@@ -888,6 +906,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelDoanhThu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelDoanhThu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelDoanhThu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExportExcelDoanhThu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelDoanhThuActionPerformed(evt);
+            }
+        });
         pFilterDoanhThu.add(btnExportExcelDoanhThu, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, 140, -1));
 
         spMessageOptionChanged.setBackground(new java.awt.Color(255, 255, 255));
@@ -920,7 +943,6 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         imageIcon = new ImageIcon(newimg);
         iconInfo.setIcon(imageIcon);
         iconInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon-info.png"))); // NOI18N
-        iconInfo.setPreferredSize(new java.awt.Dimension(24, 24));
         pFilterDoanhThu.add(iconInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, -1, -1));
 
         tbDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -1394,6 +1416,10 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             new LoaiSanPhamChart(this.arrLoaiSanPham, this.drLoaiSanPham).setVisible(true);
         }
     }//GEN-LAST:event_btnOpenChartLoaiSanPhamActionPerformed
+
+    private void btnExportExcelDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelDoanhThuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExportExcelDoanhThuActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChiTietLoaiSanPham;
