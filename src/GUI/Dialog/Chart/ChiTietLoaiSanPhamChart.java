@@ -13,7 +13,7 @@ public class ChiTietLoaiSanPhamChart extends PieChartGUI {
     public ChiTietLoaiSanPhamChart(JDialog parent, String title, ArrayList<ChiTietLoaiSanPhamDTO> arr, DateRangeDTO dateRange) {
         super(parent, title);
         this.arr = arr;
-        String chartTitle = title + " (" + DateHelper.dateRangeToString(dateRange, DateHelper.DATE_FORMATTER) + ")";
+        String chartTitle = title + " (" + DateHelper.dateRangeToString(dateRange, DateHelper.DATE_FORMATTER, " - ") + ")";
         super.displayChart(chartTitle);
     }
 

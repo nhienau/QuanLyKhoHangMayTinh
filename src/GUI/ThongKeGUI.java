@@ -11,6 +11,7 @@ import GUI.Dialog.ChiTietSanPhamNhapDialog;
 import GUI.Dialog.SelectDateDialog;
 import helper.CustomTableCellRenderer;
 import helper.DateHelper;
+import helper.FileHelper;
 import helper.LoaiSanPhamTableModel;
 import helper.NumberHelper;
 import java.awt.Image;
@@ -18,19 +19,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.ToolTipManager;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
@@ -61,9 +67,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final String CB_VALUE_LAST_2_MONTHS = "Tháng " + last2MonthDateTime.getMonthValue() + (last2MonthDateTime.getYear() == curYear ? "" : "/" + last2MonthDateTime.getYear());
     private final String CB_VALUE_CUSTOM = "Tuỳ chỉnh";
     
-    private final String CB_VALUE_GROUP_BY_DATE = "Ngày";
-    private final String CB_VALUE_GROUP_BY_MONTH = "Tháng";
-    private final String CB_VALUE_GROUP_BY_YEAR = "Năm";
+    public static final String CB_VALUE_GROUP_BY_DATE = "Ngày";
+    public static final String CB_VALUE_GROUP_BY_MONTH = "Tháng";
+    public static final String CB_VALUE_GROUP_BY_YEAR = "Năm";
     private final int DT_QUERY_MAX_DATES = 90;
     
     private DateRangeDTO drTonKho;
@@ -80,6 +86,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private boolean isLoadingSanPham;
     private boolean isLoadingLoaiSanPham;
     
+    private TongDoanhThuDTO tongDoanhThu;
     private String doanhThuGroupBy;
     
     public ThongKeGUI(NguoiDungDTO user) {
@@ -353,7 +360,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             label.setText(CB_VALUE_LIFETIME); 
         } else {
-            label.setText(dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));
+            label.setText(DateHelper.dateRangeToString(dateRange, DateHelper.DATE_FORMATTER, " - "));
         }
     }
 
@@ -632,14 +639,12 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         
         Long totalExpense = 0L;
         Long totalIncome = 0L;
-        Long totalProfit = 0L;
 
         for (int i = 0; i < arr.size(); ++i) {
             ThongKeDoanhThuDTO tkdtDTO = arr.get(i);
             
             totalExpense += tkdtDTO.getExpense();
             totalIncome += tkdtDTO.getIncome();
-            totalProfit += tkdtDTO.getProfit();
             
             Date timeline = tkdtDTO.getTimeline();
             LocalDateTime localDateTime = DateHelper.convertDateObjToLDT(timeline);
@@ -662,11 +667,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             dtmDoanhThu.addRow(row);
         }
         
+        Long totalProfit = totalIncome - totalExpense;
         String totalExpenseString = NumberHelper.appendVND(NumberHelper.commafy(totalExpense));
         String totalIncomeString = NumberHelper.appendVND(NumberHelper.commafy(totalIncome));
         String totalProfitString = NumberHelper.appendVND(NumberHelper.commafy(totalProfit));
         Object[] totalRow = {"Tổng", totalExpenseString, totalIncomeString, totalProfitString};
         dtmDoanhThu.insertRow(0, totalRow);
+        
+        tongDoanhThu = new TongDoanhThuDTO(drDoanhThu, totalExpense, totalIncome, totalProfit);
         
         for (int i = 0; i < tbDoanhThu.getColumnCount(); ++i) {
             tbDoanhThu.getColumnModel().getColumn(i).setCellRenderer(i != 0 ? CustomTableCellRenderer.RIGHT : CustomTableCellRenderer.CENTER);
@@ -1419,6 +1427,29 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
     private void btnExportExcelDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelDoanhThuActionPerformed
         // TODO add your handling code here:
+        File file = FileHelper.createExcelFile(this);
+        XSSFWorkbook wbDoanhThu = new XSSFWorkbook();
+        try {
+            XSSFSheet sheetDoanhThu = tkBUS.exportDataDoanhThu(wbDoanhThu, arrDoanhThu, tongDoanhThu, doanhThuGroupBy);
+            
+            FileHelper.writeToExcelFile(file, wbDoanhThu);
+            FileHelper.openFile(file);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không thể lưu file. Vui lòng chọn một đường dẫn lưu file hợp lệ.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Ghi vào file không thành công, vui lòng thử lại.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                wbDoanhThu.close();
+            } catch (IOException e) {
+                Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
     }//GEN-LAST:event_btnExportExcelDoanhThuActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

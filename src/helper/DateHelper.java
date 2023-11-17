@@ -8,10 +8,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class DateHelper {
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static final String DATE_PATTERN = "dd/MM/yyyy";
+    public static final String MONTH_PATTERN = "MM/yyyy";
+    public static final String YEAR_PATTERN = "yyyy";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    public static final DateTimeFormatter EXCEL_SHEET_NAME_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    public static final DateTimeFormatter MONTH_FORMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
-    public static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
+    public static final DateTimeFormatter MONTH_FORMATTER = DateTimeFormatter.ofPattern(MONTH_PATTERN);
+    public static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern(YEAR_PATTERN);
     public static final SimpleDateFormat SQL_ROW_MONTH_FORMATTER = new SimpleDateFormat("yyyy-MM");
     public static final SimpleDateFormat SQL_ROW_YEAR_FORMATTER = new SimpleDateFormat("yyyy");
     public static final DateTimeFormatter SQL_ROW_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -30,7 +34,7 @@ public class DateHelper {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
     
-    public static String dateRangeToString(DateRangeDTO dateRange, DateTimeFormatter formatter) {
-        return dateRange.getFromDate().format(formatter) + " - " + dateRange.getToDate().format(formatter);
+    public static String dateRangeToString(DateRangeDTO dateRange, DateTimeFormatter formatter, String separator) {
+        return dateRange.getFromDate().format(formatter) + separator + dateRange.getToDate().format(formatter);
     }
 }

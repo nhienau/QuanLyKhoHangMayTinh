@@ -68,7 +68,7 @@ public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
         if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             getLblTime().setText(ThongKeGUI.CB_VALUE_LIFETIME);
         } else {
-            getLblTime().setText("Thời gian: " + dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));
+            getLblTime().setText("Thời gian: " + DateHelper.dateRangeToString(dateRange, DateHelper.DATE_FORMATTER, " - "));
         }
         getLblAmount().setText("Tổng số lượng nhập: " + product.getSoLuongNhap());
     }
