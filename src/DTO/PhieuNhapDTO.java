@@ -1,19 +1,46 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package DTO;
 
+import java.sql.Date;
+
+/**
+ *
+ * @author DELL
+ */
 public class PhieuNhapDTO {
     private int maPhieuNhap;
-    private String thoiGianTao;
+    private Date thoiGianTao;
     private int maKho;
     private String nguoiTao;
     private int tongTien;
-    private int trangThai;
+    private int  trangThai;
 
-    public PhieuNhapDTO(int maPhieuNhap, String thoiGianTao, int maKho, String nguoiTao, int tongTien, int trangThai) {
+    public PhieuNhapDTO() {
+    }
+
+    public PhieuNhapDTO(int maPhieuNhap, Date thoiGianTao, int maKho, String nguoiTao, int tongTien, int trangThai) {
         this.maPhieuNhap = maPhieuNhap;
         this.thoiGianTao = thoiGianTao;
         this.maKho = maKho;
         this.nguoiTao = nguoiTao;
         this.tongTien = tongTien;
+        this.trangThai = trangThai;
+    }
+
+    public PhieuNhapDTO(Date thoiGianTao, int maKho, String nguoiTao, int tongTien, int trangThai) {
+        this.thoiGianTao = thoiGianTao;
+        this.maKho = maKho;
+        this.nguoiTao = nguoiTao;
+        this.trangThai = trangThai;
+        this.tongTien = tongTien;
+    }
+
+    public PhieuNhapDTO(int maPhieuNhap, int maKho, int trangThai) {
+        this.maPhieuNhap = maPhieuNhap;
+        this.maKho = maKho;
         this.trangThai = trangThai;
     }
     
@@ -25,14 +52,14 @@ public class PhieuNhapDTO {
         this.maPhieuNhap = maPhieuNhap;
     }
 
-    public String getThoiGianTao() {
+    public Date getThoiGianTao() {
         return thoiGianTao;
     }
 
-    public void setThoiGianTao(String thoiGianTao) {
+    public void setThoiGianTao(Date thoiGianTao) {
         this.thoiGianTao = thoiGianTao;
     }
-    
+
     public int getMaKho() {
         return maKho;
     }
@@ -64,4 +91,6 @@ public class PhieuNhapDTO {
     public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
     }
+    
+    
 }
