@@ -11,26 +11,39 @@ import GUI.Dialog.ChiTietSanPhamNhapDialog;
 import GUI.Dialog.SelectDateDialog;
 import helper.CustomTableCellRenderer;
 import helper.DateHelper;
+import helper.FileHelper;
 import helper.LoaiSanPhamTableModel;
 import helper.NumberHelper;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.ToolTipManager;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final ThongKeBUS tkBUS = new ThongKeBUS();
-    private ArrayList<ThongKeLoaiSanPhamDTO> arrLoaiSanPham;
-    private ArrayList<ThongKeDoanhThuDTO> arrDoanhThu;
+    private ChiTietTongTonKhoDTO dataTonKho;
+    private ChiTietDoanhThuDTO dataDoanhThu;
+    private ChiTietTongSanPhamDTO dataSanPham;
+    private ChiTietLSPXuatDTO dataLoaiSanPham;
     private DefaultTableModel dtmTonKho;
     private DefaultTableModel dtmDoanhThu;
     private DefaultTableModel dtmSanPham;
@@ -56,9 +69,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private final String CB_VALUE_LAST_2_MONTHS = "Tháng " + last2MonthDateTime.getMonthValue() + (last2MonthDateTime.getYear() == curYear ? "" : "/" + last2MonthDateTime.getYear());
     private final String CB_VALUE_CUSTOM = "Tuỳ chỉnh";
     
-    private final String CB_VALUE_GROUP_BY_DATE = "Ngày";
-    private final String CB_VALUE_GROUP_BY_MONTH = "Tháng";
-    private final String CB_VALUE_GROUP_BY_YEAR = "Năm";
+    public static final String CB_VALUE_GROUP_BY_DATE = "Ngày";
+    public static final String CB_VALUE_GROUP_BY_MONTH = "Tháng";
+    public static final String CB_VALUE_GROUP_BY_YEAR = "Năm";
     private final int DT_QUERY_MAX_DATES = 90;
     
     private DateRangeDTO drTonKho;
@@ -83,6 +96,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         ui.setNorthPane(null);
         initList();
         initTable();
+        setToolTip();
         getOldestDate();
         initDoanhThuOption();
         initDateRange();
@@ -166,8 +180,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     }
     
     private void initList() {
-        this.arrLoaiSanPham = new ArrayList<>();
-        this.arrDoanhThu = new ArrayList<>();
+        this.dataLoaiSanPham = new ChiTietLSPXuatDTO();
+        this.dataLoaiSanPham.setList(new ArrayList<>());
     }
     
     private void initTable() {
@@ -232,7 +246,8 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         tbSanPham.getColumnModel().getColumn(2).setPreferredWidth(400);
 
         String[] tbLoaiSanPhamColumnNames = {"Mã", "Loại sản phẩm", "Số lượng xuất"};
-        this.tmLoaiSanPham = new LoaiSanPhamTableModel(this.arrLoaiSanPham, tbLoaiSanPhamColumnNames);
+        Object[] loaiSanPhamTotalRow = {"", "Tổng", ""};
+        this.tmLoaiSanPham = new LoaiSanPhamTableModel(this.dataLoaiSanPham.getList(), tbLoaiSanPhamColumnNames, loaiSanPhamTotalRow);
         tbLoaiSanPham.setModel(tmLoaiSanPham);
         tbLoaiSanPham.getColumnModel().getColumn(0).setMinWidth(0);
         tbLoaiSanPham.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -274,6 +289,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         setQueryTonKho("");
         setQuerySanPham("");
         setQueryLoaiSanPham("");
+    }
+    
+    private void setToolTip() {
+        String groupByToolTipText = "<html>Khi thống kê trong khoảng thời gian trên " + DT_QUERY_MAX_DATES + " ngày,<br>kết quả thống kê mặc định sẽ được nhóm theo tháng.</html>";
+        iconInfo.setToolTipText(groupByToolTipText);
+        ToolTipManager.sharedInstance().registerComponent(iconInfo);
+        ToolTipManager.sharedInstance().setInitialDelay(0);
+        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
     }
     
     private void initDoanhThuOption() {
@@ -333,7 +356,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             label.setText(CB_VALUE_LIFETIME); 
         } else {
-            label.setText(dateRange.getFromDate().format(DateHelper.DATE_FORMATTER) + " - " + dateRange.getToDate().format(DateHelper.DATE_FORMATTER));
+            label.setText(DateHelper.dateRangeToString(dateRange, DateHelper.DATE_FORMATTER, " - "));
         }
     }
 
@@ -441,9 +464,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     }
     
     private void thongKeTonKho(DateRangeDTO dateRange, String productName) {
-        ArrayList<ThongKeTonKhoDTO> arr = new ArrayList<>();
+        ChiTietTongTonKhoDTO data = null;
         try {
-            arr = tkBUS.thongKeTonKho(dateRange, productName);
+            data = tkBUS.thongKeTonKho(dateRange, productName);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -453,7 +476,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             e.printStackTrace();
             return;
         }
+        this.dataTonKho = data;
         dtmTonKho.setRowCount(0);
+        
+        // Add total row
+        Object[] totalRow = {"Tổng", "", data.getTongTonDauKy(), data.getTongNhapTrongKy(), data.getTongXuatTrongKy(), data.getTongTonCuoiKy()};
+        dtmTonKho.addRow(totalRow);
+        
+        ArrayList<ThongKeTonKhoDTO> arr = data.getList();
         for (int i = 0; i < arr.size(); ++i) {
             ThongKeTonKhoDTO tktkDTO = arr.get(i);
             int maSanPham = tktkDTO.getMaSanPham();
@@ -481,9 +511,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     }
     
     private void thongKeSanPham(DateRangeDTO dateRange, String productName) {
-        ArrayList<ThongKeSanPhamDTO> arr = new ArrayList<>();
+        ChiTietTongSanPhamDTO data = null;
         try {
-            arr = tkBUS.thongKeSanPham(dateRange, productName);
+            data = tkBUS.thongKeSanPham(dateRange, productName);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -493,7 +523,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             e.printStackTrace();
             return;
         }
+        this.dataSanPham = data;
+        
         dtmSanPham.setRowCount(0);
+        // Add total row
+        Object[] totalRow = {"Tổng", "", "", data.getTongSoLuongNhap()};
+        dtmSanPham.addRow(totalRow);
+        
+        ArrayList<ThongKeSanPhamDTO> arr = data.getList();
         for (int i = 0; i < arr.size(); ++i) {
             ThongKeSanPhamDTO tkspDTO = arr.get(i);
             int maSanPham = tkspDTO.getMaSanPham();
@@ -533,9 +570,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     }
     
     private void thongKeLoaiSanPham(DateRangeDTO dateRange, String productType) {
-        ArrayList<ThongKeLoaiSanPhamDTO> arr = new ArrayList<>();
+        ChiTietLSPXuatDTO data = null;
         try {
-            arr = tkBUS.thongKeLoaiSanPham(dateRange, productType);
+            data = tkBUS.thongKeLoaiSanPham(dateRange, productType);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -545,18 +582,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             e.printStackTrace();
             return;
         }
-        this.arrLoaiSanPham = arr;
-        tmLoaiSanPham.setData(arr);
-        tmLoaiSanPham.fireTableDataChanged();
-//        dtmLoaiSanPham.setRowCount(0);
-//        for (int i = 0; i < arr.size(); ++i) {
-//            ThongKeLoaiSanPhamDTO lsp = arr.get(i);
-//            int maLoaiSanPham = lsp.getMaLoaiSanPham();
-//            String tenLoaiSanPham = lsp.getTenLoaiSanPham();
-//            int soLuong = lsp.getSoLuong();
-//            Object [] row = {maLoaiSanPham, tenLoaiSanPham, soLuong};
-//            dtmLoaiSanPham.addRow(row);
-//        }
+        
+        Object[] totalRow = {"", "Tổng", data.getTongSoLuongXuat()};
+        this.dataLoaiSanPham = data;
+        this.tmLoaiSanPham.setDataAndTotalRow(data.getList(), totalRow);
+
         for (int i = 0; i < tbLoaiSanPham.getColumnCount(); ++i) {
             switch (i) {
                 case 0:
@@ -577,9 +607,9 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         // dateRange: get data from start_date to end_date
         // filter: filter out dates with no expense and income
         // groupBy: group results by date/month/year
-        ArrayList<ThongKeDoanhThuDTO> arr = new ArrayList<>();
+        ChiTietDoanhThuDTO data = null;
         try {
-            arr = tkBUS.thongKeDoanhThu(dateRange, groupBy);
+            data = tkBUS.thongKeDoanhThu(dateRange, groupBy);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(ThongKeGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -589,8 +619,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
             e.printStackTrace();
             return;
         }
-        this.arrDoanhThu = arr;
-        
+        this.dataDoanhThu = data;
         String timelineColumnName = "";
         switch (groupBy) {
             case "date":
@@ -609,8 +638,18 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         tbDoanhThu.getTableHeader().repaint();
         
         dtmDoanhThu.setRowCount(0);
+        
+        // Add total row
+        String totalExpenseString = NumberHelper.appendVND(NumberHelper.commafy(data.getTotalExpense()));
+        String totalIncomeString = NumberHelper.appendVND(NumberHelper.commafy(data.getTotalIncome()));
+        String totalProfitString = NumberHelper.appendVND(NumberHelper.commafy(data.getTotalProfit()));
+        Object[] totalRow = {"Tổng", totalExpenseString, totalIncomeString, totalProfitString};
+        dtmDoanhThu.addRow(totalRow);
+        
+        ArrayList<ThongKeDoanhThuDTO> arr = data.getList();
         for (int i = 0; i < arr.size(); ++i) {
             ThongKeDoanhThuDTO tkdtDTO = arr.get(i);
+            
             Date timeline = tkdtDTO.getTimeline();
             LocalDateTime localDateTime = DateHelper.convertDateObjToLDT(timeline);
             String expense = NumberHelper.appendVND(NumberHelper.commafy(tkdtDTO.getExpense()));
@@ -633,7 +672,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         }
         
         for (int i = 0; i < tbDoanhThu.getColumnCount(); ++i) {
-            tbDoanhThu.getColumnModel().getColumn(i).setCellRenderer(CustomTableCellRenderer.CENTER);
+            tbDoanhThu.getColumnModel().getColumn(i).setCellRenderer(i != 0 ? CustomTableCellRenderer.RIGHT : CustomTableCellRenderer.CENTER);
         }
         setIsLoadingDoanhThu(false);
     }
@@ -671,6 +710,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelDoanhThu = new javax.swing.JButton();
         spMessageOptionChanged = new javax.swing.JScrollPane();
         taOptionChanged = new javax.swing.JTextArea();
+        iconInfo = new javax.swing.JLabel();
         scrollPane3 = new javax.swing.JScrollPane();
         tbDoanhThu = new javax.swing.JTable();
         pSanPham = new javax.swing.JPanel();
@@ -742,6 +782,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelTonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelTonKho.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelTonKho.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExportExcelTonKho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelTonKhoActionPerformed(evt);
+            }
+        });
         pFilterTonKho.add(btnExportExcelTonKho, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, -1));
 
         lblTonKhoDate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -869,6 +914,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelDoanhThu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelDoanhThu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelDoanhThu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExportExcelDoanhThu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelDoanhThuActionPerformed(evt);
+            }
+        });
         pFilterDoanhThu.add(btnExportExcelDoanhThu, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, 140, -1));
 
         spMessageOptionChanged.setBackground(new java.awt.Color(255, 255, 255));
@@ -894,6 +944,14 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         pFilterDoanhThu.add(spMessageOptionChanged, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 280, 60));
         spMessageOptionChanged.getViewport().setOpaque(false);
         spMessageOptionChanged.setVisible(false);
+
+        ImageIcon imageIcon = new ImageIcon("/icon/icon-info-2.png");
+        Image image = imageIcon.getImage();
+        Image newimg = image.getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(newimg);
+        iconInfo.setIcon(imageIcon);
+        iconInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon-info.png"))); // NOI18N
+        pFilterDoanhThu.add(iconInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 70, -1, -1));
 
         tbDoanhThu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tbDoanhThu.setModel(new javax.swing.table.DefaultTableModel(
@@ -990,6 +1048,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelSanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelSanPham.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelSanPham.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExportExcelSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelSanPhamActionPerformed(evt);
+            }
+        });
         pFilterSanPham.add(btnExportExcelSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, -1));
 
         btnReloadSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -1103,6 +1166,11 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
         btnExportExcelLoaiSanPham.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcelLoaiSanPham.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExportExcelLoaiSanPham.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExportExcelLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportExcelLoaiSanPhamActionPerformed(evt);
+            }
+        });
         pFilterLoaiSanPham.add(btnExportExcelLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 200, 130, -1));
 
         btnReloadLoaiSanPham.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -1234,7 +1302,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private void btnChiTietSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChiTietSanPhamActionPerformed
         // TODO add your handling code here:
         int row = tbSanPham.getSelectedRow();
-        if (row == -1) {
+        if (row < 1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm");
             return;
         }
@@ -1266,7 +1334,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
     private void tbSanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbSanPhamMouseClicked
         // TODO add your handling code here:
-        if(evt.getClickCount() == 2 && tbSanPham.getSelectedRow() != -1) {
+        if(evt.getClickCount() == 2 && tbSanPham.getSelectedRow() > 0) {
             int row = tbSanPham.getSelectedRow();
             handleViewProductDetail(row);
         }
@@ -1293,7 +1361,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private void btnChiTietLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChiTietLoaiSanPhamActionPerformed
         // TODO add your handling code here:
         int row = tbLoaiSanPham.getSelectedRow();
-        if (row == -1) {
+        if (row < 1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm");
             return;
         }
@@ -1307,7 +1375,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
     private void tbLoaiSanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbLoaiSanPhamMouseClicked
         // TODO add your handling code here:
-        if (evt.getClickCount() == 2 && tbLoaiSanPham.getSelectedRow() != -1) {
+        if (evt.getClickCount() == 2 && tbLoaiSanPham.getSelectedRow() > 0) {
             int row = tbLoaiSanPham.getSelectedRow();
             handleViewProductTypeDetail(row);
         }
@@ -1351,21 +1419,152 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
 
     private void btnOpenChartDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenChartDoanhThuActionPerformed
         // TODO add your handling code here:
-        if (this.arrDoanhThu.isEmpty()) {
+        ArrayList<ThongKeDoanhThuDTO> arrDoanhThu = dataDoanhThu.getList();
+        if (arrDoanhThu.isEmpty()) {
             JOptionPane.showMessageDialog(ThongKeGUI.this, "Không có dữ liệu");
         } else {
-            new LineChart(this.arrDoanhThu, this.doanhThuGroupBy).setVisible(true);
+            new LineChart(arrDoanhThu, this.doanhThuGroupBy).setVisible(true);
         }
     }//GEN-LAST:event_btnOpenChartDoanhThuActionPerformed
 
     private void btnOpenChartLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenChartLoaiSanPhamActionPerformed
         // TODO add your handling code here:
-        if (this.arrLoaiSanPham.isEmpty()) {
+        if (this.dataLoaiSanPham.getList().isEmpty()) {
             JOptionPane.showMessageDialog(ThongKeGUI.this, "Không có dữ liệu");
         } else {
-            new LoaiSanPhamChart(this.arrLoaiSanPham, this.drLoaiSanPham).setVisible(true);
+            new LoaiSanPhamChart(this.dataLoaiSanPham.getList(), this.drLoaiSanPham).setVisible(true);
         }
     }//GEN-LAST:event_btnOpenChartLoaiSanPhamActionPerformed
+
+    private void btnExportExcelDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelDoanhThuActionPerformed
+        // TODO add your handling code here:
+        File file = FileHelper.createExcelFile(this);
+        if (file == null) {
+            return;
+        }
+        XSSFWorkbook wbDoanhThu = new XSSFWorkbook();
+        try {
+            XSSFSheet sheetDoanhThu = tkBUS.exportDataDoanhThu(wbDoanhThu, dataDoanhThu, doanhThuGroupBy);
+            
+            FileHelper.writeToExcelFile(file, wbDoanhThu);
+            FileHelper.openFile(file);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không thể lưu file. Vui lòng chọn một đường dẫn lưu file hợp lệ.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Ghi vào file không thành công, vui lòng thử lại.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                wbDoanhThu.close();
+            } catch (IOException e) {
+                Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }//GEN-LAST:event_btnExportExcelDoanhThuActionPerformed
+
+    private void btnExportExcelTonKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelTonKhoActionPerformed
+        // TODO add your handling code here:
+        File file = FileHelper.createExcelFile(this);
+        if (file == null) {
+            return;
+        }
+        XSSFWorkbook wbTonKho = new XSSFWorkbook();
+        try {
+            XSSFSheet sheetTonKho = tkBUS.exportDataTonKho(wbTonKho, dataTonKho);
+            
+            FileHelper.writeToExcelFile(file, wbTonKho);
+            FileHelper.openFile(file);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không thể lưu file. Vui lòng chọn một đường dẫn lưu file hợp lệ.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Ghi vào file không thành công, vui lòng thử lại.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                wbTonKho.close();
+            } catch (IOException e) {
+                Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }//GEN-LAST:event_btnExportExcelTonKhoActionPerformed
+
+    private void btnExportExcelSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelSanPhamActionPerformed
+        // TODO add your handling code here:
+        if (dataSanPham.getList().isEmpty()) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không có dữ liệu");
+            return;
+        }
+        
+        File file = FileHelper.createExcelFile(this);
+        if (file == null) {
+            return;
+        }
+        XSSFWorkbook wbSanPham = new XSSFWorkbook();
+        try {
+            XSSFSheet sheetSanPham = tkBUS.exportDataSanPham(wbSanPham, dataSanPham);
+            
+            FileHelper.writeToExcelFile(file, wbSanPham);
+            FileHelper.openFile(file);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không thể lưu file. Vui lòng chọn một đường dẫn lưu file hợp lệ.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Ghi vào file không thành công, vui lòng thử lại.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                wbSanPham.close();
+            } catch (IOException e) {
+                Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }//GEN-LAST:event_btnExportExcelSanPhamActionPerformed
+
+    private void btnExportExcelLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelLoaiSanPhamActionPerformed
+        // TODO add your handling code here:
+        if (dataLoaiSanPham.getList().isEmpty()) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không có dữ liệu");
+            return;
+        }
+        
+        File file = FileHelper.createExcelFile(this);
+        if (file == null) {
+            return;
+        }
+        XSSFWorkbook wbLoaiSanPham = new XSSFWorkbook();
+        try {
+            XSSFSheet sheetLoaiSanPham = tkBUS.exportDataLoaiSanPham(wbLoaiSanPham, dataLoaiSanPham);
+            
+            FileHelper.writeToExcelFile(file, wbLoaiSanPham);
+            FileHelper.openFile(file);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Không thể lưu file. Vui lòng chọn một đường dẫn lưu file hợp lệ.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, "Ghi vào file không thành công, vui lòng thử lại.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ThongKeGUI.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                wbLoaiSanPham.close();
+            } catch (IOException e) {
+                Logger.getLogger(ThongKeGUI.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }//GEN-LAST:event_btnExportExcelLoaiSanPhamActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChiTietLoaiSanPham;
@@ -1386,6 +1585,7 @@ public class ThongKeGUI extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> cbLoaiSanPhamDate;
     private javax.swing.JComboBox<String> cbSanPhamDate;
     private javax.swing.JComboBox<String> cbTonKhoDate;
+    private javax.swing.JLabel iconInfo;
     private javax.swing.JTextField inputLoaiSanPham;
     private javax.swing.JTextField inputSanPham;
     private javax.swing.JTextField inputTonKho;
