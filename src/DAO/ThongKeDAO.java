@@ -61,13 +61,14 @@ public class ThongKeDAO {
         return result;
     }
     
-    public ArrayList<ThongKeTonKhoDTO> thongKeTonKho(DateRangeDTO dateRange, String productName) throws SQLException {
-        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
-            return thongKeTonKhoToanThoiGian(productName);
-        }
+    public ChiTietTongTonKhoDTO thongKeTonKho(DateRangeDTO dateRange, String productName) throws SQLException {
+//        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+//            return thongKeTonKhoToanThoiGian(productName);
+//        }
         ArrayList<ThongKeTonKhoDTO> result = new ArrayList<>();
         String fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         String toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        Long tongTonDauKy = 0L, tongNhapTrongKy = 0L, tongXuatTrongKy = 0L, tongTonCuoiKy = 0L;
         try {
             Connection conn = JDBCUtil.getConnection();
             String query = """
@@ -125,6 +126,10 @@ public class ThongKeDAO {
                 int xuatTrongKy = rs.getInt("xuattrongky");
                 int tonCuoiKy = rs.getInt("toncuoiky");
                 result.add(new ThongKeTonKhoDTO(maSanPham, tenSanPham, tonDauKy, nhapTrongKy, xuatTrongKy, tonCuoiKy));
+                tongTonDauKy += tonDauKy;
+                tongNhapTrongKy += nhapTrongKy;
+                tongXuatTrongKy += xuatTrongKy;
+                tongTonCuoiKy += tonCuoiKy;
             }
             ps.close();
             rs.close();
@@ -132,7 +137,7 @@ public class ThongKeDAO {
         } catch (SQLException e) {
             throw e;
         }
-        return result;
+        return new ChiTietTongTonKhoDTO(dateRange, productName, result, tongTonDauKy, tongNhapTrongKy, tongXuatTrongKy, tongTonCuoiKy);
     }
     
     public ArrayList<ThongKeTonKhoDTO> thongKeTonKhoToanThoiGian(String productName) throws SQLException {
@@ -180,11 +185,12 @@ public class ThongKeDAO {
         return result;
     }
     
-    public ArrayList<ThongKeSanPhamDTO> thongKeSanPham(DateRangeDTO dateRange, String productName) throws SQLException {
+    public ChiTietTongSanPhamDTO thongKeSanPham(DateRangeDTO dateRange, String productName) throws SQLException {
         ArrayList<ThongKeSanPhamDTO> result = new ArrayList<>();
         String fromDate = null;
         String toDate = null;
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        int tongSoLuongNhap = 0;
 
         if (!lifetime) {
             fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
@@ -234,6 +240,7 @@ public class ThongKeDAO {
                 String tenSanPham = rs.getString("tensanpham");
                 int soLuongNhap = rs.getInt("soluongnhap");
                 result.add(new ThongKeSanPhamDTO(maSanPham, tenLoaiSanPham, tenSanPham, soLuongNhap));
+                tongSoLuongNhap += soLuongNhap;
             }
 
             JDBCUtil.closeConnection(conn);
@@ -243,7 +250,7 @@ public class ThongKeDAO {
             throw e;
         }
 
-        return result;
+        return new ChiTietTongSanPhamDTO(dateRange, productName, result, tongSoLuongNhap);
     }
     
     public ArrayList<ChiTietSanPhamNhapDTO> thongKeChiTietSanPhamNhap(DateRangeDTO dateRange, int productId) throws SQLException {
@@ -361,11 +368,12 @@ public class ThongKeDAO {
         return result;
     }
     
-    public ArrayList<ThongKeLoaiSanPhamDTO> thongKeLoaiSanPham(DateRangeDTO dateRange, String productType) throws SQLException {
+    public ChiTietLSPXuatDTO thongKeLoaiSanPham(DateRangeDTO dateRange, String productType) throws SQLException {
         ArrayList<ThongKeLoaiSanPhamDTO> result = new ArrayList<>();
         String fromDate = null;
         String toDate = null;
         boolean lifetime = dateRange.getFromDate() == null && dateRange.getToDate() == null;
+        int tongSoLuongXuat = 0;
         
         if (!lifetime) {
             fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
@@ -403,6 +411,7 @@ public class ThongKeDAO {
                 String tenLoaiSanPham = rs.getString("tenloaisanpham");
                 int soLuong = rs.getInt("soluong");
                 result.add(new ThongKeLoaiSanPhamDTO(maLoaiSanPham, tenLoaiSanPham, soLuong));
+                tongSoLuongXuat += soLuong;
             }
             ps.close();
             rs.close();
@@ -410,7 +419,7 @@ public class ThongKeDAO {
         } catch (SQLException e) {
             throw e;
         }
-        return result;
+        return new ChiTietLSPXuatDTO(dateRange, productType, result, tongSoLuongXuat);
     }
     
     public ArrayList<ChiTietLoaiSanPhamDTO> chiTietLoaiSanPham(DateRangeDTO dateRange, int productTypeId) throws SQLException {
@@ -518,11 +527,14 @@ public class ThongKeDAO {
         return result;
     }
     
-    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu(DateRangeDTO dateRange, String groupBy) throws SQLException, ParseException {
+    public ChiTietDoanhThuDTO thongKeDoanhThu(DateRangeDTO dateRange, String groupBy) throws SQLException, ParseException {
         ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
         String queryTimeline = "";
         String fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         String toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
+        Long totalExpense = 0L;
+        Long totalIncome = 0L;
+        Long totalProfit = 0L;
 
         switch (groupBy) {
             case "date":
@@ -600,14 +612,18 @@ public class ThongKeDAO {
                 Long income = rs.getLong("income");
                 Long profit = income - expense;
                 result.add(new ThongKeDoanhThuDTO(timeline, expense, income, profit));
+                totalExpense += expense;
+                totalIncome += income;
             }
             ps.close();
             rs.close();
+            
+            totalProfit = totalIncome - totalExpense;
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
             throw e;
         }
-        return result;
+        return new ChiTietDoanhThuDTO(dateRange, result, totalExpense, totalIncome, totalProfit);
     }
     
     public LocalDateTime getOldestDate() throws SQLException {

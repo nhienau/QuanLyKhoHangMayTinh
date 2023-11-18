@@ -14,6 +14,8 @@ public class FileHelper {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.showSaveDialog(parent);
         File f = fileChooser.getSelectedFile();
+        if (f == null)
+            return null;
         String filePath = f.toString();
         if (!filePath.endsWith(".xlsx")) {
             filePath += ".xlsx";

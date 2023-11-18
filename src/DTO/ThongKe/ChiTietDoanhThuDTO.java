@@ -1,16 +1,19 @@
 package DTO.ThongKe;
 
 import DTO.DateRangeDTO;
+import java.util.ArrayList;
 
-public class TongDoanhThuDTO {
+public class ChiTietDoanhThuDTO {
     private DateRangeDTO dateRange;
+    private ArrayList<ThongKeDoanhThuDTO> list;
     private Long totalExpense, totalIncome, totalProfit;
 
-    public TongDoanhThuDTO() {
+    public ChiTietDoanhThuDTO() {
     }
-
-    public TongDoanhThuDTO(DateRangeDTO dateRange, Long totalExpense, Long totalIncome, Long totalProfit) {
+    
+    public ChiTietDoanhThuDTO(DateRangeDTO dateRange, ArrayList<ThongKeDoanhThuDTO> list, Long totalExpense, Long totalIncome, Long totalProfit) {
         this.dateRange = dateRange;
+        this.list = list;
         this.totalExpense = totalExpense;
         this.totalIncome = totalIncome;
         this.totalProfit = totalProfit;
@@ -22,6 +25,14 @@ public class TongDoanhThuDTO {
 
     public void setDateRange(DateRangeDTO dateRange) {
         this.dateRange = dateRange;
+    }
+
+    public ArrayList<ThongKeDoanhThuDTO> getList() {
+        return list;
+    }
+
+    public void setList(ArrayList<ThongKeDoanhThuDTO> list) {
+        this.list = list;
     }
 
     public Long getTotalExpense() {
