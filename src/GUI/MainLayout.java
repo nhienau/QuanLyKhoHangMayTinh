@@ -3,7 +3,6 @@ package GUI;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
 import DTO.NhomQuyenDTO;
-import view.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.util.List;
@@ -12,23 +11,16 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import model.Account;
-import GUI.*;
+import view.AccountForm;
 
 public class MainLayout extends javax.swing.JFrame {
-    Color DefaultColor, ClickedColor;
-    private Account currentAcc;
-
+    private Color DefaultColor, ClickedColor;
     private NguoiDungDTO user;
     private NhomQuyenDTO permissionInfo;
     private List<ChiTietQuyenDTO> permission;
     
     private MainLayout() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public Account getCurrentAcc() {
-        return currentAcc;
     }
     
     public MainLayout(NguoiDungDTO user, NhomQuyenDTO permissionInfo, List<ChiTietQuyenDTO> permission) throws UnsupportedLookAndFeelException {
@@ -108,38 +100,12 @@ public class MainLayout extends javax.swing.JFrame {
     }
     
     private void resetBackgroundAllPanels() {
-        javax.swing.JPanel[] panels = {NhaCungCap, NhapHang, PhieuNhap, XuatHang, PhieuXuat, SanPham, TaiKhoan, ThongKe, TonKho};
+        javax.swing.JPanel[] panels = {NhaCungCap, NhapHang, PhieuNhap, PhieuXuat, SanPham, TaiKhoan, ThongKe, TonKho};
         for (javax.swing.JPanel panel : panels) {
             panel.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         }
     }
-
-    public MainLayout(Account t) throws UnsupportedLookAndFeelException {
-        ImageIcon logo = new ImageIcon(getClass().getResource("/icon/logo.png"));
-        setIconImage(logo.getImage());
-        UIManager.setLookAndFeel(new FlatLightLaf());
-        UIManager.put("Table.showVerticalLines", true);
-        UIManager.put("Table.showHorizontalLines", true);
-        initComponents();
-        setLocationRelativeTo(null);
-        this.currentAcc = t;
-        ProductForm pf = new ProductForm();
-        pMainContent.add(pf).setVisible(true);
-//        pf.checkRole(currentAcc);
-        DefaultColor = new Color(89, 168, 105);
-        ClickedColor = new Color(26, 188, 156);
-        pSidebar.setBackground(DefaultColor);
-        SanPham.setBackground(ClickedColor);
-        PhieuNhap.setBackground(DefaultColor);
-        NhapHang.setBackground(DefaultColor);
-        XuatHang.setBackground(DefaultColor);
-        PhieuXuat.setBackground(DefaultColor);
-        NhaCungCap.setBackground(DefaultColor);
-        TonKho.setBackground(DefaultColor);
-        TaiKhoan.setBackground(DefaultColor);
-        ThongKe.setBackground(DefaultColor);
-    }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -162,8 +128,6 @@ public class MainLayout extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         PhieuNhap = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        XuatHang = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         SanPham = new javax.swing.JPanel();
@@ -298,30 +262,6 @@ public class MainLayout extends javax.swing.JFrame {
         PhieuNhap.add(jLabel3, java.awt.BorderLayout.CENTER);
 
         pNav.add(PhieuNhap);
-
-        XuatHang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        XuatHang.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
-        XuatHang.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        XuatHang.setMinimumSize(new java.awt.Dimension(240, 36));
-        XuatHang.setName("xuathang"); // NOI18N
-        XuatHang.setPreferredSize(new java.awt.Dimension(240, 36));
-        XuatHang.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                XuatHangMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                XuatHangMousePressed(evt);
-            }
-        });
-        XuatHang.setLayout(new java.awt.BorderLayout());
-
-        jLabel4.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_export_25px.png"))); // NOI18N
-        jLabel4.setText("Xuất hàng");
-        XuatHang.add(jLabel4, java.awt.BorderLayout.CENTER);
-
-        pNav.add(XuatHang);
 
         PhieuXuat.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         PhieuXuat.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
@@ -543,12 +483,6 @@ public class MainLayout extends javax.swing.JFrame {
         PhieuNhap.setBackground(ClickedColor);
     }//GEN-LAST:event_PhieuNhapMousePressed
 
-    private void XuatHangMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XuatHangMousePressed
-        // TODO add your handling code here:
-        resetBackgroundAllPanels();
-        XuatHang.setBackground(ClickedColor);
-    }//GEN-LAST:event_XuatHangMousePressed
-
     private void PhieuXuatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMousePressed
         // TODO add your handling code here:
         resetBackgroundAllPanels();
@@ -582,10 +516,6 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
         // TODO add your handling code here:
-//        TonKhoGUI tonKho = new TonKhoGUI();
-//        pMainContent.removeAll();
-//        pMainContent.add(tonKho).setVisible(true);
-        
         khoGUI khoForm = new khoGUI();
         pMainContent.removeAll();
         pMainContent.add(khoForm).setVisible(true);
@@ -594,7 +524,6 @@ public class MainLayout extends javax.swing.JFrame {
     private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked
         // TODO add your handling code here:
         NhapHangForm nhapHangForm = new NhapHangForm(user);
-//        nhaphang.setNguoiNhapHang(this.currentAcc.getUser());
         pMainContent.removeAll();
         pMainContent.add(nhapHangForm).setVisible(true);
     }//GEN-LAST:event_NhapHangMouseClicked
@@ -606,29 +535,21 @@ public class MainLayout extends javax.swing.JFrame {
         pMainContent.add(phieuNhapForm).setVisible(true);
     }//GEN-LAST:event_PhieuNhapMouseClicked
 
-    private void XuatHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XuatHangMouseClicked
-        // TODO add your handling code here:
-        XuatHangGUI xuatHangForm = new XuatHangGUI(user);
-//        xh.setNguoiTao(this.currentAcc.getFullName());
-        pMainContent.removeAll();
-        pMainContent.add(xuatHangForm).setVisible(true);
-    }//GEN-LAST:event_XuatHangMouseClicked
-
     private void PhieuXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMouseClicked
         // TODO add your handling code here:
-        PhieuXuatForm phieuXuatForm = new PhieuXuatForm(user);
+        PhieuXuatGUI px = new PhieuXuatGUI(user);
         pMainContent.removeAll();
-        pMainContent.add(phieuXuatForm).setVisible(true);
+        pMainContent.add(px).setVisible(true);
     }//GEN-LAST:event_PhieuXuatMouseClicked
 
     private void DangXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DangXuatMouseClicked
         // TODO add your handling code here:
-        int relly = JOptionPane.showConfirmDialog(
+        int resp = JOptionPane.showConfirmDialog(
                 null,
                 "Bạn có chắc chắn muốn đăng xuất không?",
                 "Đăng xuất",
                 JOptionPane.YES_NO_OPTION);
-        if (relly == JOptionPane.YES_OPTION) {
+        if (resp == JOptionPane.YES_OPTION) {
             setUser(null);
             setPermissionInfo(null);
             setPermission(null);
@@ -679,7 +600,7 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        int resp = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn thoát ?", "Exit?", JOptionPane.YES_NO_OPTION);
+        int resp = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn thoát?", "Thoát", JOptionPane.YES_NO_OPTION);
         if (resp == JOptionPane.YES_OPTION) {
             this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         } else {
@@ -722,12 +643,7 @@ public class MainLayout extends javax.swing.JFrame {
             }
         });
     }
-
-    public void setName(String name) {
-        this.lblFullName.setText(name);
-    }
-
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Account;
     private javax.swing.JPanel DangXuat;
@@ -739,7 +655,6 @@ public class MainLayout extends javax.swing.JFrame {
     private javax.swing.JPanel TaiKhoan;
     private javax.swing.JPanel ThongKe;
     private javax.swing.JPanel TonKho;
-    private javax.swing.JPanel XuatHang;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
@@ -747,7 +662,6 @@ public class MainLayout extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;

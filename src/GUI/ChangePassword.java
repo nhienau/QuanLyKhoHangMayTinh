@@ -11,9 +11,13 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
-import view.AccountForm;
-import model.Account;
-import OldDAO.AccountDAO;
+//import view.AccountForm;
+//import model.Account;
+//import OldDAO.AccountDAO;
+import DAO.NguoiDungDAO;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,37 +28,40 @@ public class ChangePassword extends javax.swing.JDialog {
     /**
      * Creates new form AddAccount
      */
-    private Account accCur;
+//    private Account accCur;
     private NguoiDungDTO user;
+    private NguoiDungDAO data;
 
-    public Account getAccCur() {
-        return accCur;
-    }
-
-    public void setAccCur(Account accCur) {
-        this.accCur = accCur;
-    }
+//    public Account getAccCur() {
+//        return accCur;
+//    }
+//
+//    public void setAccCur(Account accCur) {
+//        this.accCur = accCur;
+//    }
 
     public ChangePassword(javax.swing.JFrame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        
     }
 
-    public ChangePassword(javax.swing.JFrame parent, boolean modal, Account t) {
-        super(parent, modal);
-        initComponents();
-        setLocationRelativeTo(null);
-        this.accCur = t;
-        tenTaiKhoan.setText(this.accCur.getFullName());
-        hoten.setText(this.accCur.getEmail());
-    }
+//    public ChangePassword(javax.swing.JFrame parent, boolean modal, Account t) {
+//        super(parent, modal);
+//        initComponents();
+//        setLocationRelativeTo(null);
+//        this.accCur = t;
+//        tenTaiKhoan.setText(this.accCur.getFullName());
+//        hoten.setText(this.accCur.getEmail());
+//    }
     
     public ChangePassword(javax.swing.JFrame parent, boolean modal, NguoiDungDTO user) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.user = user;
+        tenTaiKhoan.setText(user.getTaiKhoan());
+        hoten.setText(user.getHoTen());
         
         // setText...
     }
@@ -129,10 +136,20 @@ public class ChangePassword extends javax.swing.JDialog {
         jLabel2.setText("Họ và tên");
 
         tenTaiKhoan.setEnabled(false);
+        tenTaiKhoan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tenTaiKhoanActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Email");
 
         hoten.setEnabled(false);
+        hoten.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hotenActionPerformed(evt);
+            }
+        });
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jButton1.setText("Lưu thay đổi");
@@ -148,20 +165,20 @@ public class ChangePassword extends javax.swing.JDialog {
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                .addContainerGap(56, Short.MAX_VALUE)
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel7)
+                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hoten, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tenTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(53, 53, 53))
             .addGroup(panelLayout.createSequentialGroup()
-                .addGap(132, 132, 132)
+                .addGap(140, 140, 140)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
-                .addGap(0, 52, Short.MAX_VALUE)
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(email)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(hoten, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tenTaiKhoan, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
-                .addGap(44, 44, 44))
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,9 +195,9 @@ public class ChangePassword extends javax.swing.JDialog {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
+                .addGap(48, 48, 48)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Thông tin", panel);
@@ -227,36 +244,24 @@ public class ChangePassword extends javax.swing.JDialog {
                                 .addComponent(passComEr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(panel2Layout.createSequentialGroup()
                                 .addComponent(passCurEr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panel2Layout.createSequentialGroup()
-                                        .addGap(345, 345, 345)
+                                        .addGap(346, 346, 346)
                                         .addComponent(passAftEr, javax.swing.GroupLayout.DEFAULT_SIZE, 15, Short.MAX_VALUE))
                                     .addGroup(panel2Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(panel2Layout.createSequentialGroup()
-                                                .addComponent(passAft, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                            .addGroup(panel2Layout.createSequentialGroup()
-                                                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel6)
-                                                    .addComponent(jLabel5))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))))
+                                            .addComponent(passAft, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel6)
+                                            .addComponent(jLabel5)
+                                            .addComponent(passCur, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel4)
+                                            .addComponent(passCom, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE))))))
                     .addGroup(panel2Layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(passCom, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(127, 127, 127)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(34, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(passCur, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(40, 40, 40))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(122, 122, 122))))
         );
         panel2Layout.setVerticalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,13 +281,13 @@ public class ChangePassword extends javax.swing.JDialog {
                         .addComponent(passAft, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(passAftEr)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(passCom, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(passAftEr)
+                .addGap(45, 45, 45)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addGap(84, 84, 84)
                 .addComponent(passComEr)
                 .addGap(70, 70, 70))
         );
@@ -347,8 +352,12 @@ public class ChangePassword extends javax.swing.JDialog {
             JOptionPane.showConfirmDialog(this, "Vui lòng nhập đầy đủ thông tin");
         } else {
             if (isValid(emailAccount)) {
-                    accCur.setEmail(emailAccount);
-                    AccountDAO.getInstance().update(accCur);
+                    user.setEmail(emailAccount);
+                try {
+                    data.changeEmail(user, emailAccount);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+                }
                     JOptionPane.showMessageDialog(this, "Đã thay đổi thành công !");
             } else {
                 JOptionPane.showMessageDialog(this, "Email không đúng định dạng !");
@@ -365,37 +374,48 @@ public class ChangePassword extends javax.swing.JDialog {
 
         if (curPass.length() == 0) {
             check = false;
-            passCurEr.setText("Vui lòng nhập mật khẩu hiện tại");
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu hiện tại");
+            //passCurEr.setText("Vui lòng nhập mật khẩu hiện tại");
         } else {
             passCurEr.setText("");
         }
         if (newPass.length() == 0) {
             check = false;
-            passAftEr.setText("Vui lòng nhập mật khẩu mới");
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới");
+            //passAftEr.setText("Vui lòng nhập mật khẩu mới");
         } else {
             passAftEr.setText("");
         }
         if (newPassConf.length() == 0) {
             check = false;
-            passComEr.setText("Vui lòng xác nhận lại mật khẩu");
+            JOptionPane.showMessageDialog(this, "Vui lòng xác nhận lại mật khẩu");
+            //passComEr.setText("Vui lòng xác nhận lại mật khẩu");
         } else {
             passComEr.setText("");
         }
         if (check == true) {
-            if (BCrypt.checkpw(curPass, accCur.getPassword())) {
+            if (BCrypt.checkpw(curPass, user.getMatKhau())) {
 //                BCrypt.hashpw(txtpassword.getText(), BCrypt.gensalt(12))
                 if (newPass.length() < 6) {
-                    JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới lớn bằng 6 kí tự");
-                } else {
-                    if (newPass.equals(newPassConf)) {
-                        String pass = BCrypt.hashpw(passAft.getText(), BCrypt.gensalt(12));
-                        accCur.setPassword(pass);
-                        AccountDAO.getInstance().update(accCur);
-                        JOptionPane.showMessageDialog(this, "Thay đổi mật khẩu thành công!");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp");
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới lớn hơn hoặc bằng 6 kí tự");
+                } else 
+                    if (newPass.length() > 28) {
+                        JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới nhỏ hơn hoặc bằng 28 kí tự");
+                    }else {
+                        if (newPass.equals(newPassConf)) {
+                            String pass = BCrypt.hashpw(passAft.getText(), BCrypt.gensalt(12));
+                            user.setMatKhau(pass);
+                            try {
+                                //AccountDAO.getInstance().update(accCur);
+                                data.changePassword(user, newPass);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            JOptionPane.showMessageDialog(this, "Thay đổi mật khẩu thành công!");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp");
+                        }
                     }
-                }
             } else {
                 JOptionPane.showMessageDialog(this, "Mật khẩu hiện tại không đúng ");
                 passCur.setText("");
@@ -406,6 +426,14 @@ public class ChangePassword extends javax.swing.JDialog {
     private void passCurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passCurActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passCurActionPerformed
+
+    private void tenTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tenTaiKhoanActionPerformed
+        
+    }//GEN-LAST:event_tenTaiKhoanActionPerformed
+
+    private void hotenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hotenActionPerformed
+        
+    }//GEN-LAST:event_hotenActionPerformed
 
     static boolean isValid(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";

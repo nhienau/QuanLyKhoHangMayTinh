@@ -11,7 +11,6 @@ import DTO.ChiTietPhieuXuatDTO;
 import DTO.PhieuXuatDTO;
 import DTO.SanPhamDTO;
 import GUI.PhieuXuatGUI;
-import GUI.XemChiTietPhieuXuatGUI;
 import OldDAO.AccountDAO;
 
 import com.itextpdf.text.Chunk;
