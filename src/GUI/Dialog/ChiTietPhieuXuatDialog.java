@@ -1,50 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package GUI;
+package GUI.Dialog;
 
 import BUS.PDFPhieuXuat;
 import DAO.ChiTietPhieuXuatDAO;
-import DTO.ChiTietPhieuXuatDTO;
-import DTO.SanPhamDTO;
 import DAO.SanPhamDAO;
-import DTO.NguoiDungDTO;
 import static GUI.PhieuXuatGUI.MaPhieuXuat;
+import DTO.SanPhamDTO;
+import GUI.PhieuXuatGUI;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author EV
- */
-public class XemChiTietPhieuXuatGUI extends javax.swing.JFrame {
-
-    /**
-     * Creates new form XemChiTietPhieuXuatGUI
-     */
+public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
     DecimalFormat formatter = new DecimalFormat("###,###,###");
     protected static ArrayList<SanPhamDTO> allProductPX;
-    private NguoiDungDTO user;
-
-    public XemChiTietPhieuXuatGUI() {
-        allProductPX = SanPhamDAO.getInstance().getlistProduct();
-
+    
+    public ChiTietPhieuXuatDialog(JInternalFrame parent, JFrame owner, boolean modal) {
+        super(owner, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        allProductPX = SanPhamDAO.getInstance().getlistProduct();
         loadDataToTableProduct();
-//        labelNguoiTao.setText(user.getHoTen());
         labelNguoiTao.setText("test");
-//        labelTongTien.setText(formatter.format(tinhTongTien()) + "đ");
     }
 
-//    public double tinhTongTien() {
-//        int tt = 0;
-//        for (var i : XuatHangGUI.CTPhieuXuat) {
-//            tt += (i.getDonGia()) * (i.getSoLuong());
-//        }
-//        return tt;
-//    }
+    private ChiTietPhieuXuatDialog(JFrame jFrame, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public void loadDataToTableProduct() {
         try {
             int tt = 0;
@@ -96,7 +80,7 @@ public class XemChiTietPhieuXuatGUI extends javax.swing.JFrame {
         btnXuatPDF = new javax.swing.JButton();
         btnQuayLai = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -239,15 +223,15 @@ public class XemChiTietPhieuXuatGUI extends javax.swing.JFrame {
 
     private void btnXuatPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatPDFActionPerformed
         // TODO add your handling code here:
-//                WritePDF writepdf = new WritePDF();
-//                writepdf.writePhieuXuat(this.parent.getPhieuXuatSelect().getMaPhieu());
+        //                WritePDF writepdf = new WritePDF();
+        //                writepdf.writePhieuXuat(this.parent.getPhieuXuatSelect().getMaPhieu());
 
         PDFPhieuXuat pdfphieuxuat = new PDFPhieuXuat();
-        
-//        System.out.println(MaPhieuXuat);
-//        
+
+        //        System.out.println(MaPhieuXuat);
+        //
         pdfphieuxuat.writePhieuXuat(MaPhieuXuat);
-//  pdfphieuxuat.writePhieuXuat(4);
+        //  pdfphieuxuat.writePhieuXuat(4);
     }//GEN-LAST:event_btnXuatPDFActionPerformed
 
     private void btnQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuayLaiActionPerformed
@@ -271,20 +255,27 @@ public class XemChiTietPhieuXuatGUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(XemChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChiTietPhieuXuatDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(XemChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChiTietPhieuXuatDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(XemChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChiTietPhieuXuatDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(XemChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChiTietPhieuXuatDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new XemChiTietPhieuXuatGUI().setVisible(true);
+                ChiTietPhieuXuatDialog dialog = new ChiTietPhieuXuatDialog(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }

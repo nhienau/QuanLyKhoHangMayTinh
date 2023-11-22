@@ -21,11 +21,15 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
     private final NguoiDungBUS ndBUS = new NguoiDungBUS();
     private String otp;
     private NguoiDungDTO user;
+    private boolean isProcessing;
+    private boolean isEmailSending;
 
     public RecoverPassword(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.isProcessing = false;
+        this.isEmailSending = false;
     }
 
     public String getOtp() {
@@ -44,6 +48,14 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         this.user = user;
     }
 
+    public void setIsProcessing(boolean isProcessing) {
+        this.isProcessing = isProcessing;
+    }
+
+    public void setIsEmailSending(boolean isEmailSending) {
+        this.isEmailSending = isEmailSending;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,6 +90,11 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Khôi phục mật khẩu");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         pHeader.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         pHeader.setPreferredSize(new java.awt.Dimension(540, 70));
@@ -100,7 +117,6 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pEmailVerification.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblEnterEmail.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblEnterEmail.setForeground(new java.awt.Color(0, 0, 0));
         lblEnterEmail.setText("Nhập địa chỉ email");
         pEmailVerification.add(lblEnterEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, -1, -1));
 
@@ -118,7 +134,6 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pEmailVerification.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 90, 251, 41));
 
         btnSendCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        btnSendCode.setForeground(new java.awt.Color(0, 0, 0));
         btnSendCode.setText("Gửi mã xác nhận");
         btnSendCode.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSendCode.addActionListener(new java.awt.event.ActionListener() {
@@ -140,7 +155,6 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         taSendingMessage.setBackground(new java.awt.Color(255, 255, 255));
         taSendingMessage.setColumns(20);
         taSendingMessage.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        taSendingMessage.setForeground(new java.awt.Color(0, 0, 0));
         taSendingMessage.setLineWrap(true);
         taSendingMessage.setRows(5);
         taSendingMessage.setText("Mã xác nhận đang được gửi đến email của bạn. Vui lòng chờ trong giây lát.");
@@ -161,12 +175,10 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pCodeVerification.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblCodeSent.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblCodeSent.setForeground(new java.awt.Color(0, 0, 0));
         lblCodeSent.setText("Mã xác nhận gồm 6 chữ số đã được gửi vào địa chỉ email của bạn.");
         pCodeVerification.add(lblCodeSent, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 63, -1, -1));
 
         lblEnterCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblEnterCode.setForeground(new java.awt.Color(0, 0, 0));
         lblEnterCode.setText("Nhập mã xác nhận:");
         pCodeVerification.add(lblEnterCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 90, 138, -1));
 
@@ -179,7 +191,6 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pCodeVerification.add(txtOtp, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 117, 273, 41));
 
         btnConfirmCode.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        btnConfirmCode.setForeground(new java.awt.Color(0, 0, 0));
         btnConfirmCode.setText("Xác nhận");
         btnConfirmCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,12 +206,10 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pNewPassword.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblSetNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lblSetNewPassword.setForeground(new java.awt.Color(0, 0, 0));
         lblSetNewPassword.setText("Hãy đặt một mật khẩu mới.");
         pNewPassword.add(lblSetNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, -1, -1));
 
         lblNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblNewPassword.setForeground(new java.awt.Color(0, 0, 0));
         lblNewPassword.setText("Mật khẩu mới");
         pNewPassword.add(lblNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
 
@@ -213,7 +222,6 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pNewPassword.add(txtNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, 259, 42));
 
         lblConfirmNewPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        lblConfirmNewPassword.setForeground(new java.awt.Color(0, 0, 0));
         lblConfirmNewPassword.setText("Xác nhận mật khẩu mới");
         pNewPassword.add(lblConfirmNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, -1, -1));
 
@@ -231,7 +239,6 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         pNewPassword.add(txtConfirmNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 120, 259, 42));
 
         btnChangePassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        btnChangePassword.setForeground(new java.awt.Color(0, 0, 0));
         btnChangePassword.setText("Đổi mật khẩu");
         btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,6 +280,8 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         btnSendCode.setEnabled(false);
         txtEmail.setEnabled(false);
         spSendingMessage.setVisible(true);
+        setIsProcessing(true);
+        setIsEmailSending(true);
         
         try {
             ndBUS.sendEmailOTP(user.getTaiKhoan(), email, this);
@@ -376,6 +385,24 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
         }
     }//GEN-LAST:event_txtOtpKeyPressed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        if (isProcessing) {
+            String message = isEmailSending ?
+                    "Quá trình gửi email vẫn sẽ được tiếp tục kể cả khi bạn đóng cửa sổ này. Bạn có chắc chắn muốn thoát?"
+                    :
+                    "Quá trình khôi phục mật khẩu sẽ không được hoàn tác nếu bạn đóng cửa sổ này. Bạn có chắc chắn muốn thoát?";
+            int option = JOptionPane.showConfirmDialog(this, message, "Khôi phục mật khẩu", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                this.dispose();
+            } else {
+                this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+            }
+        } else {
+            this.dispose();
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     /**
      * @param args the command line arguments
      */
@@ -422,6 +449,7 @@ public class RecoverPassword extends javax.swing.JDialog implements EmailSentLis
 
     @Override
     public void onEmailSent(String otp) {
+        setIsEmailSending(false);
         setOtp(otp);
         CardLayout forgotPassword = (CardLayout) pMain.getLayout();
         forgotPassword.next(pMain);

@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package GUI;
+package GUI.Dialog;
 
 import DAO.ChiTietPhieuXuatDAO;
 import DAO.PhieuXuatDAO;
@@ -10,57 +6,39 @@ import DAO.SanPhamDAO;
 import DTO.NguoiDungDTO;
 import DTO.PhieuXuatDTO;
 import DTO.SanPhamDTO;
-import GUI.XuatHangGUI;
+import GUI.PhieuXuatGUI;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.sql.Timestamp;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Timestamp;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import java.awt.CardLayout;
 
-/**
- *
- * @author EV
- */
-//public class ChiTietPhieuXuatGUI extends javax.swing.JDialog {
-public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
-
-    /**
-     * Creates new form ChiTietPhieuXuat
-     */
-//    private PhieuXuatForm parent;
-    DecimalFormat formatter = new DecimalFormat("###,###,###");
-    
+public class PhieuXuatPreviewDialog extends javax.swing.JDialog {
+    private DecimalFormat formatter = new DecimalFormat("###,###,###");
     private NguoiDungDTO user;
-    
     private PhieuXuatGUI parent;
-    private XuatHangGUI owner;
-
-//    public ChiTietPhieuXuatGUI(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
-//        super(owner, modal);
-//        this.owner = (XuatHangGUI) parent;
-//        initComponents();
-//        setLocationRelativeTo(null);
-//
-//    }
-    public ChiTietPhieuXuatGUI() {
-        
+    private XuatHangDialog owner;
+    
+    public PhieuXuatPreviewDialog(JDialog parent, boolean modal, NguoiDungDTO user) {
+        super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         loadDataToTableProduct();
         setWidthTable();
         labelTongTien.setText(formatter.format(tinhTongTien()) + "đ");
         
         this.user = user;
-//        labelNguoiTao.setText(user.getHoTen());
-        labelNguoiTao.setText("tram");
-        labelMaPhieu.setText(Integer.toString(XuatHangGUI.MaPhieuXuat));
-        
+        labelNguoiTao.setText(user.getHoTen());
+        labelMaPhieu.setText(Integer.toString(XuatHangDialog.MaPhieuXuat));
+    }
+
+    private PhieuXuatPreviewDialog(JFrame jFrame, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     public SanPhamDTO findMayTinh(int maMay) {
-        for (var i : XuatHangGUI.allProductPX) {
+        for (var i : XuatHangDialog.allProductPX) {
             if (maMay == i.getMaSanPham()) {
                 return i;
             }
@@ -70,25 +48,12 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
     
     public double tinhTongTien() {
         int tt = 0;
-        for (var i : XuatHangGUI.CTPhieuXuat) {
+        for (var i : XuatHangDialog.CTPhieuXuat) {
             tt += (i.getDonGia()) * (i.getSoLuong());
         }
         return tt;
     }
-
-//    public ChiTietPhieuXuat(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
-//
-////        super(owner, modal);
-////        this.parent = (PhieuXuatForm) parent;
-////    
-////        setLocationRelativeTo(null);
-////        PhieuXuat pn = this.parent.getPhieuXuatSelect();
-////        labelMaPhieu.setText(pn.getMaPhieu());
-////        labelNguoiTao.setText(AccountDAO.getInstance().selectById(pn.getNguoiTao()).getFullName());
-////        labelTongTien.setText(this.parent.getFormatter().format(pn.getTongTien()) + "đ");
-////        labelThoiGianTao.setText(this.parent.getFormatDate().format(pn.getThoiGianTao()));
-// 
-//    }
+    
     public void setWidthTable() {
         tblChiTietPhieu.getColumnModel().getColumn(0).setPreferredWidth(5);
         tblChiTietPhieu.getColumnModel().getColumn(1).setPreferredWidth(10);
@@ -99,14 +64,14 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
         try {
             DefaultTableModel tblCTPhieumd = (DefaultTableModel) tblChiTietPhieu.getModel();
             tblCTPhieumd.setRowCount(0);
-            for (int i = 0; i < XuatHangGUI.CTPhieuXuat.size(); i++) {
+            for (int i = 0; i < XuatHangDialog.CTPhieuXuat.size(); i++) {
                 
                 tblCTPhieumd.addRow(new Object[]{
                     i + 1,
-                    XuatHangGUI.CTPhieuXuat.get(i).getMaSanPham(),
-                    findMayTinh(XuatHangGUI.CTPhieuXuat.get(i).getMaSanPham()).getTenSanPham(),
-                    XuatHangGUI.CTPhieuXuat.get(i).getSoLuong(), formatter.format(XuatHangGUI.CTPhieuXuat.get(i).getDonGia()) + "đ",
-                    formatter.format((XuatHangGUI.CTPhieuXuat.get(i).getDonGia()) * (XuatHangGUI.CTPhieuXuat.get(i).getSoLuong())) + "đ"
+                    XuatHangDialog.CTPhieuXuat.get(i).getMaSanPham(),
+                    findMayTinh(XuatHangDialog.CTPhieuXuat.get(i).getMaSanPham()).getTenSanPham(),
+                    XuatHangDialog.CTPhieuXuat.get(i).getSoLuong(), formatter.format(XuatHangDialog.CTPhieuXuat.get(i).getDonGia()) + "đ",
+                    formatter.format((XuatHangDialog.CTPhieuXuat.get(i).getDonGia()) * (XuatHangDialog.CTPhieuXuat.get(i).getSoLuong())) + "đ"
                 
                 });
                 
@@ -140,12 +105,9 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
         btnXuatHang = new javax.swing.JButton();
         btnSua = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Xem trước phiếu xuất");
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -278,30 +240,28 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 816, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 493, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-//      private void loadDataToTableProduct(ArrayList<SanPhamDTO> arrProd) {
-//        try {
-//            tblModel.setRowCount(0);
-//            for (var i : arrProd) {
-//                tblModel.addRow(new Object[]{
-//                    i.getMaSanPham(), i.getTenSanPham(), i.getSoLuong(), formatter.format(i.getGiaXuat()) + "đ"
-//                });
-//            }
-//        } catch (Exception e) {
-//        }
-//    }
-
     private void btnXuatHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatHangActionPerformed
-        if (XuatHangGUI.CTPhieuXuat.isEmpty()) {
+        if (XuatHangDialog.CTPhieuXuat.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Bạn chưa chọn sản phẩm để xuất hàng !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
         } else {
             int check = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xuất hàng ?", "Xác nhận xuất hàng", JOptionPane.YES_NO_OPTION);
@@ -310,42 +270,23 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
                 long now = System.currentTimeMillis();
                 Timestamp sqlTimestamp = new Timestamp(now);
 
-                // Tao doi tuong phieu nhap
-                PhieuXuatDTO pn = new PhieuXuatDTO(XuatHangGUI.MaPhieuXuat, sqlTimestamp.toString(), labelNguoiTao.getText(), (int) tinhTongTien(), 1);
-                
+                // Tao doi tuong phieu xuat
+                PhieuXuatDTO pn = new PhieuXuatDTO(XuatHangDialog.MaPhieuXuat, sqlTimestamp.toString(), user.getTaiKhoan(), (int) tinhTongTien(), 1);
+
                 try {
                     PhieuXuatDAO.getInstance().insert(pn);
                     SanPhamDAO mtdao = SanPhamDAO.getInstance();
-                    for (var i : XuatHangGUI.CTPhieuXuat) {
-                        
+                    for (var i : XuatHangDialog.CTPhieuXuat) {
+
                         System.out.println(i);
-                        
+
                         ChiTietPhieuXuatDAO.getInstance().insert(i);
                         mtdao.updateSoLuongPX(i.getMaSanPham(), mtdao.selectByIdPX(i.getMaSanPham()).getSoLuong() - i.getSoLuong());
                     }
-                    
-                    JOptionPane.showMessageDialog(this, "Xuất hàng thành công !");
-                    
-                    XuatHangGUI xuatHangGUI = new XuatHangGUI();
-                  
-                  
-          
-//                    System.out.println(xuatHangGUI.allProductPX);
 
-//        nhaphang.setNguoiNhapHang(this.currentAcc.getUser());
-//                    xuatHangGUI.removeAll();
-//                    xuatHangGUI.add(xuatHangGUI).setVisible(true);
+                    JOptionPane.showMessageDialog(this, "Xuất hàng thành công !");
+
                     this.dispose();
-//                    new XuatHangGUI().setVisible(false);
-//                     new XuatHangGUI().setVisible(true);
-//                    loadDataToTableProduct(XuatHangGUI.allProductPX);
-//                    DefaultTableModel l = (DefaultTableModel) tblNhapHang.getModel();
-//                    l.setRowCount(0);
-//                    CTPhieuXuat = new ArrayList<ChiTietPhieuXuatDTO>();
-//                    txtSoLuong.setText("1");
-//                    textTongTien.setText(0 + "đ");
-//                    this.MaPhieuXuat = createId(PhieuXuatDAO.getInstance().getAllPhieuXuat());
-//                    txtMaPhieu.setText(String.valueOf(this.MaPhieuXuat));
                 } catch (Exception e) {
                     JOptionPane.showConfirmDialog(this, "Đã xảy ra lỗi !");
                 }
@@ -357,18 +298,6 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnSuaActionPerformed
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-
-        int resp = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn thoát ?", "Exit?", JOptionPane.YES_NO_OPTION);
-        if (resp == JOptionPane.YES_OPTION) {
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        } else {
-            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        }
-
-    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -387,22 +316,28 @@ public class ChiTietPhieuXuatGUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatPreviewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatPreviewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatPreviewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChiTietPhieuXuatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PhieuXuatPreviewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ChiTietPhieuXuatGUI().setVisible(true);
-                
+                PhieuXuatPreviewDialog dialog = new PhieuXuatPreviewDialog(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
