@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.KhoBUS;
 import DAO.khoDAO;
 import DTO.khoDTO;
 import GUI.khoGUI;
@@ -18,6 +19,7 @@ public class addKho extends javax.swing.JFrame {
     /**
      * Creates new form addKho
      */
+    KhoBUS khoBus = new KhoBUS();
     khoGUI parent ;
     public addKho(khoGUI frame) {
         initComponents();
@@ -182,12 +184,11 @@ public class addKho extends javax.swing.JFrame {
             return;
         }else {
             try {
-                khoDAO.getInstance().addWareHouse(kho);
                 this.dispose();
-                JOptionPane.showMessageDialog(this, "Thêm kho mới thành công");
+                JOptionPane.showMessageDialog(this, khoBus.addWareHouse(kho));
                 parent.loadDataWareHouse();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Thêm kho mới thất bại");
+                System.out.println(e);
             }
         }
         

@@ -157,14 +157,15 @@ public class SanPhamDAO {
     }
     
     
-    public int deleteProduct(int id) {
-        int ketQua = 0;
+    public boolean deleteProduct(int id) {
+        boolean ketQua = false;
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "UPDATE sanpham SET trangthai = 0 WHERE masanpham = ? ";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
-            ketQua = pst.executeUpdate();
+            if( pst.executeUpdate() > 0)
+                ketQua = true;
 
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
@@ -174,8 +175,8 @@ public class SanPhamDAO {
         return ketQua;
     }
     
-    public int updateProduct(SanPhamDTO sp) {
-        int ketqua = 0;
+    public boolean updateProduct(SanPhamDTO sp) {
+        boolean ketqua = false;
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "UPDATE sanpham SET tensanpham = ? , maloaisanpham = ?, giaxuat = ? , cpu = ?, ram = ?, mausac = ?, manhinh=  ?, vga = ?, ocung = ?, trongluong = ? , os = ? WHERE masanpham=?";
@@ -192,7 +193,8 @@ public class SanPhamDAO {
             pst.setFloat(10, sp.getTrongLuong());
             pst.setString(11, sp.getOs());
             pst.setInt(12, sp.getMaSanPham());
-            ketqua = pst.executeUpdate();
+            if(pst.executeUpdate() >= 1)
+                ketqua = true;
             JDBCUtil.closeConnection(con);
         } catch (Exception ex) {
             ex.printStackTrace();

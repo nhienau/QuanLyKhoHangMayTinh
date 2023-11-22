@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.SanPhamBUS;
 import DAO.SanPhamDAO;
 import DAO.loaiSanPhamDAO;
 import DTO.SanPhamDTO;
@@ -24,6 +25,7 @@ public class UpdateProduct extends javax.swing.JDialog {
     private ProductForm owner;
     DecimalFormat formatterE = new DecimalFormat("0");
     int idProduct;
+    SanPhamBUS spBUS = new SanPhamBUS();
     
     public UpdateProduct(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
         super(owner, modal);
@@ -385,12 +387,11 @@ public class UpdateProduct extends javax.swing.JDialog {
             spDTO.setTrongLuong(trongluong);
 
             try {
-                SanPhamDAO.getInstance().updateProduct(spDTO);
                 this.dispose();
-                JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công !");
+                JOptionPane.showMessageDialog(this, spBUS.updateProduct(spDTO));
                 owner.loadDataToTable();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Sửa sản phẩm thất bại !");
+                System.out.println(e);;
             }
         
 

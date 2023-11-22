@@ -4,6 +4,7 @@
  */
 package GUI.Dialog;
 
+import BUS.LoaiSanPhamBUS;
 import DAO.loaiSanPhamDAO;
 import GUI.loaiSanPhamGUI;
 import javax.swing.JFrame;
@@ -20,6 +21,7 @@ public class addLoaiSanPham  extends javax.swing.JDialog{
      * Creates new form addLoaiSanPham
      */
     loaiSanPhamGUI parent;
+    LoaiSanPhamBUS lspBUS = new LoaiSanPhamBUS();
     public addLoaiSanPham(loaiSanPhamGUI frame) {
         
         initComponents();
@@ -147,14 +149,10 @@ public class addLoaiSanPham  extends javax.swing.JDialog{
             JOptionPane.showMessageDialog(this, "Tên thương hiệu đã tồn tại. Vui lòng thêm tên khác!");
             return;
         }
-        boolean rs = loaiSanPhamDAO.getInstance().addTypeOfProduct(name);
-        if(rs == true){
             this.dispose();
-            JOptionPane.showMessageDialog(this, "Thêm thương hiệu mới thành công!", "Thêm thương hiệu",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, lspBUS.addTypeOfProduct(name) );
             parent.loadDataToTable();
-        } else {
-            JOptionPane.showMessageDialog(this, "Thêm thương hiệu mới thất bại!","Thêm thương hiệu",JOptionPane.ERROR_MESSAGE);
-        }
+        
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed

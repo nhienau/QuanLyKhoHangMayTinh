@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.LoaiSanPhamBUS;
 import DAO.loaiSanPhamDAO;
 import DTO.loaiSanPhamDTO;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
     /**
      * Creates new form LoaiSanPhamGUI
      */
+    LoaiSanPhamBUS lspBUS = new LoaiSanPhamBUS();
     public loaiSanPhamGUI() {
         initComponents();
         tbLoaiSanPham.setDefaultEditor(Object.class, null);
@@ -274,13 +276,8 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
         int dialog = JOptionPane.showConfirmDialog (null, "Bạn có chắc muốn xóa thương hiệu " + tenLoaiSanPham + "?" ,"WARNING", JOptionPane.YES_NO_OPTION) ;
         
             if(dialog == JOptionPane.YES_OPTION) {
-                if(loaiSanPhamDAO.getInstance().deleteTypeOfProduct(maLoaiSP)){
-                    JOptionPane.showMessageDialog(this, "Xóa thương hiệu thành công!");
-                    loadDataToTable();
-                
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa thương hiệu thất bại!");
-                }
+                JOptionPane.showMessageDialog(this, lspBUS.deleteTypeOfProduct(maLoaiSP));
+                loadDataToTable();
             } else {
                   remove(this);
                 

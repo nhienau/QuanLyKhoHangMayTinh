@@ -422,10 +422,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-        if (tblSanPham.getSelectedRow() == -1) {
+        int row = tblSanPham.getSelectedRow();
+        if (row == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần xoá");
         } else {
-            xoaMayTinhSelect();
+            int id = Integer.parseInt( tblSanPham.getValueAt(row, 0).toString());
+            deleteProduct(id);
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -665,13 +667,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         return result;
     }
 
-    public boolean checklap() {
-        if (LaptopDAO.getInstance().isLaptop(getMayTinhSelect().getMaMay()) == true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public SanPhamDTO getDetailSanPham() {
         int row = tblSanPham.getSelectedRow();
@@ -680,35 +675,18 @@ public class ProductForm extends javax.swing.JInternalFrame {
         return spDTO;
     }
 
-    public PC getDetailPC() {
-        PC a = PCDAO.getInstance().selectById(getMayTinhSelect().getMaMay());
-        return a;
-    }
 
-    public void xoaMayTinhSelect() {
-        DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
-        int row = tblSanPham.getSelectedRow();
+    public void deleteProduct(int id) {
         int luaChon = JOptionPane.showConfirmDialog(this, "Bạn có muốn xoá sản phẩm này?", "Xoá sản phẩm",
                 JOptionPane.YES_NO_OPTION);
         if (luaChon == JOptionPane.YES_OPTION) {
-            SanPhamDTO remove = getSanPhamSelect();
-            SanPhamDAO.getInstance().deleteProduct(remove.getMaSanPham());
+          JOptionPane.showMessageDialog(this, spBUS.deleteProduct(id));
+          loadDataToTable();
         }
-        loadDataToTable();
+        
     }
 
-    public MayTinh getMayTinhSelect() {
-        int i_row = tblSanPham.getSelectedRow();
-        MayTinh acc = MayTinhDAO.getInstance().selectById(tblModel.getValueAt(i_row, 0).toString());
-        return acc;
-    }
 
-    public SanPhamDTO getSanPhamSelect(){
-        int row = tblSanPham.getSelectedRow();
-        int id = Integer.parseInt(tblModel.getValueAt(row, 0).toString());
-        SanPhamDTO spDTO = SanPhamDAO.getInstance().selectProductByID(id);
-        return spDTO;
-    }
     
     public void loadDataToTableSearch(ArrayList<SanPhamDTO> result) {
         try {

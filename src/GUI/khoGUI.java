@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.KhoBUS;
 import DAO.khoDAO;
 import DTO.khoDTO;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
     /**
      * Creates new form khoGUI
      */
+    KhoBUS khoBUS = new KhoBUS();
     public khoGUI() {
         
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
@@ -319,12 +321,10 @@ public class khoGUI extends javax.swing.JInternalFrame {
         String tenKho = khoDAO.getInstance().getWareHouseByID(makho);
         int dialog = JOptionPane.showConfirmDialog (null, "Bạn có chắc muốn xóa kho " + tenKho + "?" ,"WARNING", JOptionPane.YES_NO_OPTION) ;
         if(dialog == JOptionPane.YES_OPTION){
-            if(khoDAO.getInstance().deleteWareHouse(makho)){
-                JOptionPane.showMessageDialog(this, "Xóa kho thành công!");
+            
+                JOptionPane.showMessageDialog(this, khoBUS.deleteWareHouse(makho));
                 loadDataWareHouse();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa thất bại!");
-            }
+            
         } else {
             remove(this);
         }

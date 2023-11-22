@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.KhoBUS;
 import DAO.khoDAO;
 import DTO.khoDTO;
 import javax.swing.JOptionPane;
@@ -19,7 +20,7 @@ public class updateKho extends javax.swing.JFrame {
      * 
      * 
      */
-    
+    KhoBUS khoBUS = new KhoBUS();
     khoDTO kho = new khoDTO();
     khoGUI parent;
     public updateKho(khoGUI frame, khoDTO khoData) {
@@ -147,13 +148,11 @@ public class updateKho extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Địa chỉ kho đã tồn tại, vui lòng thêm địa chỉ khác!");
             return ;
         }
-        if(khoDAO.getInstance().updateWareHouse(kho)){      
+          
             this.dispose();
-            JOptionPane.showMessageDialog(this, "Cập nhật kho mới thành công!");
+            JOptionPane.showMessageDialog(this, khoBUS.updateWareHouse(kho));
             parent.loadDataWareHouse();
-        } else {
-            JOptionPane.showMessageDialog(this, "Cập nhật kho mới thất bại!");
-        }
+        
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void txtDiaDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiaDiemActionPerformed

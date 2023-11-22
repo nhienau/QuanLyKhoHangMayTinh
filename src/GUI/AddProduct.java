@@ -1,5 +1,6 @@
 package GUI;
 
+import BUS.SanPhamBUS;
 import GUI.ProductForm;
 import DAO.loaiSanPhamDAO;
 import DAO.SanPhamDAO;
@@ -12,6 +13,7 @@ import javax.swing.JOptionPane;
 
 public class AddProduct extends javax.swing.JDialog {
     private ProductForm owner;
+    SanPhamBUS spBUS = new SanPhamBUS();
 
     public AddProduct(javax.swing.JInternalFrame parent, javax.swing.JFrame owner, boolean modal) {
         super(owner, modal);
@@ -445,12 +447,11 @@ public class AddProduct extends javax.swing.JDialog {
                 spDTO.setTrongLuong(trongluong);
                 
                 try {
-                    SanPhamDAO.getInstance().addProduct(spDTO);
                     this.dispose();
-                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công !");
+                    JOptionPane.showMessageDialog(this, spBUS.addProduct(spDTO));
                     owner.loadDataToTable();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại !");
+                    System.out.println(e);
                 }
             
         

@@ -71,7 +71,7 @@ public class loaiSanPhamDAO {
     }
     
         
-    public boolean editTypeOfProduct(String name, int id){
+    public boolean updateTypeOfProduct(String name, int id){
         boolean result = false;
         try {
              Connection con = JDBCUtil.getConnection();
