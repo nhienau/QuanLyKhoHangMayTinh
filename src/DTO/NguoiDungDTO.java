@@ -7,7 +7,7 @@ public class NguoiDungDTO {
     private String email;
     private int maNhomQuyen;
     private int trangThai;
-
+    
     public NguoiDungDTO(String taiKhoan, String matKhau, String hoTen, String email, int maNhomQuyen, int trangThai) {
         this.taiKhoan = taiKhoan;
         this.matKhau = matKhau;

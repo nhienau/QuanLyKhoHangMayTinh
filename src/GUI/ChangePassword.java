@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.NguoiDungBUS;
 import DTO.NguoiDungDTO;
 import com.formdev.flatlaf.FlatLightLaf;
 import helper.BCrypt;
@@ -30,7 +31,8 @@ public class ChangePassword extends javax.swing.JDialog {
      */
 //    private Account accCur;
     private NguoiDungDTO user;
-    private NguoiDungDAO data;
+    private final NguoiDungDAO data = new NguoiDungDAO();
+    private final NguoiDungBUS bus = new NguoiDungBUS();
 
 //    public Account getAccCur() {
 //        return accCur;
@@ -39,7 +41,11 @@ public class ChangePassword extends javax.swing.JDialog {
 //    public void setAccCur(Account accCur) {
 //        this.accCur = accCur;
 //    }
-
+    
+//    public ChangePassword(){
+//        
+//    }
+    
     public ChangePassword(javax.swing.JFrame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -60,6 +66,7 @@ public class ChangePassword extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.user = user;
         tenTaiKhoan.setText(user.getTaiKhoan());
         hoten.setText(user.getHoTen());
         
@@ -327,7 +334,8 @@ public class ChangePassword extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:     
+//        try {
+            // TODO add your handling code here:
 //        String nameAccount = tenTaiKhoan.getText();
 //        String emailAccount = email.getText();
 //        String passwordAccount = password.getText();
@@ -347,6 +355,7 @@ public class ChangePassword extends javax.swing.JDialog {
 //                JOptionPane.showMessageDialog(this, "Email không đúng định dạng !");
 //            }
 //        }
+
         String emailAccount = email.getText();
         if(emailAccount.equals("")){
             JOptionPane.showConfirmDialog(this, "Vui lòng nhập đầy đủ thông tin");
@@ -407,7 +416,7 @@ public class ChangePassword extends javax.swing.JDialog {
                             user.setMatKhau(pass);
                             try {
                                 //AccountDAO.getInstance().update(accCur);
-                                data.changePassword(user, newPass);
+                                bus.ChangPassword(user, pass);
                             } catch (SQLException ex) {
                                 Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
                             }

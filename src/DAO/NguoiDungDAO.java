@@ -59,27 +59,27 @@ public class NguoiDungDAO {
     }
     
     //@Override
-    public int update(NguoiDungDTO t) {
-        int ketQua = 0;
-        try {
-            Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE nguoidung SET matkhau=?, hoten=?, email=?, manhomquen=? trangthai=? WHERE userName=?";
-            PreparedStatement pst = con.prepareStatement(sql);          
-            pst.setString(1, t.getMatKhau());
-            pst.setString(2, t.getHoTen());
-            pst.setString(3, t.getEmail());
-            pst.setInt(4, t.getMaNhomQuyen());
-            pst.setInt(5, t.getTrangThai());
-            pst.setString(6, t.getTaiKhoan());
-            ketQua = pst.executeUpdate();
-            JDBCUtil.closeConnection(con);
-
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-        return ketQua;
-    }
+//    public int update(NguoiDungDTO t) {
+//        int ketQua = 0;
+//        try {
+//            Connection con = JDBCUtil.getConnection();
+//            String sql = "UPDATE nguoidung SET matkhau=?, hoten=?, email=?, manhomquen=?, trangthai=? WHERE userName=?";
+//            PreparedStatement pst = con.prepareStatement(sql);          
+//            pst.setString(1, t.getMatKhau());
+//            pst.setString(2, t.getHoTen());
+//            pst.setString(3, t.getEmail());
+//            pst.setInt(4, t.getMaNhomQuyen());
+//            pst.setInt(5, t.getTrangThai());
+//            pst.setString(6, t.getTaiKhoan());
+//            ketQua = pst.executeUpdate();
+//            JDBCUtil.closeConnection(con);
+//
+//        } catch (Exception e) {
+//            // TODO: handle exception
+//            e.printStackTrace();
+//        }
+//        return ketQua;
+//    }
     
     public int changePassword(NguoiDungDTO user, String newPassword) throws SQLException {
         int result = 0;

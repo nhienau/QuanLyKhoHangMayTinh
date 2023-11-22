@@ -7,6 +7,7 @@ import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
 import DTO.NhomQuyenDTO;
 import DTO.UserInfoDTO;
+import GUI.ChangePassword;
 import helper.BCrypt;
 import helper.Exception.AuthenticationException;
 import helper.Exception.EmptyFieldException;
@@ -17,11 +18,17 @@ import helper.Validation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 public class NguoiDungBUS {
+//    private final NguoiDungDTO user;
     private final NguoiDungDAO ndDAO = new NguoiDungDAO();
     private final NhomQuyenDAO nqDAO = new NhomQuyenDAO();
     private final ChiTietQuyenDAO ctqDAO = new ChiTietQuyenDAO();
+    private  ChangePassword changepassword ;
 
     public NguoiDungBUS() {
     }
@@ -141,5 +148,13 @@ public class NguoiDungBUS {
             throw e;
         }
         return result > 0;
+    }
+    
+    public int ChangEmail(NguoiDungDTO user, String newEmail) throws SQLException{
+        return ndDAO.changeEmail(user, newEmail);
+    }
+    
+    public int ChangPassword(NguoiDungDTO user, String pass) throws SQLException {
+        return ndDAO.changePassword(user, pass);
     }
 }
