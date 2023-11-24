@@ -358,7 +358,7 @@ public class ChangePassword extends javax.swing.JDialog {
 
         String emailAccount = email.getText();
         if(emailAccount.equals("")){
-            JOptionPane.showConfirmDialog(this, "Vui lòng nhập đầy đủ thông tin");
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
         } else {
             if (isValid(emailAccount)) {
                     user.setEmail(emailAccount);
