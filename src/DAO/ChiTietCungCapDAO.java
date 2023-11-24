@@ -107,5 +107,38 @@ public class ChiTietCungCapDAO {
          return ketQua;
     }
     
+    public ArrayList<ChiTietCungCapDTO> findNhaCungCapByMaSanPham(int masp){
+      ArrayList<ChiTietCungCapDTO> list = new ArrayList<ChiTietCungCapDTO>();
+        try {
+            java.sql.Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM chitietcungcap WHERE trangthai = 1 and masanpham = " + masp;
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {   
+                ChiTietCungCapDTO ccsp = new ChiTietCungCapDTO();
+                ccsp.setMaNhaCungCap(rs.getInt("manhacungcap"));
+                list.add(ccsp);
+            }
+        } catch (Exception e) {
+             e.printStackTrace();
+        }
+        return list;  
+    }
     
+    public int findDonGia(int maNCC, int maSP){
+        int cost = 0;
+        try {
+            java.sql.Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM chitietcungcap WHERE trangthai = 1 and masanpham = " + maSP + " and manhacungcap = " +maNCC;
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {   
+               cost = rs.getInt("gianhap");
+
+            }
+        } catch (Exception e) {
+             e.printStackTrace();
+        }
+        return cost;
+    }
 }

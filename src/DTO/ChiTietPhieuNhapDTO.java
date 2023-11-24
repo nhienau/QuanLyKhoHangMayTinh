@@ -17,11 +17,11 @@ public class ChiTietPhieuNhapDTO {
     private int soLuongTonKho;
     private int maKho;
     private String tenSanPham;
-
+    
     public ChiTietPhieuNhapDTO() {
     }
 
-    public ChiTietPhieuNhapDTO(int maPhieuNhap, int maNhaCungCap, int maSanPham, int soLuongNhap, int donGia, int soLuongTonKho) {
+    public ChiTietPhieuNhapDTO(int maPhieuNhap, int maNhaCungCap, int maSanPham, int soLuongNhap, int donGia, int soLuongTonKho ) {
         this.maPhieuNhap = maPhieuNhap;
         this.maNhaCungCap = maNhaCungCap;
         this.maSanPham = maSanPham;
@@ -30,11 +30,12 @@ public class ChiTietPhieuNhapDTO {
         this.soLuongTonKho = soLuongTonKho;
     }
 
-    public ChiTietPhieuNhapDTO(int maNhaCungCap, int maSanPham, int makho, int soLuongNhap) {
+    public ChiTietPhieuNhapDTO(int maNhaCungCap, int maSanPham,  int soLuongNhap, int donGia, int soLuongTonKho) {
         this.maNhaCungCap = maNhaCungCap;
         this.maSanPham = maSanPham;
         this.soLuongNhap = soLuongNhap;
-        this.maKho = makho;
+        this.donGia = donGia;
+        this.soLuongTonKho = soLuongTonKho;
     }
 
     

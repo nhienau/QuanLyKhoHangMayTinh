@@ -9,7 +9,6 @@ import BUS.SearchProduct;
 import helper.WritePDF;
 import OldDAO.ChiTietPhieuXuatDAO;
 import OldDAO.MayTinhDAO;
-import OldDAO.PhieuNhapDAO;
 import OldDAO.PhieuXuatDAO;
 import java.io.BufferedInputStream;
 import java.io.File;

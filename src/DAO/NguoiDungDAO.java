@@ -11,7 +11,10 @@ import java.sql.SQLException;
 public class NguoiDungDAO {
     public NguoiDungDAO() {
     }
-
+    public static NguoiDungDAO getInstance() {
+        return new NguoiDungDAO();
+    }
+    
     public NguoiDungDTO verifyLogin(String username) throws SQLException {
         NguoiDungDTO user = null;
         try {
