@@ -417,11 +417,18 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         ArrayList<tonKhoDTO> arr = tonKhoDAO.getInstance().getTonKho(makho);
         modelTonKho.setRowCount(0);
         int stt = 0;
+        
         for(int i = 0; i< arr.size() ; i++){
             tonKhoDTO tkDTO = arr.get(i);
             stt ++;
             SanPhamDTO sp = SanPhamDAO.getInstance().selectProductByID(tkDTO.getMaSanPham());
-            Object [] row = {stt, sp.getTenSanPham(), tkDTO.getSoLuong()  };
+            int soLuong = 0;
+            ArrayList<tonKhoDTO> arrDetail = tonKhoDAO.getInstance().getDetailTonKho(tkDTO.getMaSanPham(), makho);
+            for(int j = 0; j< arrDetail.size() ; j++){
+                tonKhoDTO tonkho = arrDetail.get(j);
+                soLuong += tonkho.getSoLuong()  ;
+            }
+            Object [] row = {stt, sp.getTenSanPham(), soLuong  };
             modelTonKho.addRow(row);
         }
         

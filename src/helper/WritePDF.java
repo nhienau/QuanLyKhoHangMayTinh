@@ -18,11 +18,12 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 import OldDAO.AccountDAO;
-import OldDAO.ChiTietPhieuNhapDAO;
+import DAO.ChiTietPhieuNhapDAO;
 import OldDAO.ChiTietPhieuXuatDAO;
 import OldDAO.MayTinhDAO;
 import DAO.NhaCungCapDAO;
-import OldDAO.PhieuNhapDAO;
+import DAO.PhieuNhapDAO;
+import DTO.PhieuNhapDTO;
 import OldDAO.PhieuXuatDAO;
 import java.awt.Desktop;
 import java.awt.FileDialog;
@@ -117,12 +118,12 @@ public class WritePDF {
         return url;
     }
 
-    public void writePhieuNhap(String mapn) {
+    public void writePhieuNhap(int mapn) {
         String url = "";
         try {
             fd.setTitle("In phiếu nhập");
             fd.setLocationRelativeTo(null);
-            url = getFile(mapn);
+            url = getFile(String.valueOf(mapn));
             if (url == null) {
                 return;
             }
@@ -133,19 +134,19 @@ public class WritePDF {
 
             setTitle("THÔNG TIN PHIẾU NHẬP");
 
-            PhieuNhap pn = PhieuNhapDAO.getInstance().selectById(mapn);
+            PhieuNhapDTO pn = PhieuNhapDAO.getInstance().layPhieuNhapTheoMa(mapn);
 
             Chunk glue = new Chunk(new VerticalPositionMark());// Khoang trong giua hang
             Paragraph para1 = new Paragraph();
             para1.setFont(fontData);
-            para1.add("Mã phiếu: " + pn.getMaPhieu());
+            para1.add("Mã phiếu: " + pn.getMaPhieuNhap());
             para1.add("\nThời gian tạo: " + formatDate.format(pn.getThoiGianTao()));
             para1.setIndentationLeft(40);
             Paragraph para2 = new Paragraph();
             para2.setPaddingTop(30);
             para2.setFont(fontData);
             para2.add(String.valueOf("Người tạo: " + AccountDAO.getInstance().selectById(pn.getNguoiTao()).getFullName()));
-            para2.add(String.valueOf("\nNhà cung cấp: " + NhaCungCapDAO.getInstance().selectById(pn.getNhaCungCap()).getTenNhaCungCap() + "  -  " + pn.getNhaCungCap()));
+           // para2.add(String.valueOf("\nNhà cung cấp: " + NhaCungCapDAO.getInstance().selectById(pn.getNhaCungCap()).getTenNhaCungCap() + "  -  " + pn.getNhaCungCap()));
             para2.setIndentationLeft(40);
             document.add(para1);
             document.add(para2);
@@ -169,14 +170,14 @@ public class WritePDF {
             }
 
             //Truyen thong tin tung chi tiet vao table
-            for (ChiTietPhieu ctpn : ChiTietPhieuNhapDAO.getInstance().selectAll(mapn)) {
-                MayTinh mt = MayTinhDAO.getInstance().selectById(ctpn.getMaMay());
-                pdfTable.addCell(new PdfPCell(new Phrase(ctpn.getMaMay(), fontData)));
-                pdfTable.addCell(new PdfPCell(new Phrase(mt.getTenMay(), fontData)));
-                pdfTable.addCell(new PdfPCell(new Phrase(formatter.format(mt.getGia()) + "đ", fontData)));
-                pdfTable.addCell(new PdfPCell(new Phrase(String.valueOf(ctpn.getSoLuong()), fontData)));
-                pdfTable.addCell(new PdfPCell(new Phrase(formatter.format(ctpn.getSoLuong() * mt.getGia()) + "đ", fontData)));
-            }
+//            for (ChiTietPhieu ctpn : ChiTietPhieuNhapDAO.getInstance().getDetailPhieuNhap(mapn)) {
+//                MayTinh mt = MayTinhDAO.getInstance().selectById(ctpn.getMaMay());
+//                pdfTable.addCell(new PdfPCell(new Phrase(ctpn.getMaMay(), fontData)));
+//                pdfTable.addCell(new PdfPCell(new Phrase(mt.getTenMay(), fontData)));
+//                pdfTable.addCell(new PdfPCell(new Phrase(formatter.format(mt.getGia()) + "đ", fontData)));
+//                pdfTable.addCell(new PdfPCell(new Phrase(String.valueOf(ctpn.getSoLuong()), fontData)));
+//                pdfTable.addCell(new PdfPCell(new Phrase(formatter.format(ctpn.getSoLuong() * mt.getGia()) + "đ", fontData)));
+//            }
 
             document.add(pdfTable);
             document.add(Chunk.NEWLINE);

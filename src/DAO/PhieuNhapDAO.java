@@ -20,9 +20,41 @@ import DTO.ChiTietCungCapDTO;
  * @author DELL
  */
 public class PhieuNhapDAO {
-        public static PhieuNhapDAO getInstance() {
+    
+    public static PhieuNhapDAO getInstance() {
         return new PhieuNhapDAO();
     }
+        
+    public ArrayList<PhieuNhapDTO> getAllDanhSachPhieuNhap() {
+        ArrayList<PhieuNhapDTO> dsPhieuNhap = new ArrayList();
+        try {
+            Connection con = JDBCUtil.getConnection();
+
+            String sql = "SELECT * FROM phieunhap ";
+            PreparedStatement st = con.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                    int maPhieuNhap = rs.getInt("maphieunhap");
+                    Date thoiGianTao = rs.getDate("thoigiantao");
+                    int maKho = rs.getInt("makho");
+                    String nguoiTao = rs.getString("nguoitao");
+                    int tongTien = rs.getInt("tongtien");
+                    int status = rs.getInt("trangthai");
+
+                    PhieuNhapDTO phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, tongTien,status);
+                    dsPhieuNhap.add(phieuNhap);
+            }
+
+            JDBCUtil.closeConnection(con);
+        } catch (SQLException e) {
+                e.printStackTrace();
+        }
+        return dsPhieuNhap;
+    }
+    
+    
+    
     public static int luuPhieuNhapPending(PhieuNhapDTO phieuNhap, ArrayList<ChiTietPhieuNhapDTO> listChiTietPN) {
         int result = -1;
         Connection conn = JDBCUtil.getConnection();
@@ -36,7 +68,7 @@ public class PhieuNhapDAO {
             phieuNhapStatement.setInt(2, phieuNhap.getMaKho());
             phieuNhapStatement.setString(3, phieuNhap.getNguoiTao());
             phieuNhapStatement.setInt(4, phieuNhap.getTongTien());
-            phieuNhapStatement.setInt(5, phieuNhap.getTrangThai());
+            phieuNhapStatement.setInt(5, 1);
             phieuNhapStatement.executeUpdate();
 
             ResultSet phieuNhapResultSet = phieuNhapStatement.getGeneratedKeys();
@@ -233,19 +265,20 @@ public class PhieuNhapDAO {
         return listPN;
     }
     
-    public int capNhatPhieuNhap(int maPhieuNhap, int trangThai) {
+    public boolean capNhatPhieuNhap(int maPhieuNhap, int trangThai) {
+        boolean result = false;
         Connection con = JDBCUtil.getConnection();
         try {
-            String query = "UPDATE phieunhap SET trangthai = ? WHERE maphieunhap = ?";
+            String query = "UPDATE phieunhap SET trangthai = " + trangThai + " WHERE maphieunhap = " +maPhieuNhap;
             PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, 4);
-            pstmt.setInt(2, maPhieuNhap);
             int rowsUpdated = pstmt.executeUpdate();
-            return rowsUpdated;
+            if(rowsUpdated > 0){
+                result = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return -1;
+        return result;
     }
     
     public PhieuNhapDTO layPhieuNhapTheoMa(int maPhieuNhap) {
@@ -283,19 +316,17 @@ public class PhieuNhapDAO {
         try {
             Connection con = JDBCUtil.getConnection();
 
-            String sql = "SELECT * FROM chitietcungcap WHERE masanpham=?";
+            String sql = "SELECT * FROM chitietcungcap WHERE masanpham= " + maSanPham;
             PreparedStatement st = con.prepareStatement(sql);
-            st.setInt(1, maSanPham);
+            
 
-            ResultSet rs = st.executeQuery();
+            ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
-                    int ma = rs.getInt("masanpham");
+                    ctcc.setMaSanPham(maSanPham);
                     //String tenSanPham = rs.getString("tensanpham");
-                    int giaNhap = rs.getInt("gianhap");
+                    ctcc.setGiaNhap( rs.getInt("gianhap"));
 
-//                    ctcc = new ChiTietCungCapDTO(maSanPham, tenSanPham, giaNhap);
-                        ctcc = new ChiTietCungCapDTO();
                     break;
             }
             JDBCUtil.closeConnection(con);
@@ -325,4 +356,6 @@ public class PhieuNhapDAO {
         }
         return makho;
      }
+     
+
 }

@@ -4,8 +4,10 @@
  */
 package GUI;
 
+import DAO.ChiTietCungCapDAO;
 import DAO.NhaCungCapDAO;
 import DAO.PhieuNhapDAO;
+import DTO.ChiTietCungCapDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -40,7 +42,6 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
     public QuanLyPhieuNhapForm() {
         initComponents();
         hienThiDanhSachPhieuNhapTheoTrangThai(1);
-        loadDanhSachNhaCungCap();
         this.setLocationRelativeTo(null);
     }
 
@@ -189,7 +190,6 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
         jLabel3.setText("Thay đổi nhà cung cấp:");
 
         cbbNhaCungCap.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cbbNhaCungCap.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbbNhaCungCap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cbbNhaCungCapMouseClicked(evt);
@@ -309,28 +309,36 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
 
     private void tblPhieuNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPhieuNhapMouseClicked
         int row = tblPhieuNhap.getSelectedRow();
-        int maPhieuNhapSelected = Integer.parseInt(tblPhieuNhap.getValueAt(row, 1).toString());
-        
-        PhieuNhapDAO phieuNhapDao = new PhieuNhapDAO();
-        phieuNhapSelected = phieuNhapDao.layPhieuNhapTheoMa(maPhieuNhapSelected);
-        dsCTPN = phieuNhapDao.danhSachCTPNTheoMaPhieuNhap(maPhieuNhapSelected);
-        if(dsCTPN == null) {
-            return;
+        if(row != -1){
+            int maPhieuNhapSelected = Integer.parseInt(tblPhieuNhap.getValueAt(row, 1).toString());
+            phieuNhapSelected = PhieuNhapDAO.getInstance().layPhieuNhapTheoMa(maPhieuNhapSelected);
+            dsCTPN = PhieuNhapDAO.getInstance().danhSachCTPNTheoMaPhieuNhap(maPhieuNhapSelected);
+            if(dsCTPN == null) {
+                return;
+            }
+            hienThiChiTietPhieuNhap(dsCTPN);
         }
-        hienThiChiTietPhieuNhap(dsCTPN);
+       
+        
+       
     }//GEN-LAST:event_tblPhieuNhapMouseClicked
 
-    private void loadDanhSachNhaCungCap() {
-        NhaCungCapDAO nccDao = new NhaCungCapDAO();
-        ArrayList<NhaCungCapDTO> list = nccDao.selectAll();
-        DefaultComboBoxModel model = new DefaultComboBoxModel(list.toArray());
-        // Set the model for the JComboBox
-        cbbNhaCungCap.setModel(model);
+    private void loadDanhSachNhaCungCap(int maSP) {
+        modelCbbNcc = (DefaultComboBoxModel) cbbNhaCungCap.getModel();
+        ArrayList<ChiTietCungCapDTO> nccList = ChiTietCungCapDAO.getInstance().findNhaCungCapByMaSanPham(maSP) ;
+        for(int i = 0; i< nccList.size(); i++){
+            int maNCC = nccList.get(i).getMaNhaCungCap();
+            NhaCungCapDTO ncc = NhaCungCapDAO.getInstance().getByID(maNCC); 
+            modelCbbNcc.addElement(ncc.getTenNhaCungCap());
+        }
     }
     
     private void tblChiTietPNMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblChiTietPNMouseClicked
         rowSelectedOfTblChiTietPN = tblChiTietPN.getSelectedRow();
         int maNhaCungCapSelected = Integer.parseInt(tblChiTietPN.getValueAt(rowSelectedOfTblChiTietPN, 2).toString());
+        int row = tblChiTietPN.getSelectedRow();
+        int maSP = Integer.parseInt(tblChiTietPN.getValueAt(row, 1).toString());
+        loadDanhSachNhaCungCap(maSP);
     }//GEN-LAST:event_tblChiTietPNMouseClicked
 
     private void cbbNhaCungCapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbbNhaCungCapMouseClicked
@@ -435,7 +443,7 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
             }
         });
     }
-
+    private DefaultComboBoxModel modelCbbNcc;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cbbNhaCungCap;
     private javax.swing.JButton jButton1;

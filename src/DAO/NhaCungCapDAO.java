@@ -79,16 +79,25 @@ public class NhaCungCapDAO{
         boolean ketQua = false;
         try {
             java.sql.Connection con = JDBCUtil.getConnection();
-            String sql = "UPDATE NhaCungCap SET trangthai = 0 WHERE maNhaCungCap=?";
-            PreparedStatement pst = con.prepareStatement(sql);
-//            pst.setString(1, t.getMaNhaCungCap());
-            pst.setInt(1, t.getMaNhaCungCap());
-            if(pst.executeUpdate() >= 1){
-                ketQua = true;
+            // Kiểm tra xem nhà cung cấp có thông tin chi tiết cung cấp hay không
+            String checkSql = "SELECT COUNT(*) FROM chitietcungcap WHERE manhacungcap = ? and trangthai = 1";
+            PreparedStatement checkStmt = con.prepareStatement(checkSql);
+            checkStmt.setInt(1, t.getMaNhaCungCap());
+            ResultSet rs = checkStmt.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+
+            if (count == 0) {
+                // Đặt trạng thái của nhà cung cấp thành 0 để đánh dấu là đã bị xóa
+                String deleteSql = "UPDATE nhacungcap SET trangthai = 0 WHERE manhacungcap = ? and trangthai = 1";
+                PreparedStatement deleteStmt = con.prepareStatement(deleteSql);
+                deleteStmt.setInt(1, t.getMaNhaCungCap());
+                if (deleteStmt.executeUpdate() >= 1) {
+                    ketQua = true;
+                }
             }
             JDBCUtil.closeConnection(con);
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
         return ketQua;
@@ -205,5 +214,48 @@ public class NhaCungCapDAO{
         return result;
     }
     
+    
+    // code for nhap hang 
+    public NhaCungCapDTO getByID(int id){
+       NhaCungCapDTO ncc = null;
+        try {
+            java.sql.Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM nhacungcap WHERE trangthai = 1  and manhacungcap = " +id;
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                ncc = new NhaCungCapDTO();
+                ncc.setMaNhaCungCap(rs.getInt("manhacungcap"));
+                ncc.setTenNhaCungCap(rs.getString("tennhacungcap"));
+                ncc.setSdt(rs.getString("sdt"));
+                ncc.setDiaChi(rs.getString("diachi"));
+            }
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return ncc;
+    }
+    
+    public NhaCungCapDTO getNCCByName(String name){
+        NhaCungCapDTO ncc = null;
+        try {
+            java.sql.Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM nhacungcap WHERE trangthai = 1  and tennhacungcap = '" + name + "'";
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                ncc = new NhaCungCapDTO();
+                ncc.setMaNhaCungCap(rs.getInt("manhacungcap"));
+                ncc.setTenNhaCungCap(rs.getString("tennhacungcap"));
+                ncc.setSdt(rs.getString("sdt"));
+                ncc.setDiaChi(rs.getString("diachi"));
+            }
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return ncc;
+    }
     
 }
