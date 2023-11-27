@@ -54,6 +54,39 @@ public class SanPhamDAO {
         return list;
     }
     
+    public ArrayList<SanPhamDTO> getUnuselistProduct(){
+        ArrayList<SanPhamDTO> list = new ArrayList<>();
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM sanpham where trangthai =0";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                SanPhamDTO sp = new SanPhamDTO();
+                sp.setMaSanPham( rs.getInt("masanpham"));
+                sp.setLoaiSanPham(rs.getInt("maloaisanpham"));
+                sp.setTenSanPham(rs.getString("tensanpham"));
+                sp.setSoLuong( rs.getInt("soluong"));
+                sp.setGiaXuat(rs.getInt("giaxuat"));
+                sp.setCpu(rs.getString("cpu"));
+                sp.setRam( rs.getString("ram"));
+                sp.setVga( rs.getString("vga"));
+                sp.setoCung( rs.getString("ocung"));
+                sp.setManHinh( rs.getString("manhinh"));
+                sp.setPin( rs.getString("pin"));
+                sp.setMauSac( rs.getString("mausac"));
+                sp.setTrongLuong( rs.getFloat("trongluong"));
+                sp.setOs( rs.getString("os"));
+
+                list.add(sp);
+            }
+            JDBCUtil.closeConnection(con);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
     public SanPhamDTO selectProductByID(int id){
         SanPhamDTO spDTO = null;
         
@@ -96,6 +129,40 @@ public class SanPhamDAO {
         try{
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT * FROM sanpham WHERE trangthai = 1 and  tensanpham = '" + name + "'"  ;
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                int maMay = rs.getInt("masanpham");
+                String tenMay = rs.getString("tensanpham");
+                int loaiSP = rs.getInt("maloaisanpham");
+                int soLuong = rs.getInt("soluong");
+                String tenCpu = rs.getString("cpu");
+                String ram = rs.getString("ram");
+                String vga = rs.getString("vga");
+                int gia = rs.getInt("giaxuat");
+                String kichThuocMan = rs.getString("manhinh");
+                String dungLuongPin = rs.getString("pin");
+                String mausac = rs.getString("mausac");
+                String os = rs.getString("os");
+                String ocung = rs.getString("ocung");
+                Float trongLuong = rs.getFloat("trongluong");
+                int nhacungcap = 1;
+                
+                spDTO = new SanPhamDTO(maMay, tenMay, loaiSP, soLuong, gia, tenCpu, ram, vga, ocung, kichThuocMan, dungLuongPin, trongLuong, mausac, os);
+            }
+            JDBCUtil.closeConnection(con);
+        } catch(Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return spDTO;
+    }
+    
+    public SanPhamDTO selectDeletedProductByName(String name){
+        SanPhamDTO spDTO = null;
+        try{
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM sanpham WHERE trangthai = 0 and  tensanpham = '" + name + "'"  ;
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
@@ -175,6 +242,23 @@ public class SanPhamDAO {
         return ketQua;
     }
     
+    public boolean reuseProduct(int masp){
+         boolean ketQua = false;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "UPDATE sanpham SET trangthai = 1 WHERE masanpham = ? ";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, masp);
+            if( pst.executeUpdate() > 0)
+                ketQua = true;
+
+            JDBCUtil.closeConnection(con);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
     public boolean updateProduct(SanPhamDTO sp) {
         boolean ketqua = false;
         try {

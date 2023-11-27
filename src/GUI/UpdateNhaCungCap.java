@@ -184,6 +184,9 @@ public class UpdateNhaCungCap extends javax.swing.JDialog {
             else if(NhaCungCapDAO.getInstance().hasDiaChiException(ncc)){
                 JOptionPane.showMessageDialog(this, "Địa chỉ bị trùng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
+            else if(NhaCungCapDAO.getInstance().hasNameException(ncc)){
+                JOptionPane.showMessageDialog(this, "Tên nhà cung cấp bị trùng!",  "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }
             else{  
                 JOptionPane.showMessageDialog(this, nccBUS.updateNhaCungCap(ncc));
                 parent.loadDataToTable();

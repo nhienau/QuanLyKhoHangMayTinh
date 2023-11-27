@@ -13,7 +13,6 @@ import database.JDBCUtil;
 import java.sql.Statement;
 import java.sql.Date;
 import DTO.PhieuNhapDTO;
-import DTO.SanPhamDTO;
 import DTO.ChiTietCungCapDTO;
 /**
  *
@@ -242,11 +241,10 @@ public class PhieuNhapDAO {
         ArrayList<PhieuNhapDTO> listPN = new ArrayList<>();
         Connection con = JDBCUtil.getConnection();
         try {
-            String sql = "SELECT * FROM phieunhap WHERE tongtien BETWEEN ? AND ? AND trangthai=?";
+            String sql = "SELECT * FROM phieunhap WHERE tongtien BETWEEN ? AND ? ";
             PreparedStatement preStatement = con.prepareStatement(sql);
             preStatement.setInt(1, giaMin);
             preStatement.setInt(2, giaMax);
-            preStatement.setInt(3, 4);
             ResultSet result = preStatement.executeQuery();
             while(result.next()) {
                     PhieuNhapDTO pn = new PhieuNhapDTO();
@@ -358,4 +356,47 @@ public class PhieuNhapDAO {
      }
      
 
+    public ArrayList<PhieuNhapDTO> searchGiaMin( int tongtien){
+         ArrayList<PhieuNhapDTO> pnList = new ArrayList<>();
+         try {
+             Connection con = JDBCUtil.getConnection();
+             String sql = "SELECT * FROM phieunhap WHERE tongtien >= " + tongtien ;
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql);
+             while(rs.next()){
+                 PhieuNhapDTO pnDTO = new PhieuNhapDTO();
+                 pnDTO.setMaPhieuNhap(rs.getInt("maphieunhap"));
+                 pnDTO.setMaKho(rs.getInt("makho"));
+                 pnDTO.setThoiGianTao(rs.getDate("thoigiantao"));
+                 pnDTO.setTongTien(rs.getInt("tongtien"));
+                 pnDTO.setTrangThai(rs.getInt("trangthai"));
+                 pnList.add(pnDTO);
+             }
+         } catch (Exception e) {
+             System.out.println(e);
+         }
+         return pnList;
+     }
+    
+    public ArrayList<PhieuNhapDTO> searchGiaMax( int tongtien){
+         ArrayList<PhieuNhapDTO> pnList = new ArrayList<>();
+         try {
+             Connection con = JDBCUtil.getConnection();
+             String sql = "SELECT * FROM phieunhap WHERE  tongtien <= " + tongtien ;
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql);
+             while(rs.next()){
+                 PhieuNhapDTO pnDTO = new PhieuNhapDTO();
+                 pnDTO.setMaPhieuNhap(rs.getInt("maphieunhap"));
+                 pnDTO.setMaKho(rs.getInt("makho"));
+                 pnDTO.setThoiGianTao(rs.getDate("thoigiantao"));
+                 pnDTO.setTongTien(rs.getInt("tongtien"));
+                 pnDTO.setTrangThai(rs.getInt("trangthai"));
+                 pnList.add(pnDTO);
+             }
+         } catch (Exception e) {
+             System.out.println(e);
+         }
+         return pnList;
+     }
 }

@@ -175,13 +175,13 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
 
         tbLoaiSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "STT", "Tên thương hiệu"
+                "STT", "Tên thương hiệu", "Số lượng sản phẩm"
             }
         ));
         jScrollPane1.setViewportView(tbLoaiSanPham);
@@ -494,7 +494,8 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
         for(int i = 0; i< arr.size() ; i++){
             loaiSanPhamDTO lspDTO = arr.get(i);
             stt ++;
-            Object [] row = {stt, lspDTO.getTenLoaiSanPham()  };
+            int soluong = loaiSanPhamDAO.getInstance().getNumberOfType(lspDTO.getMaLoaiSanPham());
+            Object [] row = {stt, lspDTO.getTenLoaiSanPham() , soluong };
             modelLoaiSanPham.addRow(row);
         }
         

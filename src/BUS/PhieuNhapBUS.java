@@ -5,6 +5,9 @@
 package BUS;
 
 import DAO.PhieuNhapDAO;
+import DTO.ChiTietPhieuNhapDTO;
+import DTO.PhieuNhapDTO;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,5 +23,9 @@ public class PhieuNhapBUS {
         return "Cập nhật phiếu nhập hàng thất bại!";
     }
     
-
+    public String xacNhanPhieuNhap(PhieuNhapDTO phieuNhap, ArrayList<ChiTietPhieuNhapDTO> listChiTietPN){
+        if(pnDAO.xacNhanPhieuNhap(phieuNhap, listChiTietPN) == 1)
+            return "Xác nhận phiếu nhập thành công!";
+        return "Xác nhận phiếu nhập thất bại!";
+    }
 }
