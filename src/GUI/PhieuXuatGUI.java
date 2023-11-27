@@ -85,6 +85,14 @@ public class PhieuXuatGUI extends javax.swing.JInternalFrame {
     public SimpleDateFormat getFormatDate() {
         return this.formatDate;
     }
+
+    public ArrayList<PhieuXuatDTO> getAllPhieuXuat() {
+        return allPhieuXuat;
+    }
+
+    public void setAllPhieuXuat(ArrayList<PhieuXuatDTO> allPhieuXuat) {
+        this.allPhieuXuat = allPhieuXuat;
+    }
     
     public ChiTietPhieuXuatDTO findCTPhieu(int maMay) {
         if (maMay == ChiTietPhieuXuatDAO.getInstance().selectById(maMay).getMaPhieuXuat()) {
@@ -614,12 +622,20 @@ public class PhieuXuatGUI extends javax.swing.JInternalFrame {
 
             MaPhieuXuat = mtl.getMaPhieuXuat();
 
+            PhieuXuatDTO px = allPhieuXuat.get((int) tblPhieuXuat.getValueAt(i_row, 1) - 1);
+            
             ChiTietPhieuXuatDTO ctp = new ChiTietPhieuXuatDTO(mtl.getMaPhieuXuat(), mtl.getMaSanPham(), mtl.getSoLuong(), mtl.getDonGia());
             CTPhieuXuat.add(ctp);
 //            ChiTietPhieuXuatGUI a = new ChiTietPhieuXuatGUI();
 //            a.setVisible(true);
-            ChiTietPhieuXuatDialog dialog = new ChiTietPhieuXuatDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-            dialog.setVisible(true);
+            ChiTietPhieuXuatDialog dialog = null;
+            try {
+                dialog = new ChiTietPhieuXuatDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, px);
+            } catch (SQLException ex) {
+                Logger.getLogger(PhieuXuatGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (dialog != null)
+                dialog.setVisible(true);
             CTPhieuXuat.clear();
         }
 

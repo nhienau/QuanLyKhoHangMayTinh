@@ -1,5 +1,6 @@
 package GUI.Dialog;
 
+import BUS.PhieuXuatBUS;
 import DAO.ChiTietPhieuXuatDAO;
 import DAO.PhieuXuatDAO;
 import DAO.SanPhamDAO;
@@ -7,6 +8,7 @@ import DTO.ChiTietPhieuXuatDTO;
 import DTO.NguoiDungDTO;
 import DTO.PhieuXuatDTO;
 import DTO.SanPhamDTO;
+import GUI.PhieuXuatGUI;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.sql.Timestamp;
@@ -17,6 +19,8 @@ import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import javax.swing.table.DefaultTableModel;
 
 public class XuatHangDialog extends javax.swing.JDialog {
+    private final PhieuXuatBUS pxBUS = new PhieuXuatBUS();
+    private JInternalFrame parent;
     private DefaultTableModel tblModel;
     DecimalFormat formatter = new DecimalFormat("###,###,###");
     protected static ArrayList<SanPhamDTO> allProductPX;
@@ -28,6 +32,7 @@ public class XuatHangDialog extends javax.swing.JDialog {
         super(owner, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.parent = parent;
         this.user = user;
         
         allProductPX = SanPhamDAO.getInstance().getlistProduct();
@@ -462,7 +467,7 @@ public class XuatHangDialog extends javax.swing.JDialog {
 
     private void btnXemTruocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemTruocActionPerformed
         // TODO add your handling code here:
-        PhieuXuatPreviewDialog previewDialog = new PhieuXuatPreviewDialog(this, true, this.user);
+        PhieuXuatPreviewDialog previewDialog = new PhieuXuatPreviewDialog(this.parent, this, true, this.user);
         previewDialog.setVisible(true);
         //        System.out.println(user.getTaiKhoan());
         //           ChiTietPhieuXuatGUI a = new  ChiTietPhieuXuatGUI(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
@@ -515,7 +520,12 @@ public class XuatHangDialog extends javax.swing.JDialog {
                     textTongTien.setText(0 + "đ");
                     this.MaPhieuXuat = createId(PhieuXuatDAO.getInstance().selectAll());
                     txtMaPhieu.setText(String.valueOf(this.MaPhieuXuat));
-
+                    
+                    if (parent instanceof PhieuXuatGUI) {
+                        PhieuXuatGUI phieuXuatGUI = (PhieuXuatGUI) parent;
+                        phieuXuatGUI.setAllPhieuXuat(pxBUS.getList());
+                        phieuXuatGUI.loadDataToTable(phieuXuatGUI.getAllPhieuXuat());
+                    }
                 } catch (Exception e) {
                     JOptionPane.showConfirmDialog(this, "Đã xảy ra lỗi !");
                 }

@@ -7,9 +7,15 @@ import java.util.ArrayList;
 
 public class PhieuXuatBUS {
     PhieuXuatDAO dao = new PhieuXuatDAO();
+    
+    public PhieuXuatBUS() {
+    }
 
     public ArrayList<PhieuXuatDTO> getList() throws SQLException {
         return dao.selectAll();
     }
-
+    
+    public String getNguoiTao(int maPhieuXuat) throws SQLException {
+        return dao.getNguoiTao(maPhieuXuat);
+    }
 }
