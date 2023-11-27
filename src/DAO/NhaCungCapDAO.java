@@ -214,7 +214,37 @@ public class NhaCungCapDAO{
         return result;
     }
     
+    public boolean hasNameException(NhaCungCapDTO ncc){
+        boolean result = false;
+        
+            try {
+                java.sql.Connection con = JDBCUtil.getConnection();
+                String sql = "SELECT tennhacungcap FROM nhacungcap WHERE trangthai = 1 and tennhacungcap = '" + ncc.getTenNhaCungCap() + "' and manhacungcap not in (" + ncc.getMaNhaCungCap() + ")";
+                PreparedStatement pst = con.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery();
+                result = rs.next();
+                JDBCUtil.closeConnection(con);
+            } catch (Exception e) {
+                System.out.println(e);
+            } 
+        return result;
+    }
     
+    public boolean hasName(String name){
+        boolean result = false;
+        
+            try {
+                java.sql.Connection con = JDBCUtil.getConnection();
+                String sql = "SELECT tennhacungcap FROM nhacungcap WHERE trangthai = 1 and tennhacungcap = '" + name + "'";
+                PreparedStatement pst = con.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery();
+                result = rs.next();
+                JDBCUtil.closeConnection(con);
+            } catch (Exception e) {
+                System.out.println(e);
+            } 
+        return result;
+    }
     // code for nhap hang 
     public NhaCungCapDTO getByID(int id){
        NhaCungCapDTO ncc = null;

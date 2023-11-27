@@ -6,6 +6,7 @@ package DAO;
 
 import DTO.ChiTietPhieuNhapDTO;
 import database.JDBCUtil;
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,6 +47,20 @@ public class ChiTietPhieuNhapDAO {
         return ctpnList;
     }
     
+    public boolean updateCTPN(ChiTietPhieuNhapDTO ctpn, int maNCC){
+        boolean result = false;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "UPDATE chitietphieunhap SET manhacungcap = " + maNCC + " , soluongnhap = " + ctpn.getSoLuongNhap() + "  , dongia = " + ctpn.getDonGia() + "  WHERE maphieunhap = " + ctpn.getMaPhieuNhap() + " and masanpham = " + ctpn.getMaSanPham() + " and manhacungcap = " + ctpn.getMaNhaCungCap();      
+            Statement stmt = con.createStatement();
+            if(stmt.executeUpdate(sql) > 0){
+                result = true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return result;
+    }
     
 
 }

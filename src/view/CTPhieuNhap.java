@@ -89,15 +89,12 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                     break;
                 case 2:
                     btnNhanHang.setEnabled(false);
-                    btnXoa.setEnabled(false);
                     break;
                 case 3:
                     btnNhanHang.setEnabled(true);
-                    btnXoa.setEnabled(true);
                     break;
                 case 4:
                     btnNhanHang.setEnabled(false);
-                    btnXoa.setEnabled(false);
                     break;
                 default:
                     throw new AssertionError();
@@ -143,7 +140,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
         labelThoiGianTao = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         exportPDF = new javax.swing.JButton();
-        btnXoa = new javax.swing.JButton();
         btnNhanHang = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -216,13 +212,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
             }
         });
 
-        btnXoa.setText("Xóa phiếu nhập");
-        btnXoa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXoaActionPerformed(evt);
-            }
-        });
-
         btnNhanHang.setText("Nhận hàng");
         btnNhanHang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -256,15 +245,13 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelTongTien, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(labelNguoiTao, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(61, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(339, 339, 339)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38)
-                                .addComponent(btnXoa)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                                .addGap(47, 47, 47)
                                 .addComponent(exportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1))
                         .addGap(21, 21, 21))))
@@ -290,7 +277,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(exportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26))
         );
@@ -317,23 +303,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
         WritePDF writepdf = new WritePDF();
        // writepdf.writePhieuNhap(String.valueOf(this.parent.getPhieuNhapSelect().getMaPhieuNhap()));
     }//GEN-LAST:event_exportPDFActionPerformed
-
-    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        // TODO add your handling code here:
-        
-        int confirm = JOptionPane.showConfirmDialog(this,
-                            "Bạn có chắc muốn xóa phiếu nhập hàng này?",
-                            "Xác nhận",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-
-        if(confirm == JOptionPane.YES_OPTION){
-            JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 2)); 
-            dispose();
-            parent.loadDanhSachPhieuNhap();
-        }
-        
-    }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnNhanHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanHangActionPerformed
         // TODO add your handling code here:
@@ -383,7 +352,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
     private DefaultTableModel modelCTPN;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNhanHang;
-    private javax.swing.JButton btnXoa;
     private javax.swing.JButton exportPDF;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
