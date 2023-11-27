@@ -61,6 +61,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
     DefaultTableCellRenderer renderer;
     DecimalFormat formatter = new DecimalFormat("###, ###, ###");
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
+    private NguoiDungDTO user;
     
     public ProductForm(NguoiDungDTO user) {
         initComponents();
@@ -70,12 +71,12 @@ public class ProductForm extends javax.swing.JInternalFrame {
         initTable();
         loadDataToTable();
         changeTextFind();
-        
+        this.user = user;
         // Authorization
-        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
+        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit, btnThuongHieu};
         disableAllButtons(buttons);
         authorizeAction(user);
-
+        authorizeProductType(user);
         // loadDataToTable();
     }
     
@@ -126,18 +127,23 @@ public class ProductForm extends javax.swing.JInternalFrame {
         }
     }
     
-    public void checkRole(Account t) {
-        if(t.getRole().equals("Nhân viên nhập") || t.getRole().equals("Nhân viên xuất")) {
-            btnAdd.setEnabled(false);
-            btnDelete.setEnabled(false);
-            btnEdit.setEnabled(false);
-            btnXuatExcel.setEnabled(false);
-            btnNhapExcel.setEnabled(false);
-        } else {
-            System.out.println("abcdjad");
+    private void authorizeProductType(NguoiDungDTO user) {
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "loaisanpham");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(ProductForm.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(ProductForm.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
         }
-    }
 
+        btnThuongHieu.setEnabled(!allowedActions.isEmpty());
+    }
+    
     public final void initTable() {
         tblModel = new DefaultTableModel(){
             @Override
@@ -208,8 +214,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         btnEdit = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        btnXuatExcel = new javax.swing.JButton();
-        btnNhapExcel = new javax.swing.JButton();
         btnThuongHieu = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
@@ -279,33 +283,9 @@ public class ProductForm extends javax.swing.JInternalFrame {
         jToolBar1.add(btnDetail);
         jToolBar1.add(jSeparator1);
 
-        btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        btnXuatExcel.setText("Xuất Excel");
-        btnXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXuatExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnXuatExcel);
-
-        btnNhapExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        btnNhapExcel.setText("Nhập Excel");
-        btnNhapExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNhapExcel.setFocusable(false);
-        btnNhapExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNhapExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNhapExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNhapExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnNhapExcel);
-
         btnThuongHieu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icon_laptop.jpg"))); // NOI18N
         btnThuongHieu.setText("Thương hiệu");
+        btnThuongHieu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnThuongHieu.setFocusable(false);
         btnThuongHieu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnThuongHieu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -391,8 +371,8 @@ public class ProductForm extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -443,114 +423,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnEditActionPerformed
 
-    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
-        // TODO add your handling code here:
-        try {
-            JFileChooser jFileChooser = new JFileChooser();
-            jFileChooser.showSaveDialog(this);
-            File saveFile = jFileChooser.getSelectedFile();
-            if (saveFile != null) {
-                saveFile = new File(saveFile.toString() + ".xlsx");
-                Workbook wb = new XSSFWorkbook();
-                Sheet sheet = wb.createSheet("Product");
-
-                Row rowCol = sheet.createRow(0);
-                for (int i = 0; i < tblSanPham.getColumnCount(); i++) {
-                    Cell cell = rowCol.createCell(i);
-                    cell.setCellValue(tblSanPham.getColumnName(i));
-                }
-
-                for (int j = 0; j < tblSanPham.getRowCount(); j++) {
-                    Row row = sheet.createRow(j + 1);
-                    for (int k = 0; k < tblSanPham.getColumnCount(); k++) {
-                        Cell cell = row.createCell(k);
-                        if (tblSanPham.getValueAt(j, k) != null) {
-                            cell.setCellValue(tblSanPham.getValueAt(j, k).toString());
-                        }
-
-                    }
-                }
-                FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
-                wb.write(out);
-                wb.close();
-                out.close();
-                openFile(saveFile.toString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_btnXuatExcelActionPerformed
-
-    private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
-         
-//        File excelFile;
-//        FileInputStream excelFIS = null;
-//        BufferedInputStream excelBIS = null;
-//        XSSFWorkbook excelJTableImport = null;
-//        ArrayList<SanPhamDTO> listAccExcel = new ArrayList<SanPhamDTO>();
-//        JFileChooser jf = new JFileChooser();
-//        int result = jf.showOpenDialog(null);
-//        jf.setDialogTitle("Open file");
-//        Workbook workbook = null;
-//        if (result == JFileChooser.APPROVE_OPTION) {
-//            try {
-//                excelFile = jf.getSelectedFile();
-//                excelFIS = new FileInputStream(excelFile);
-//                excelBIS = new BufferedInputStream(excelFIS);
-//                excelJTableImport = new XSSFWorkbook(excelBIS);
-//                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
-//                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
-//                    XSSFRow excelRow = excelSheet.getRow(row);
-//                    
-//                    String tenMay = excelRow.getCell(0).getStringCellValue();
-//                    String loaiSanPham = excelRow.getCell(1).getStringCellValue();
-//                    int maLoaiSanPham = loaiSanPhamDAO.getInstance().getIDOfType(loaiSanPham);
-//                    int soLuong = (int) excelRow.getCell(2).getNumericCellValue();
-//                    String giaFomat = excelRow.getCell(3).getStringCellValue().replaceAll(",", "");
-//                    int viTri = giaFomat.length() - 1;
-//                    String giaoke = giaFomat.substring(0, viTri) + giaFomat.substring(viTri + 1);
-//                    double donGia = Double.parseDouble(giaoke);
-//                    String boXuLi = excelRow.getCell(4).getStringCellValue();
-//                    String ram = excelRow.getCell(5).getStringCellValue();
-//                    String boNho = excelRow.getCell(6).getStringCellValue();
-//                    SanPhamDTO sp = new SanPhamDTO(null, tenMay,maLoaiSanPham, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
-//                    listAccExcel.add(mt);
-//                    DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
-//                    table_acc.setRowCount(0);
-//                    loadDataToTableSearch(listAccExcel);
-//                }
-//            } catch (FileNotFoundException ex) {
-//                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IOException ex) {
-//                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        for (int i = 0; i < listAccExcel.size(); i++) {
-//            SanPhamDTO spDTO = listAccExcel.get(i);
-//            SanPhamDTO item = new SanPhamDTO();
-//            item.setTenSanPham(spDTO.getTenSanPham());
-//            item.setMaLoaiSanPham(spDTO.getMaLoaiSanPham());
-//            item.setGiaXuat(spDTO.getGiaXuat());
-//            item.setCpu(spDTO.getCpu());
-//            item.setRam(spDTO.getRam());
-//            item.setPin(spDTO.getPin());
-//            item.setMauSac(spDTO.getMauSac());
-//            item.setManHinh(spDTO.getManHinh());
-//            item.setVga(spDTO.getVga());
-//            item.setoCung(spDTO.getoCung());
-//            item.setTrongLuong(spDTO.getTrongLuong());
-//            item.setOs(spDTO.getOs());
-//                
-//            SanPhamDAO.getInstance().addProduct(item);
-//            
-//            if( SanPhamDAO.getInstance().addProduct(item) == false){
-//                JOptionPane.showMessageDialog(this, "Sản phẩm " + item.getTenSanPham() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-//            }
-//                
-//            
-//        }
-    }//GEN-LAST:event_btnNhapExcelActionPerformed
-
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         // TODO add your handling code here:
         jComboBoxLuaChon.setSelectedIndex(0);
@@ -599,7 +471,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private void btnThuongHieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThuongHieuActionPerformed
         // TODO add your handling code here:
         
-        loaiSanPhamGUI lsp = new loaiSanPhamGUI();
+        loaiSanPhamGUI lsp = new loaiSanPhamGUI(user);
         lsp.setVisible(true);
     }//GEN-LAST:event_btnThuongHieuActionPerformed
 
@@ -732,9 +604,7 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi;
-    private javax.swing.JButton btnNhapExcel;
     private javax.swing.JButton btnThuongHieu;
-    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;

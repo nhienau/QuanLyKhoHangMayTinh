@@ -7,10 +7,12 @@ package GUI.Dialog;
 import DAO.SanPhamDAO;
 import DAO.khoDAO;
 import DAO.tonKhoDAO;
+import DTO.ChiTietQuyenDTO;
 import DTO.tonKhoDTO;
 import GUI.TonKhoGUI;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -21,7 +23,8 @@ import javax.swing.table.DefaultTableModel;
  * @author trant
  */
 public class DetailTonKho extends javax.swing.JDialog {
-
+    private List<ChiTietQuyenDTO> allowedActions;
+    private boolean restrictGiaNhap;
     /**
      * Creates new form DetailTonKho
      */
@@ -29,12 +32,14 @@ public class DetailTonKho extends javax.swing.JDialog {
     DecimalFormat formatter = new DecimalFormat("###, ###, ###");
     private TonKhoGUI owner;
     String status;
-    public DetailTonKho( int masanpham, int makho) {
+    public DetailTonKho( int masanpham, int makho, List<ChiTietQuyenDTO> allowedActions) {
 
         
         initComponents();
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        this.allowedActions = allowedActions;
+        checkRestriction();
         String tensp = SanPhamDAO.getInstance().getNameByID(masanpham);
         String tenKho = khoDAO.getInstance().getWareHouseByID(makho);
         txtTenSanPham.setText(tensp);
@@ -45,6 +50,22 @@ public class DetailTonKho extends javax.swing.JDialog {
     private DetailTonKho(JFrame jFrame, boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
+    private void checkRestriction() {
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.findRestriction(ctq.getHanChe(), "gianhap")) {
+                setRestrictGiaNhap(true);
+                // break;
+                return;
+            }
+        }
+        setRestrictGiaNhap(false);
+    }
+
+    public void setRestrictGiaNhap(boolean restrictGiaNhap) {
+        this.restrictGiaNhap = restrictGiaNhap;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

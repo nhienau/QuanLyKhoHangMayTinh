@@ -321,58 +321,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
     }
-
+    
     public void handleLogin() {
-//        String usercheck = txtUsername.getText();
-//        String passwordcheck = txtPassword.getText();
-//        if (usercheck.equals("") || passwordcheck.equals("")) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-//        } else {
-//            try {
-//                Account acc = AccountDAO.getInstance().selectById(usercheck);
-//                if (acc == null) {
-//                    JOptionPane.showMessageDialog(this, "Tài khoản không tồn tại trên hệ thống !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-//                } else {
-//                    if (BCrypt.checkpw(passwordcheck, acc.getPassword())) {
-//                        if (acc.getStatus() == 1) {
-//                            try {
-//                                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-//                                this.dispose();
-//                                String role = acc.getRole();
-//                                if (role.equals("Admin")) {
-//                                    Admin ad = new Admin(acc);
-//                                    ad.setVisible(true);
-////                                    ad.setCurrentAcc(acc);
-//                                    ad.setName(acc.getFullName());
-//                                } else if (role.equals("Quản lý kho")) {
-//                                    QuanLiKho ql = new QuanLiKho();
-//                                    ql.setVisible(true);
-//                                    ql.setCurrentAcc(acc);
-//                                    ql.setName(acc.getFullName());
-//                                } else if (role.equals("Nhân viên nhập")) {
-//                                    NhapKho ql = new NhapKho(acc);
-//                                    ql.setVisible(true);
-//                                    ql.setName(acc.getFullName());
-//                                } else if (role.equals("Nhân viên xuất")) {
-//                                    XuatKho ql = new XuatKho(acc);
-//                                    ql.setVisible(true);
-//                                    ql.setName(acc.getFullName());
-//                                }
-//                            } catch (UnsupportedLookAndFeelException ex) {
-//                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                        } else {
-//                            JOptionPane.showMessageDialog(this, "Tài khoản của bạn đã bị khóa !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-//                        }
-//                    } else {
-//                        JOptionPane.showMessageDialog(this, "Sai mật khẩu !", "Cảnh báo !", JOptionPane.WARNING_MESSAGE);
-//                    }
-//                }
-//            } catch (Exception e) {
-//            }
-//        }
-
-        // Validate input
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
         
