@@ -107,7 +107,7 @@ public class ThongKeDAO {
                            )
                            SELECT DISTINCT * FROM tonkho
                            WHERE tensanpham LIKE ?
-                           ORDER BY masanpham
+                           ORDER BY toncuoiky DESC, tondauky DESC, xuattrongky DESC, nhaptrongky DESC, masanpham DESC
                            """;
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, fromDate);
