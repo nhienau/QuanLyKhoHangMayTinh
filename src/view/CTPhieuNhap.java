@@ -12,12 +12,14 @@ import DAO.SanPhamDAO;
 import DTO.ChiTietPhieuNhapDTO;
 import DTO.NguoiDungDTO;
 import DTO.PhieuNhapDTO;
+import GUI.Dialog.ReceivedProduct;
 import helper.WritePDF;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -43,7 +45,7 @@ public class CTPhieuNhap extends javax.swing.JDialog {
         pnDTO = phieuNhap;
         initComponents();
         setLocationRelativeTo(null);
-        labelMaPhieu.setText(String.valueOf(pnDTO.getMaPhieuNhap()));
+        txtMaPhieu.setText(String.valueOf(pnDTO.getMaPhieuNhap()));
         NguoiDungDTO nd = NguoiDungDAO.getInstance().verifyLogin(pnDTO.getNguoiTao());
         labelNguoiTao.setText(nd.getHoTen());
         labelTongTien.setText(this.parent.getFormatter().format(pnDTO.getTongTien()) + " VND");
@@ -135,7 +137,7 @@ public class CTPhieuNhap extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         labelTongTien = new javax.swing.JLabel();
-        labelMaPhieu = new javax.swing.JLabel();
+        txtMaPhieu = new javax.swing.JLabel();
         labelNguoiTao = new javax.swing.JLabel();
         labelThoiGianTao = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -195,7 +197,7 @@ public class CTPhieuNhap extends javax.swing.JDialog {
         labelTongTien.setFont(new java.awt.Font("SF Pro Display", 1, 14)); // NOI18N
         labelTongTien.setText(" ");
 
-        labelMaPhieu.setText("jLabel7");
+        txtMaPhieu.setText("jLabel7");
 
         labelNguoiTao.setText("jLabel7");
 
@@ -232,7 +234,7 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(55, 55, 55)
-                                .addComponent(labelMaPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtMaPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -249,7 +251,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(47, 47, 47)
                                 .addComponent(exportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -264,7 +265,7 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
-                    .addComponent(labelMaPhieu)
+                    .addComponent(txtMaPhieu)
                     .addComponent(labelNguoiTao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -306,16 +307,10 @@ public class CTPhieuNhap extends javax.swing.JDialog {
 
     private void btnNhanHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanHangActionPerformed
         // TODO add your handling code here:
-                
-        int confirm = JOptionPane.showConfirmDialog(this,
-                            "Bạn có chắc muốn xác nhận giao hàng thành công cho phiếu nhập hàng này?",
-                            "Xác nhận",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-
-        if(confirm == JOptionPane.YES_OPTION){
-            JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 4)); 
-        }
+       
+        ReceivedProduct received = new ReceivedProduct( pnDTO);
+        received.setVisible(true);
+        this.dispose();
         
     }//GEN-LAST:event_btnNhanHangActionPerformed
 
@@ -361,10 +356,10 @@ public class CTPhieuNhap extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel labelMaPhieu;
     private javax.swing.JLabel labelNguoiTao;
     private javax.swing.JLabel labelThoiGianTao;
     private javax.swing.JLabel labelTongTien;
     private javax.swing.JTable tblChiTietPhieu;
+    private javax.swing.JLabel txtMaPhieu;
     // End of variables declaration//GEN-END:variables
 }

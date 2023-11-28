@@ -626,7 +626,7 @@ public class NhapHangForm extends javax.swing.JDialog {
             int maKhoSelected = kho.getMaKho();
 
             PhieuNhapDAO phieuNhapDao = new PhieuNhapDAO();
-            ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(maNhaCungCap,maSanPham,soLuong, donGia, soLuong);
+            ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(maNhaCungCap,maSanPham,soLuong, donGia, userDTO.getTaiKhoan(), 0 , soLuong, 1);
             ctpn.setMaKho(maKhoSelected);
             if(listCTPNCurrent.size() == 0){
                 listCTPNCurrent.add(ctpn);
@@ -772,7 +772,7 @@ public class NhapHangForm extends javax.swing.JDialog {
             DefaultTableModel modelPN = (DefaultTableModel) tblChiTietPN.getModel();
             modelPN.setRowCount(0);
             //hienThiDanhSachPhieuNhapTheoTrangThai(1);
-            listDetail = null;
+            listDetail.clear();
             result = 1;
         }
         else {
