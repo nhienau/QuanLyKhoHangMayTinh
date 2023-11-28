@@ -18,53 +18,7 @@ public class ThongKeDAO {
     public ThongKeDAO() {
     }
     
-    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu7NgayQua() throws SQLException {
-        ArrayList<ThongKeDoanhThuDTO> result = new ArrayList<>();
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String query = """
-                           WITH RECURSIVE dates(date) AS (
-                             SELECT DATE_SUB(CURDATE(), INTERVAL 6 DAY)
-                             UNION ALL
-                             SELECT DATE_ADD(date, INTERVAL 1 DAY)
-                             FROM dates
-                             WHERE date < CURDATE()
-                           )
-                           SELECT 
-                             dates.date AS ngay,
-                             COALESCE(SUM(PN.tongtien), 0) AS chiphi,
-                             COALESCE(SUM(PX.tongtien), 0) AS doanhthu
-                           FROM dates
-                           LEFT JOIN phieunhap PN ON dates.date = DATE(PN.thoigiantao)
-                           LEFT JOIN phieuxuat PX ON dates.date = DATE(PX.thoigiantao)
-                           LEFT JOIN trangthaiphieunhap TTPN ON PN.trangthai = TTPN.matrangthai
-                           WHERE (TTPN.tentrangthai LIKE '%delivered%')
-                              OR (TTPN.matrangthai IS NULL)
-                           GROUP BY dates.date
-                           ORDER BY dates.date DESC;
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Date ngay = rs.getDate("ngay");
-                Long chiPhi = rs.getLong("chiphi");
-                Long doanhThu = rs.getLong("doanhthu");
-                Long loiNhuan = doanhThu - chiPhi;
-                result.add(new ThongKeDoanhThuDTO(ngay, chiPhi, doanhThu, loiNhuan));
-            }
-            ps.close();
-            rs.close();
-            JDBCUtil.closeConnection(conn);
-        } catch (SQLException e) {
-            throw e;
-        }
-        return result;
-    }
-    
     public ChiTietTongTonKhoDTO thongKeTonKho(DateRangeDTO dateRange, String productName) throws SQLException {
-//        if (dateRange.getFromDate() == null && dateRange.getToDate() == null) {
-//            return thongKeTonKhoToanThoiGian(productName);
-//        }
         ArrayList<ThongKeTonKhoDTO> result = new ArrayList<>();
         String fromDate = dateRange.getFromDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
         String toDate = dateRange.getToDate().format(DateHelper.SQL_ROW_DATE_FORMATTER);
@@ -73,7 +27,7 @@ public class ThongKeDAO {
             Connection conn = JDBCUtil.getConnection();
             String query = """
                            WITH nhaptrongky AS (
-                           	SELECT masanpham, SUM(soluongnhap) AS soluongnhap
+                           	SELECT masanpham, SUM(soluongthucte) AS soluongnhap
                            	FROM phieunhap PN JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap JOIN trangthaiphieunhap TTPN ON PN.trangthai = TTPN.matrangthai
                            	WHERE DATE(PN.thoigiantao) BETWEEN ? AND ? AND tentrangthai LIKE '%delivered%'
                            	GROUP BY masanpham
@@ -83,7 +37,7 @@ public class ThongKeDAO {
                            	WHERE DATE(PX.thoigiantao) BETWEEN ? AND ? AND PX.trangthai = 1
                            	GROUP BY masanpham
                            ), nhapdauky AS (
-                           	SELECT masanpham, SUM(soluongnhap) AS soluongnhap
+                           	SELECT masanpham, SUM(soluongthucte) AS soluongnhap
                            	FROM phieunhap PN JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
                            	WHERE DATE(PN.thoigiantao) < ?
                            	GROUP BY masanpham
@@ -140,51 +94,6 @@ public class ThongKeDAO {
         return new ChiTietTongTonKhoDTO(dateRange, productName, result, tongTonDauKy, tongNhapTrongKy, tongXuatTrongKy, tongTonCuoiKy);
     }
     
-    public ArrayList<ThongKeTonKhoDTO> thongKeTonKhoToanThoiGian(String productName) throws SQLException {
-        ArrayList<ThongKeTonKhoDTO> result = new ArrayList<>();
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String query = """
-                            WITH nhaptrongky AS (
-                                SELECT masanpham, SUM(soluongnhap) AS soluongnhap
-                                FROM phieunhap PN JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap JOIN trangthaiphieunhap TTPN ON PN.trangthai = TTPN.matrangthai
-                                WHERE tentrangthai LIKE '%delivered%'
-                                GROUP BY masanpham
-                            ), xuattrongky AS (
-                                SELECT masanpham, SUM(soluong) AS soluongxuat
-                                FROM phieuxuat PX JOIN chitietphieuxuat CTPX ON PX.maphieuxuat = CTPX.maphieuxuat
-                                WHERE PX.trangthai = 1
-                                GROUP BY masanpham
-                            ), tonkho AS (
-                                SELECT SP.masanpham, tensanpham, COALESCE(NTK.soluongnhap, 0) AS nhaptrongky, COALESCE(XTK.soluongxuat, 0) AS xuattrongky, (COALESCE(NTK.soluongnhap, 0) - COALESCE(XTK.soluongxuat, 0)) AS toncuoiky
-                                FROM sanpham SP
-                                LEFT JOIN nhaptrongky NTK ON SP.masanpham = NTK.masanpham
-                                LEFT JOIN xuattrongky XTK ON SP.masanpham = XTK.masanpham
-                            )
-                            SELECT DISTINCT * FROM tonkho
-                            WHERE tensanpham LIKE ?
-                            ORDER BY masanpham
-                           """;
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, "%" + productName + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int maSanPham = rs.getInt("masanpham");
-                String tenSanPham = rs.getString("tensanpham");
-                int nhapTrongKy = rs.getInt("nhaptrongky");
-                int xuatTrongKy = rs.getInt("xuattrongky");
-                int tonCuoiKy = rs.getInt("toncuoiky");
-                result.add(new ThongKeTonKhoDTO(maSanPham, tenSanPham, 0, nhapTrongKy, xuatTrongKy, tonCuoiKy));
-            }
-            ps.close();
-            rs.close();
-            JDBCUtil.closeConnection(conn);
-        } catch (SQLException e) {
-            throw e;
-        }
-        return result;
-    }
-    
     public ChiTietTongSanPhamDTO thongKeSanPham(DateRangeDTO dateRange, String productName) throws SQLException {
         ArrayList<ThongKeSanPhamDTO> result = new ArrayList<>();
         String fromDate = null;
@@ -200,7 +109,7 @@ public class ThongKeDAO {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("""
             WITH slnhap AS (
-                SELECT masanpham, SUM(soluongnhap) AS soluongnhap
+                SELECT masanpham, SUM(soluongthucte) AS soluongnhap
                 FROM phieunhap PN
                 JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
                 JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
@@ -267,7 +176,7 @@ public class ThongKeDAO {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("""
                                 WITH tongnhap AS (
-                                    SELECT manhacungcap, SUM(soluongnhap) AS tongsoluongnhap
+                                    SELECT manhacungcap, SUM(soluongthucte) AS tongsoluongnhap
                                     FROM phieunhap PN
                                     JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
                                     JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
@@ -328,7 +237,7 @@ public class ThongKeDAO {
         
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("""
-                            SELECT CTPN.maphieunhap, PN.thoigiantao, soluongnhap, dongia AS dongianhap
+                            SELECT CTPN.maphieunhap, PN.thoigiantao, soluongthucte AS soluongnhap, dongia AS dongianhap
                             FROM phieunhap PN
                             JOIN chitietphieunhap CTPN ON PN.maphieunhap = CTPN.maphieunhap
                             JOIN trangthaiphieunhap TTPN ON TTPN.matrangthai = PN.trangthai
