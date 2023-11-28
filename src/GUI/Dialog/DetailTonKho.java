@@ -4,13 +4,18 @@
  */
 package GUI.Dialog;
 
+import BUS.TonKhoBUS;
 import DAO.SanPhamDAO;
 import DAO.khoDAO;
 import DAO.tonKhoDAO;
 import DTO.ChiTietQuyenDTO;
+import DTO.ChiTietTonKhoDTO;
 import DTO.tonKhoDTO;
 import GUI.TonKhoGUI;
+import helper.DateHelper;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -23,6 +28,8 @@ import javax.swing.table.DefaultTableModel;
  * @author trant
  */
 public class DetailTonKho extends javax.swing.JDialog {
+    private ArrayList<ChiTietTonKhoDTO> arr = new ArrayList<>();
+    private final TonKhoBUS tkBUS = new TonKhoBUS();
     private List<ChiTietQuyenDTO> allowedActions;
     private boolean restrictGiaNhap;
     /**
@@ -44,7 +51,7 @@ public class DetailTonKho extends javax.swing.JDialog {
         String tenKho = khoDAO.getInstance().getWareHouseByID(makho);
         txtTenSanPham.setText(tensp);
         txtTenKho.setText(tenKho);
-        loadDataTotable(masanpham, makho);
+        loadDataTotable(masanpham, makho, restrictGiaNhap);
     }
 
     private DetailTonKho(JFrame jFrame, boolean b) {
@@ -135,36 +142,15 @@ public class DetailTonKho extends javax.swing.JDialog {
                 .addGap(64, 64, 64))
         );
 
-        tbChiTiet.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Nhà cung cấp", "Giá thành", "Số lượng"
-            }
-        ));
-        jScrollPane1.setViewportView(tbChiTiet);
-        if (tbChiTiet.getColumnModel().getColumnCount() > 0) {
-            tbChiTiet.getColumnModel().getColumn(0).setResizable(false);
-            tbChiTiet.getColumnModel().getColumn(1).setResizable(false);
-            tbChiTiet.getColumnModel().getColumn(2).setResizable(false);
-        }
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+            .addGap(0, 831, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -191,13 +177,43 @@ public class DetailTonKho extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
+        tbChiTiet.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Mã phiếu nhập", "Thời gian tạo", "Nhà cung cấp", "Đơn giá", "Số lượng"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tbChiTiet);
+        if (tbChiTiet.getColumnModel().getColumnCount() > 0) {
+            tbChiTiet.getColumnModel().getColumn(0).setResizable(false);
+            tbChiTiet.getColumnModel().getColumn(0).setPreferredWidth(24);
+            tbChiTiet.getColumnModel().getColumn(1).setResizable(false);
+            tbChiTiet.getColumnModel().getColumn(2).setResizable(false);
+            tbChiTiet.getColumnModel().getColumn(2).setPreferredWidth(240);
+            tbChiTiet.getColumnModel().getColumn(3).setResizable(false);
+            tbChiTiet.getColumnModel().getColumn(4).setResizable(false);
+            tbChiTiet.getColumnModel().getColumn(4).setPreferredWidth(24);
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -205,7 +221,9 @@ public class DetailTonKho extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
         );
 
         pack();
@@ -220,17 +238,27 @@ public class DetailTonKho extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     
-    public void loadDataTotable(int masanpham, int makho){
+    public void loadDataTotable(int masanpham, int makho, boolean restrictGiaNhap) {
+        ArrayList<ChiTietTonKhoDTO> arr = new ArrayList<>();
         modelChiTiet = (DefaultTableModel) tbChiTiet.getModel();
         tbChiTiet.setDefaultEditor(Object.class, null);
-        ArrayList<tonKhoDTO> arr = tonKhoDAO.getInstance().getDetailTonKho(masanpham, makho);
+        try {
+            arr = tkBUS.getDetailTonKho(masanpham, makho, restrictGiaNhap);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        this.arr = arr;
         modelChiTiet.setRowCount(0);
-
         for(int i = 0; i< arr.size() ; i++){
-            tonKhoDTO tkDTO = arr.get(i);
-            
-            
-            Object [] row = {tkDTO.getMaNhaCungCap(), formatter.format(tkDTO.getGiaNhap()), tkDTO.getSoLuong()  };
+            ChiTietTonKhoDTO cttk = arr.get(i);
+            int maPhieuNhap = cttk.getMaPhieuNhap();
+            LocalDateTime thoiGianTao = cttk.getThoiGianTao();
+            String strThoiGianTao = thoiGianTao.format(DateHelper.DATE_TIME_FORMATTER);
+            String nhaCungCap = cttk.getTenNhaCungCap();
+            int soLuong = cttk.getSoLuongTonKho();
+            Long donGia = cttk.getDonGia();
+            String strDonGia = donGia == -1 ? "" : donGia.toString();
+            Object [] row = {maPhieuNhap, strThoiGianTao, nhaCungCap, strDonGia, soLuong};
             modelChiTiet.addRow(row);
         }
         

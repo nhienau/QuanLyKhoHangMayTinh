@@ -167,7 +167,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
 
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Số lượng"
+                "Mã sản phẩm", "Tên sản phẩm", "Số lượng"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -299,15 +299,15 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         
         for(int i = 0; i< arr.size() ; i++){
             tonKhoDTO tkDTO = arr.get(i);
-            stt ++;
-            SanPhamDTO sp = SanPhamDAO.getInstance().selectProductByID(tkDTO.getMaSanPham());
-            int soLuong = 0;
-            ArrayList<tonKhoDTO> arrDetail = tonKhoDAO.getInstance().getDetailTonKho(tkDTO.getMaSanPham(), makho);
-            for(int j = 0; j< arrDetail.size() ; j++){
-                tonKhoDTO tonkho = arrDetail.get(j);
-                soLuong += tonkho.getSoLuong()  ;
-            }
-            Object [] row = {stt, sp.getTenSanPham(), soLuong  };
+//            stt ++;
+//            SanPhamDTO sp = SanPhamDAO.getInstance().selectProductByID(tkDTO.getMaSanPham());
+//            int soLuong = 0;
+//            ArrayList<tonKhoDTO> arrDetail = tonKhoDAO.getInstance().getDetailTonKho(tkDTO.getMaSanPham(), makho, true);
+//            for(int j = 0; j< arrDetail.size() ; j++){
+//                tonKhoDTO tonkho = arrDetail.get(j);
+//                soLuong += tonkho.getSoLuong()  ;
+//            }
+            Object [] row = {tkDTO.getMaSanPham(), tkDTO.getTenSanPham(), tkDTO.getSoLuong() };
             modelTonKho.addRow(row);
         }
         

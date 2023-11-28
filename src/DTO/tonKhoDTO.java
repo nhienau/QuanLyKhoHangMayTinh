@@ -11,6 +11,7 @@ package DTO;
 public class tonKhoDTO  {
     private int maKho;
     private int maSanPham;
+    private String tenSanPham;
     private int maNhaCungCap;
     private int soLuong;
     private int giaNhap;
@@ -64,6 +65,14 @@ public class tonKhoDTO  {
 
     public void setGiaNhap(int giaNhap) {
         this.giaNhap = giaNhap;
+    }
+
+    public String getTenSanPham() {
+        return tenSanPham;
+    }
+
+    public void setTenSanPham(String tenSanPham) {
+        this.tenSanPham = tenSanPham;
     }
     
     
