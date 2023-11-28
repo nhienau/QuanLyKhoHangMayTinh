@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 26, 2023 at 05:40 PM
+-- Generation Time: Nov 28, 2023 at 03:48 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -122,7 +122,7 @@ INSERT INTO `chitietphieunhap` (`maphieunhap`, `manhacungcap`, `masanpham`, `sol
 (2, 5, 7, 10, 14200000, 'baoduy', 10, 0, 1),
 (3, 1, 17, 10, 23090000, 'trunganh', 10, 0, 1),
 (3, 2, 10, 10, 10250000, 'trunganh', 10, 0, 1),
-(3, 7, 14, 20, 34790000, 'trunganh', 20, 10, 1),
+(3, 7, 14, 20, 34790000, 'trunganh', 20, 0, 1),
 (4, 8, 13, 20, 31690000, 'thuyduyen', 20, 0, 1),
 (5, 6, 4, 20, 21690000, 'ngoctram', 20, 20, 1),
 (5, 6, 17, 10, 22790000, 'ngoctram', 10, 0, 1),
@@ -201,7 +201,10 @@ INSERT INTO `chitietphieuxuat` (`maphieuxuat`, `masanpham`, `soluong`, `dongia`)
 (11, 17, 20, 27490000),
 (12, 14, 10, 40490000),
 (13, 17, 1, 27490000),
-(14, 17, 9, 27490000);
+(14, 17, 9, 27490000),
+(15, 14, 1, 40490000),
+(16, 14, 1, 40490000),
+(17, 14, 1, 40490000);
 
 -- --------------------------------------------------------
 
@@ -213,7 +216,7 @@ CREATE TABLE `chitietquyen` (
   `manhomquyen` int(11) NOT NULL,
   `machucnang` varchar(50) NOT NULL,
   `hanhdong` varchar(50) NOT NULL,
-  `hanche` varchar(50) DEFAULT NULL
+  `hanche` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hanche`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -221,6 +224,7 @@ CREATE TABLE `chitietquyen` (
 --
 
 INSERT INTO `chitietquyen` (`manhomquyen`, `machucnang`, `hanhdong`, `hanche`) VALUES
+(1, 'loaisanpham', 'create', NULL),
 (1, 'loaisanpham', 'view', NULL),
 (1, 'nhacungcap', 'view', NULL),
 (1, 'phieunhap', 'view', NULL),
@@ -231,7 +235,7 @@ INSERT INTO `chitietquyen` (`manhomquyen`, `machucnang`, `hanhdong`, `hanche`) V
 (1, 'taikhoan', 'update', NULL),
 (1, 'taikhoan', 'view', NULL),
 (1, 'thongke', 'view', NULL),
-(1, 'tonkho', 'view', 'gianhap'),
+(1, 'tonkho', 'view', '[\"gianhap\"]'),
 (2, 'loaisanpham', 'create', NULL),
 (2, 'loaisanpham', 'delete', NULL),
 (2, 'loaisanpham', 'update', NULL),
@@ -258,15 +262,15 @@ INSERT INTO `chitietquyen` (`manhomquyen`, `machucnang`, `hanhdong`, `hanche`) V
 (2, 'tonkho', 'view', NULL),
 (3, 'loaisanpham', 'view', NULL),
 (3, 'nhacungcap', 'view', NULL),
-(3, 'phieunhap', 'create', 'nhacungcap'),
+(3, 'phieunhap', 'create', '[\"nhacungcap\", \"gianhap\"]'),
 (3, 'phieunhap', 'view', NULL),
 (3, 'sanpham', 'view', NULL),
-(3, 'tonkho', 'view', 'gianhap'),
+(3, 'tonkho', 'view', '[\"gianhap\"]'),
 (4, 'loaisanpham', 'view', NULL),
 (4, 'phieuxuat', 'create', NULL),
 (4, 'phieuxuat', 'view', NULL),
 (4, 'sanpham', 'view', NULL),
-(4, 'tonkho', 'view', 'gianhap');
+(4, 'tonkho', 'view', '[\"gianhap\"]');
 
 -- --------------------------------------------------------
 
@@ -499,7 +503,10 @@ INSERT INTO `phieuxuat` (`maphieuxuat`, `thoigiantao`, `nguoitao`, `tongtien`, `
 (11, '2023-10-26 00:46:54', 'baoduy', 549800000, 1),
 (12, '2023-10-26 00:46:54', 'ngoctram', 404900000, 1),
 (13, '2023-11-21 23:19:24', 'thienan', 27490000, 1),
-(14, '2023-11-21 23:23:32', 'hoainam', 247410000, 1);
+(14, '2023-11-21 23:23:32', 'hoainam', 247410000, 1),
+(15, '2023-11-27 09:33:05', 'thienan', 40490000, 1),
+(16, '2023-11-27 09:42:39', 'thienan', 40490000, 1),
+(17, '2023-11-27 09:47:27', 'ngoctram', 40490000, 1);
 
 -- --------------------------------------------------------
 
@@ -544,7 +551,7 @@ INSERT INTO `sanpham` (`masanpham`, `maloaisanpham`, `tensanpham`, `soluong`, `g
 (11, 1, 'Lenovo ThinkPad E14 21E300E3VN', 0, 21290000, 23990000, 'Intel® Core™ i7-1255U, 10 Cores (2P + 8E) / 12 Threads, P-core 1.7 / 4.7GHz, E-core 1.2 / 3.5GHz, 12MB', '8GB Soldered DDR4-3200 (Trống 1 slot Sodimm, nâng cấp tối đa 40GB)', 'Intel Iris Xe Graphics (with dual channel memory); Intel® UHD Graphics (with single channel memory)', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe® Opal 2.0 (Còn trống 1 Slot M.2 2242 PCIe 3.0 x4)', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 45% NTSC', '45Whr battery', 1.64, 'Black', 'Windows 11 Home', 1),
 (12, 3, 'ASUS ProArt Studiobook 16 OLED H7600ZM L2079W', 0, 49990000, 57990000, 'Intel Core i9-12900H 2.5GHz up to 5.0GHz 24MB', '32GB (16x2) DDR5 4800MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA® GeForce® RTX™ 3060 6GB GDDR6', '1TB M.2 NVMe™ PCIe® 4.0 Performance SSD (2 slots M.2 2280 PCIe 4.0x4)', '16\" 4K (3840 x 2400) OLED 16:10, 0.2ms response time, 550nits, 100% DCI-P3, PANTONE Validated, Glossy display, 70% less harmful blue light', '4 Cell 90WHrs', 2.4, 'Mineral Black Aluminum', 'Windows 11 Home', 1),
 (13, 8, 'LG Gram Style 14Z90RS GAH54A5', 0, 32190000, 35990000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '14 inch WQXGA+ 2K8 (2880 x 1800), 16:10, OLED 90Hz 0.2ms, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '72 Wh Li-Ion, Thời lượng pin lên đến 15 giờ (Video playback)', 0.999, 'Trắng', 'Windows 11 Home', 1),
-(14, 8, 'LG Gram Ultra Slim 15Z90RT GAH55A5', 0, 36290000, 40490000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '15.6 inch FHD (1920*1080), 16:9, OLED 60Hz, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '60 Wh Li-Ion', 0.99, 'Đen', 'Windows 11 Home', 1),
+(14, 8, 'LG Gram Ultra Slim 15Z90RT GAH55A5', 7, 36290000, 40490000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '15.6 inch FHD (1920*1080), 16:9, OLED 60Hz, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '60 Wh Li-Ion', 0.99, 'Đen', 'Windows 11 Home', 1),
 (15, 1, 'Lenovo Ideapad Gaming 3 15IAH7 82S9006YVN', 0, 16990000, 18990000, 'Intel Core i5-12500H, 12C (4P + 8E) / 16T, P-core 2.5 / 4.5GHz, E-core 1.8 / 3.3GHz, 18MB', '1 x 8GB DDR4 3200MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Boost Clock 1740MHz, TGP 85W', '512GB SSD M.2 2242 PCIe 4.0x4 NVMe (2 Slots)', '15.6\" FHD (1920x1080) IPS 250nits Anti-glare, 120Hz, 45% NTSC, DC dimmer', 'Integrated 60Wh', 2.315, 'Onyx Grey', 'Windows 11 Home', 1),
 (16, 3, 'ASUS TUF F15 FX507ZC4 HN074W', 0, 17790000, 19990000, 'Intel® Core™ i5-12500H Processor 2.5 GHz (18M Cache, up to 4.5 GHz, 12 cores: 4 P-cores and 8 E-cores)', '8GB DDR4 3200MHz (2x SO-DIMM socket, up to 32GB RAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Up to 1790MHz* at 95W (1740MHz Boost Clock+50MHz OC, 80W+15W Dynamic Boost) + MUX Switch + Optimus', '512GB SSD M.2 PCIE G3X2 (Còn trống 1 khe SSD M.2 PCIE)', '15.6\" FHD (1920 x 1080) IPS, 144Hz, Wide View, 250nits, Narrow Bezel, Non-Glare with 45% NTSC, 62.5% sRGB', '4 Cell 56WHr', 2.2, 'Jaeger Grey', 'Windows 11 Home', 1),
 (17, 4, 'Acer Nitro 5 Tiger AN515 58 50D2', 0, 24590000, 27490000, 'Intel Core i5-12500H 3.3GHz up to 4.5GHz 18MB', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX™ 3060 6GB GDDR6', '512GB PCIe NVMe SED SSD (Còn trống 1 khe SSD M.2 PCIE và 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS, 165Hz, Acer ComfyView LED-backlit TFT LCD, SlimBezel, 100% sRGB', '4 Cell 57.5WHr', 2.5, 'Obsidian Black', 'Windows 11 Home', 1),
@@ -720,7 +727,7 @@ ALTER TABLE `phieunhap`
 -- AUTO_INCREMENT for table `phieuxuat`
 --
 ALTER TABLE `phieuxuat`
-  MODIFY `maphieuxuat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `maphieuxuat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `sanpham`
