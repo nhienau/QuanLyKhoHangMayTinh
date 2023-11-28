@@ -23,10 +23,6 @@ public class ThongKeBUS {
     public ThongKeBUS() {
     }
     
-    public ArrayList<ThongKeDoanhThuDTO> thongKeDoanhThu7NgayQua() throws SQLException {
-        return tkDAO.thongKeDoanhThu7NgayQua();
-    }
-    
     public ChiTietTongTonKhoDTO thongKeTonKho(DateRangeDTO dateRange, String productName) throws SQLException {
         return tkDAO.thongKeTonKho(dateRange, productName);
     }

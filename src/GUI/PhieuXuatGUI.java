@@ -147,7 +147,7 @@ public class PhieuXuatGUI extends javax.swing.JInternalFrame {
 //                System.out.println(i.getNguoiTao());
                 tblModel.addRow(new Object[]{
                     stt++,
-                    i.getMaPhieuXuat(), i.getNguoiTao(), i.getThoiGianTao(), i.getTongTien() + " đ"
+                    i.getMaPhieuXuat(), i.getHoTenNguoiTao(), i.getThoiGianTao(), i.getTongTien() + " đ"
 
 //                    AccountDAO.getInstance().selectById(allPhieu.get(i).getNguoiTao()).getFullName(), 
 //                    formatDate.format(allPhieu.get(i).getThoiGianTao()),
