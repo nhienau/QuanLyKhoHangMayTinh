@@ -173,7 +173,10 @@ public class AddNhaCungCap extends javax.swing.JDialog {
             else if(NhaCungCapDAO.getInstance().hasDiaChi(diachiNcc)){
                 JOptionPane.showMessageDialog(this, "Địa chỉ bị trùng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
-           else {
+            else if(NhaCungCapDAO.getInstance().hasName(tenNcc)){
+                 JOptionPane.showMessageDialog(this, "Tên nhà cung cấp bị trùng!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            }
+            else {
                     NhaCungCapDTO ncc = new NhaCungCapDTO();
                     ncc.setTenNhaCungCap(tenNcc);
                     ncc.setSdt(sdtNcc);

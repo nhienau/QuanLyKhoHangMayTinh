@@ -36,7 +36,7 @@ public class MainLayout extends javax.swing.JFrame {
         this.user = user;
         this.permission = permission;
         this.permissionInfo = permissionInfo;
-        javax.swing.JPanel[] panels = {SanPham, NhaCungCap, PhieuNhap, PhieuXuat, TonKho, TaiKhoan, ThongKe};
+        javax.swing.JPanel[] panels = {SanPham, NhaCungCap, PhieuXuat, TonKho, TaiKhoan, ThongKe};
         hideAllControllers(panels);
         authorize(panels, permission);
         lblFullName.setText(user.getHoTen());
@@ -74,10 +74,6 @@ public class MainLayout extends javax.swing.JFrame {
                 NhaCungCapMouseClicked(null);
                 NhaCungCapMousePressed(null);
                 break;
-            case "phieunhap":
-                PhieuNhapMouseClicked(null);
-                PhieuNhapMousePressed(null);
-                break;
             case "phieuxuat":
                 PhieuXuatMouseClicked(null);
                 PhieuXuatMousePressed(null);
@@ -100,7 +96,7 @@ public class MainLayout extends javax.swing.JFrame {
     }
     
     private void resetBackgroundAllPanels() {
-        javax.swing.JPanel[] panels = {NhaCungCap, NhapHang, PhieuNhap, PhieuXuat, SanPham, TaiKhoan, ThongKe, TonKho};
+        javax.swing.JPanel[] panels = {NhaCungCap, NhapHang, PhieuXuat, SanPham, TaiKhoan, ThongKe, TonKho};
         for (javax.swing.JPanel panel : panels) {
             panel.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         }
@@ -126,8 +122,6 @@ public class MainLayout extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         NhapHang = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        PhieuNhap = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         SanPham = new javax.swing.JPanel();
@@ -238,30 +232,6 @@ public class MainLayout extends javax.swing.JFrame {
         NhapHang.add(jLabel2, java.awt.BorderLayout.CENTER);
 
         pNav.add(NhapHang);
-
-        PhieuNhap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        PhieuNhap.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
-        PhieuNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        PhieuNhap.setMinimumSize(new java.awt.Dimension(240, 36));
-        PhieuNhap.setName("phieunhap"); // NOI18N
-        PhieuNhap.setPreferredSize(new java.awt.Dimension(240, 36));
-        PhieuNhap.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                PhieuNhapMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                PhieuNhapMousePressed(evt);
-            }
-        });
-        PhieuNhap.setLayout(new java.awt.BorderLayout());
-
-        jLabel3.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_file_25px_2.png"))); // NOI18N
-        jLabel3.setText("Phiếu nhập");
-        PhieuNhap.add(jLabel3, java.awt.BorderLayout.CENTER);
-
-        pNav.add(PhieuNhap);
 
         PhieuXuat.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         PhieuXuat.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
@@ -477,12 +447,6 @@ public class MainLayout extends javax.swing.JFrame {
         NhapHang.setBackground(ClickedColor);
     }//GEN-LAST:event_NhapHangMousePressed
 
-    private void PhieuNhapMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMousePressed
-        // TODO add your handling code here:
-        resetBackgroundAllPanels();
-        PhieuNhap.setBackground(ClickedColor);
-    }//GEN-LAST:event_PhieuNhapMousePressed
-
     private void PhieuXuatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMousePressed
         // TODO add your handling code here:
         resetBackgroundAllPanels();
@@ -523,17 +487,10 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked
         // TODO add your handling code here:
-        NhapHangForm nhapHangForm = new NhapHangForm(user);
+        PhieuNhapForm pnForm = new PhieuNhapForm(user);
         pMainContent.removeAll();
-        pMainContent.add(nhapHangForm).setVisible(true);
+        pMainContent.add(pnForm).setVisible(true);
     }//GEN-LAST:event_NhapHangMouseClicked
-
-    private void PhieuNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMouseClicked
-        // TODO add your handling code here:
-        PhieuNhapForm phieuNhapForm = new PhieuNhapForm(user);
-        pMainContent.removeAll();
-        pMainContent.add(phieuNhapForm).setVisible(true);
-    }//GEN-LAST:event_PhieuNhapMouseClicked
 
     private void PhieuXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMouseClicked
         // TODO add your handling code here:
@@ -649,7 +606,6 @@ public class MainLayout extends javax.swing.JFrame {
     private javax.swing.JPanel DangXuat;
     private javax.swing.JPanel NhaCungCap;
     private javax.swing.JPanel NhapHang;
-    private javax.swing.JPanel PhieuNhap;
     private javax.swing.JPanel PhieuXuat;
     private javax.swing.JPanel SanPham;
     private javax.swing.JPanel TaiKhoan;
@@ -661,7 +617,6 @@ public class MainLayout extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;

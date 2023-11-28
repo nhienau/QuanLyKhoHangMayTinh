@@ -6,6 +6,7 @@ package DAO;
 
 import DTO.ChiTietTonKhoDTO;
 import DTO.tonKhoDTO;
+import com.mysql.cj.jdbc.PreparedStatementWrapper;
 import database.JDBCUtil;
 import java.sql.Statement;
 import java.sql.Connection;
@@ -58,6 +59,7 @@ public class tonKhoDAO {
                 list.add(tonkho);
             }
         } catch (Exception e) {
+            System.out.println(e);
         }
         return list;
     }

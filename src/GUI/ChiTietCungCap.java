@@ -259,7 +259,7 @@ public class ChiTietCungCap extends javax.swing.JFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if (tbSanPham.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn thông tin chi tiết cung cấp muốn sửa");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn thông tin chi tiết cung cấp muốn xóa");
         }
         else{
             int output = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xoá thông tin chi tiết cung cấp này không ?", "Xác nhận xoá thông tin chi tiết cung cấp", JOptionPane.YES_NO_OPTION);

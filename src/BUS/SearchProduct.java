@@ -238,4 +238,17 @@ public class SearchProduct {
         }
         return result;
     }
+    
+        public ArrayList<SanPhamDTO> searchDeletedTenSanPham(String text) {
+        ArrayList<SanPhamDTO> result = new ArrayList<>();
+        ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getUnuselistProduct();
+        for (var sp : allsp) {
+            
+                if (sp.getTenSanPham().toLowerCase().contains(text.toLowerCase())) {
+                    result.add(sp);
+                }
+            
+        }
+        return result;
+    }
 }

@@ -206,5 +206,21 @@ public class loaiSanPhamDAO {
         }
         return result;
     }
+    
+    public int getNumberOfType(int maLoaiSanPham){
+        int result = 0;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT COUNT(masanpham) AS soluong FROM sanpham WHERE trangthai = 1 and maloaisanpham = " + maLoaiSanPham + "  GROUP BY maloaisanpham";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if(rs.next())
+                result = rs.getInt("soluong");
+            JDBCUtil.closeConnection(con); 
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return result;
+    }
 }
 
