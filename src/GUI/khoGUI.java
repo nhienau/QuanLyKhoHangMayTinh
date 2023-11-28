@@ -4,10 +4,15 @@
  */
 package GUI;
 
+import BUS.ChiTietQuyenBUS;
 import BUS.KhoBUS;
 import DAO.khoDAO;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import DTO.khoDTO;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
@@ -22,18 +27,62 @@ import javax.swing.table.DefaultTableModel;
  * @author trant
  */
 public class khoGUI extends javax.swing.JInternalFrame {
-
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
+    private List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+    private NguoiDungDTO user;
     /**
      * Creates new form khoGUI
      */
     KhoBUS khoBUS = new KhoBUS();
-    public khoGUI() {
+    public khoGUI(NguoiDungDTO user) {
         
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
         initComponents();
         moreInit();
         loadDataWareHouse();
+        this.user = user;
+        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("update")) {
+                btnEdit.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("delete")) {
+                btnDelete.setEnabled(true);
+                continue;
+            }
+        }
+        this.allowedActions = allowedActions;
     }
 
     /**
@@ -50,8 +99,6 @@ public class khoGUI extends javax.swing.JInternalFrame {
         btnDelete = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        btnXuatExcel = new javax.swing.JButton();
-        btnNhapExcel3 = new javax.swing.JButton();
         btnTonKho = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
@@ -106,36 +153,11 @@ public class khoGUI extends javax.swing.JInternalFrame {
         jToolBar4.add(btnEdit);
         jToolBar4.add(jSeparator4);
 
-        btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        btnXuatExcel.setText("Xuất Excel");
-        btnXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXuatExcelActionPerformed(evt);
-            }
-        });
-        jToolBar4.add(btnXuatExcel);
-
-        btnNhapExcel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        btnNhapExcel3.setText("Nhập Excel");
-        btnNhapExcel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNhapExcel3.setFocusable(false);
-        btnNhapExcel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNhapExcel3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNhapExcel3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNhapExcel3ActionPerformed(evt);
-            }
-        });
-        jToolBar4.add(btnNhapExcel3);
-
         btnTonKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/warehouse.png"))); // NOI18N
+        btnTonKho.setText("Tồn kho");
         btnTonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnTonKho.setFocusable(false);
         btnTonKho.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnTonKho.setLabel("Tồn Kho");
         btnTonKho.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnTonKho.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,7 +250,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jToolBar4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jToolBar4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 17, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -277,15 +299,6 @@ public class khoGUI extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
       
     }//GEN-LAST:event_btnLamMoi3ActionPerformed
-
-    private void btnNhapExcel3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcel3ActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_btnNhapExcel3ActionPerformed
-
-    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
-
-    }//GEN-LAST:event_btnXuatExcelActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
@@ -338,7 +351,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnTonKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTonKhoActionPerformed
-        TonKhoGUI tonkho = new TonKhoGUI();
+        TonKhoGUI tonkho = new TonKhoGUI(user, allowedActions);
         tonkho.setVisible(true);
     }//GEN-LAST:event_btnTonKhoActionPerformed
 
@@ -476,9 +489,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi3;
-    private javax.swing.JButton btnNhapExcel3;
     private javax.swing.JButton btnTonKho;
-    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;

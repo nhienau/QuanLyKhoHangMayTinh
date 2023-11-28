@@ -2,6 +2,7 @@ package DAO;
 
 import DTO.ChiTietQuyenDTO;
 import database.JDBCUtil;
+import helper.JSONHelper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +25,8 @@ public class ChiTietQuyenDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String maChucNang = rs.getString("machucnang");
-                String hanChe = rs.getString("hanche");
+                String hanCheJsonStr = rs.getString("hanche");
+                String[] hanChe = JSONHelper.parseJSONToStringArray(hanCheJsonStr);
                 list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, "view", hanChe));
             }
             JDBCUtil.closeConnection(conn);
@@ -45,7 +47,8 @@ public class ChiTietQuyenDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String hanhDong = rs.getString("hanhdong");
-                String hanChe = rs.getString("hanche");
+                String hanCheJsonStr = rs.getString("hanche");
+                String[] hanChe = JSONHelper.parseJSONToStringArray(hanCheJsonStr);
                 list.add(new ChiTietQuyenDTO(maNhomQuyen, maChucNang, hanhDong, hanChe));
             }
             JDBCUtil.closeConnection(conn);

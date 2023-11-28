@@ -168,7 +168,7 @@ public class PhieuXuatDAO {
         return ketQua;
     }
 
-        public PhieuXuatDTO selectById(int t) {
+    public PhieuXuatDTO selectById(int t) {
         PhieuXuatDTO ketQua = null;
         try {
             Connection con = JDBCUtil.getConnection();
@@ -190,7 +190,23 @@ public class PhieuXuatDAO {
         return ketQua;
     }
     
- 
+    public String getNguoiTao(int maPhieuNhap) throws SQLException {
+        String nguoiTao = null;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String query = "SELECT hoten FROM phieuxuat PX, nguoidung ND WHERE PX.nguoitao = ND.taikhoan AND maphieuxuat = ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, maPhieuNhap);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                nguoiTao = rs.getString("hoten");
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return nguoiTao;
+    }
     
     
 //    public int update(PhieuXuatDTO t) {

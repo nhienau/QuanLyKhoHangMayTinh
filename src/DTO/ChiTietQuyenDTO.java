@@ -4,7 +4,7 @@ public class ChiTietQuyenDTO {
     private int maNhomQuyen;
     private String maChucNang;
     private String hanhDong;
-    private String hanChe;
+    private String[] hanChe;
 
     public ChiTietQuyenDTO(int maNhomQuyen, String maChucNang, String hanhDong) {
         this.maNhomQuyen = maNhomQuyen;
@@ -12,7 +12,7 @@ public class ChiTietQuyenDTO {
         this.hanhDong = hanhDong;
     }
 
-    public ChiTietQuyenDTO(int maNhomQuyen, String maChucNang, String hanhDong, String hanChe) {
+    public ChiTietQuyenDTO(int maNhomQuyen, String maChucNang, String hanhDong, String[] hanChe) {
         this.maNhomQuyen = maNhomQuyen;
         this.maChucNang = maChucNang;
         this.hanhDong = hanhDong;
@@ -43,11 +43,20 @@ public class ChiTietQuyenDTO {
         this.hanhDong = hanhDong;
     }
 
-    public String getHanChe() {
+    public String[] getHanChe() {
         return hanChe;
     }
 
-    public void setHanChe(String hanChe) {
+    public void setHanChe(String[] hanChe) {
         this.hanChe = hanChe;
+    }
+    
+    public boolean findRestriction(String[] array, String restrictionName) {
+        for (String str : array) {
+            if (str.contains(restrictionName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

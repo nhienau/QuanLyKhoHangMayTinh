@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public class PDFPhieuXuat {
         }
     }
 
-    public void writePhieuXuat(int mapn) {
+    public void writePhieuXuat(int mapn) throws SQLException {
         String url = "";
 
         try {
@@ -185,7 +186,7 @@ public class PDFPhieuXuat {
 
             Paragraph para1 = new Paragraph(new Phrase("Mã phiếu: " + mapn, fontData));
             Paragraph para2 = new Paragraph(new Phrase("Thời gian tạo: " +  PhieuXuatDAO.getInstance().selectById(mapn).getThoiGianTao(), fontData));
-            Paragraph para3 = new Paragraph(new Phrase("Người tạo: " + PhieuXuatDAO.getInstance().selectById(mapn).getNguoiTao(), fontData));
+            Paragraph para3 = new Paragraph(new Phrase("Người tạo: " + new PhieuXuatBUS().getNguoiTao(mapn), fontData));
             para1.setIndentationLeft(40);
             para2.setIndentationLeft(40);
             para3.setIndentationLeft(40);

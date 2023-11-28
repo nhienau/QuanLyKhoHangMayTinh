@@ -4,9 +4,12 @@
  */
 package GUI;
 
+import BUS.ChiTietQuyenBUS;
 import DAO.SanPhamDAO;
 import DAO.khoDAO;
 import DAO.tonKhoDAO;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import DTO.SanPhamDTO;
 import DTO.khoDTO;
 import DTO.tonKhoDTO;
@@ -20,14 +23,16 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import GUI.Dialog.DetailTonKho;
+import java.util.List;
 
 
 public class TonKhoGUI extends javax.swing.JDialog  {
-
-
+    private NguoiDungDTO user;
+    private List<ChiTietQuyenDTO> allowedActions;
+    
     DefaultTableCellRenderer renderer;
     
-    public TonKhoGUI() {
+    public TonKhoGUI(NguoiDungDTO user, List<ChiTietQuyenDTO> allowedActions) {
         
         
         renderer = new DefaultTableCellRenderer();
@@ -35,9 +40,10 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         
         initComponents();
         loadComboboxTenKho();
-
+        this.user = user;
+        this.allowedActions = allowedActions;
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,9 +55,6 @@ public class TonKhoGUI extends javax.swing.JDialog  {
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        btnXuatExcel = new javax.swing.JButton();
-        btnNhapExcel = new javax.swing.JButton();
         btnDetail = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -68,32 +71,6 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         jToolBar1.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Chức năng"));
         jToolBar1.setRollover(true);
-        jToolBar1.add(jSeparator1);
-
-        btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        btnXuatExcel.setText("Xuất Excel");
-        btnXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXuatExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnXuatExcel);
-
-        btnNhapExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        btnNhapExcel.setText("Nhập Excel");
-        btnNhapExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNhapExcel.setFocusable(false);
-        btnNhapExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNhapExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNhapExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNhapExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnNhapExcel);
 
         btnDetail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_eye_40px.png"))); // NOI18N
         btnDetail.setText("Xem chi tiết");
@@ -190,7 +167,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
 
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Số lượng"
+                "Mã sản phẩm", "Tên sản phẩm", "Số lượng"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -241,104 +218,6 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
-        // TODO add your handling code here:
-//        try {
-//            JFileChooser jFileChooser = new JFileChooser();
-//            jFileChooser.showSaveDialog(this);
-//            File saveFile = jFileChooser.getSelectedFile();
-//            if (saveFile != null) {
-//                saveFile = new File(saveFile.toString() + ".xlsx");
-//                Workbook wb = new XSSFWorkbook();
-//                Sheet sheet = wb.createSheet("Product");
-//
-//                Row rowCol = sheet.createRow(0);
-//                for (int i = 0; i < tblSanPham.getColumnCount(); i++) {
-//                    Cell cell = rowCol.createCell(i);
-//                    cell.setCellValue(tblSanPham.getColumnName(i));
-//                }
-//
-//                for (int j = 0; j < tblSanPham.getRowCount(); j++) {
-//                    Row row = sheet.createRow(j + 1);
-//                    for (int k = 0; k < tblSanPham.getColumnCount(); k++) {
-//                        Cell cell = row.createCell(k);
-//                        if (tblSanPham.getValueAt(j, k) != null) {
-//                            cell.setCellValue(tblSanPham.getValueAt(j, k).toString());
-//                        }
-//
-//                    }
-//                }
-//                FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
-//                wb.write(out);
-//                wb.close();
-//                out.close();
-//                openFile(saveFile.toString());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }//GEN-LAST:event_btnXuatExcelActionPerformed
-
-    private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
-        // TODO add your handling code here:
-        //        File excelFile;
-        //        FileInputStream excelFIS = null;
-        //        BufferedInputStream excelBIS = null;
-        //        XSSFWorkbook excelJTableImport = null;
-        //        ArrayList<SanPhamDTO> listAccExcel = new ArrayList<SanPhamDTO>();
-        //        JFileChooser jf = new JFileChooser();
-        //        int result = jf.showOpenDialog(null);
-        //        jf.setDialogTitle("Open file");
-        //        Workbook workbook = null;
-        //        if (result == JFileChooser.APPROVE_OPTION) {
-            //            try {
-                //                excelFile = jf.getSelectedFile();
-                //                excelFIS = new FileInputStream(excelFile);
-                //                excelBIS = new BufferedInputStream(excelFIS);
-                //                excelJTableImport = new XSSFWorkbook(excelBIS);
-                //                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
-                //                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
-                    //                    XSSFRow excelRow = excelSheet.getRow(row);
-                    //                    String maMay = excelRow.getCell(0).getStringCellValue();
-                    //                    String tenMay = excelRow.getCell(1).getStringCellValue();
-                    //                    int soLuong = (int) excelRow.getCell(2).getNumericCellValue();
-                    //                    String giaFomat = excelRow.getCell(3).getStringCellValue().replaceAll(",", "");
-                    //                    int viTri = giaFomat.length() - 1;
-                    //                    String giaoke = giaFomat.substring(0, viTri) + giaFomat.substring(viTri + 1);
-                    //                    double donGia = Double.parseDouble(giaoke);
-                    //                    String boXuLi = excelRow.getCell(4).getStringCellValue();
-                    //                    String ram = excelRow.getCell(5).getStringCellValue();
-                    //                    String boNho = excelRow.getCell(6).getStringCellValue();
-                    //                    MayTinh mt = new MayTinh(maMay, tenMay, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
-                    //                    listAccExcel.add(mt);
-                    //                    DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
-                    //                    table_acc.setRowCount(0);
-                    //                    loadDataToTableSearch(listAccExcel);
-                    //                }
-                //            } catch (FileNotFoundException ex) {
-                //                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-                //            } catch (IOException ex) {
-                //                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-                //            }
-            //        }
-        //        for (int i = 0; i < listAccExcel.size(); i++) {
-            //            SanPhamDTO spDTO = listAccExcel.get(i);
-            //            if (mayTinh.getMaMay().contains("LP")) {
-                //                Laptop lapNew = new Laptop(0, "", mayTinh.getMaMay(),
-                    //                        mayTinh.getTenMay(), mayTinh.getSoLuong(), mayTinh.getGia(), mayTinh.getTenCpu(),
-                    //                        mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(), mayTinh.getRom(), 1);
-                //                LaptopDAO.getInstance().insert(lapNew);
-                //            } else if (mayTinh.getMaMay().contains("PC")) {
-                //                PC pcNew = new PC("", 0, mayTinh.getMaMay(), mayTinh.getTenMay(), mayTinh.getSoLuong(),
-                    //                        mayTinh.getGia(), mayTinh.getTenCpu(), mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(),
-                    //                        mayTinh.getRom(), mayTinh.getTrangThai());
-                //                PCDAO.getInstance().insert(pcNew);
-                //            } else {
-                //                JOptionPane.showMessageDialog(this, "Mã máy " + mayTinh.getMaMay() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-                //            }
-            //        }
-    }//GEN-LAST:event_btnNhapExcelActionPerformed
-
     private void txtDiaChiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDiaChiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDiaChiActionPerformed
@@ -373,7 +252,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
             String tensanpham = tbTonKho.getValueAt(row, 1).toString().trim();
             SanPhamDTO sanpham = SanPhamDAO.getInstance().selectProductByName(tensanpham);
             int makho = Integer.parseInt(txtMaKho.getText());
-            DetailTonKho a = new DetailTonKho(sanpham.getMaSanPham(), makho);
+            DetailTonKho a = new DetailTonKho(sanpham.getMaSanPham(), makho, allowedActions);
             a.setVisible(true);
         }
     }//GEN-LAST:event_btnDetailActionPerformed
@@ -420,9 +299,15 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         
         for(int i = 0; i< arr.size() ; i++){
             tonKhoDTO tkDTO = arr.get(i);
-            stt ++;
-            SanPhamDTO sp = SanPhamDAO.getInstance().selectProductByID(tkDTO.getMaSanPham());
-            Object [] row = {stt, sp.getTenSanPham(), tkDTO.getSoLuong() };
+//            stt ++;
+//            SanPhamDTO sp = SanPhamDAO.getInstance().selectProductByID(tkDTO.getMaSanPham());
+//            int soLuong = 0;
+//            ArrayList<tonKhoDTO> arrDetail = tonKhoDAO.getInstance().getDetailTonKho(tkDTO.getMaSanPham(), makho, true);
+//            for(int j = 0; j< arrDetail.size() ; j++){
+//                tonKhoDTO tonkho = arrDetail.get(j);
+//                soLuong += tonkho.getSoLuong()  ;
+//            }
+            Object [] row = {tkDTO.getMaSanPham(), tkDTO.getTenSanPham(), tkDTO.getSoLuong() };
             modelTonKho.addRow(row);
         }
         
@@ -448,8 +333,6 @@ public class TonKhoGUI extends javax.swing.JDialog  {
     private DefaultTableModel modelTonKho ;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDetail;
-    private javax.swing.JButton btnNhapExcel;
-    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> cbbTenKho;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -457,7 +340,6 @@ public class TonKhoGUI extends javax.swing.JDialog  {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTable tbTonKho;
     private javax.swing.JTextField txtDiaChi;

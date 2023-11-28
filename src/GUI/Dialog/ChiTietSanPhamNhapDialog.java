@@ -221,7 +221,7 @@ public class ChiTietSanPhamNhapDialog extends StatDetailDialog {
     public void handleOpenPriceDetailDialog() {
         int row = getTable().getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm");
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp");
             return;
         }
         handleViewGiaNhap(row);

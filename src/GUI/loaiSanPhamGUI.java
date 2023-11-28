@@ -4,8 +4,11 @@
  */
 package GUI;
 
+import BUS.ChiTietQuyenBUS;
 import BUS.LoaiSanPhamBUS;
 import DAO.loaiSanPhamDAO;
+import DTO.ChiTietQuyenDTO;
+import DTO.NguoiDungDTO;
 import DTO.loaiSanPhamDTO;
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -16,17 +19,33 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import GUI.Dialog.updateLoaiSanPham;
 import GUI.Dialog.addLoaiSanPham;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
  * @author trant
  */
 public class loaiSanPhamGUI extends javax.swing.JFrame{
-
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     /**
      * Creates new form LoaiSanPhamGUI
      */
     LoaiSanPhamBUS lspBUS = new LoaiSanPhamBUS();
+    
+    public loaiSanPhamGUI(NguoiDungDTO user) {
+        initComponents();
+        tbLoaiSanPham.setDefaultEditor(Object.class, null);
+        modelLoaiSanPham = (DefaultTableModel) tbLoaiSanPham.getModel();
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        loadDataToTable();
+        
+        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+    }
+    
     public loaiSanPhamGUI() {
         initComponents();
         tbLoaiSanPham.setDefaultEditor(Object.class, null);
@@ -34,6 +53,43 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         loadDataToTable();
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "loaisanpham");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(loaiSanPhamGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(loaiSanPhamGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("update")) {
+                btnEdit.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("delete")) {
+                btnDelete.setEnabled(true);
+                continue;
+            }
+        }
     }
 
     /**
@@ -50,9 +106,6 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
         btnAdd = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        btnXuatExcel = new javax.swing.JButton();
-        btnNhapExcel = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
@@ -105,31 +158,6 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
             }
         });
         jToolBar1.add(btnEdit);
-        jToolBar1.add(jSeparator1);
-
-        btnXuatExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_spreadsheet_file_40px.png"))); // NOI18N
-        btnXuatExcel.setText("Xuất Excel");
-        btnXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXuatExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnXuatExcel);
-
-        btnNhapExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_xls_40px.png"))); // NOI18N
-        btnNhapExcel.setText("Nhập Excel");
-        btnNhapExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNhapExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNhapExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNhapExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNhapExcelActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnNhapExcel);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -215,9 +243,11 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 639, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -298,104 +328,6 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
             loadDataToTable();
         }
     }//GEN-LAST:event_btnEditActionPerformed
-
-    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
-        // TODO add your handling code here:
-//        try {
-//            JFileChooser jFileChooser = new JFileChooser();
-//            jFileChooser.showSaveDialog(this);
-//            File saveFile = jFileChooser.getSelectedFile();
-//            if (saveFile != null) {
-//                saveFile = new File(saveFile.toString() + ".xlsx");
-//                Workbook wb = new XSSFWorkbook();
-//                Sheet sheet = wb.createSheet("Product");
-//
-//                Row rowCol = sheet.createRow(0);
-//                for (int i = 0; i < tblSanPham.getColumnCount(); i++) {
-//                    Cell cell = rowCol.createCell(i);
-//                    cell.setCellValue(tblSanPham.getColumnName(i));
-//                }
-//
-//                for (int j = 0; j < tblSanPham.getRowCount(); j++) {
-//                    Row row = sheet.createRow(j + 1);
-//                    for (int k = 0; k < tblSanPham.getColumnCount(); k++) {
-//                        Cell cell = row.createCell(k);
-//                        if (tblSanPham.getValueAt(j, k) != null) {
-//                            cell.setCellValue(tblSanPham.getValueAt(j, k).toString());
-//                        }
-//
-//                    }
-//                }
-//                FileOutputStream out = new FileOutputStream(new File(saveFile.toString()));
-//                wb.write(out);
-//                wb.close();
-//                out.close();
-//                openFile(saveFile.toString());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }//GEN-LAST:event_btnXuatExcelActionPerformed
-
-    private void btnNhapExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapExcelActionPerformed
-        // TODO add your handling code here:
-        //        File excelFile;
-        //        FileInputStream excelFIS = null;
-        //        BufferedInputStream excelBIS = null;
-        //        XSSFWorkbook excelJTableImport = null;
-        //        ArrayList<SanPhamDTO> listAccExcel = new ArrayList<SanPhamDTO>();
-        //        JFileChooser jf = new JFileChooser();
-        //        int result = jf.showOpenDialog(null);
-        //        jf.setDialogTitle("Open file");
-        //        Workbook workbook = null;
-        //        if (result == JFileChooser.APPROVE_OPTION) {
-            //            try {
-                //                excelFile = jf.getSelectedFile();
-                //                excelFIS = new FileInputStream(excelFile);
-                //                excelBIS = new BufferedInputStream(excelFIS);
-                //                excelJTableImport = new XSSFWorkbook(excelBIS);
-                //                XSSFSheet excelSheet = excelJTableImport.getSheetAt(0);
-                //                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
-                    //                    XSSFRow excelRow = excelSheet.getRow(row);
-                    //                    String maMay = excelRow.getCell(0).getStringCellValue();
-                    //                    String tenMay = excelRow.getCell(1).getStringCellValue();
-                    //                    int soLuong = (int) excelRow.getCell(2).getNumericCellValue();
-                    //                    String giaFomat = excelRow.getCell(3).getStringCellValue().replaceAll(",", "");
-                    //                    int viTri = giaFomat.length() - 1;
-                    //                    String giaoke = giaFomat.substring(0, viTri) + giaFomat.substring(viTri + 1);
-                    //                    double donGia = Double.parseDouble(giaoke);
-                    //                    String boXuLi = excelRow.getCell(4).getStringCellValue();
-                    //                    String ram = excelRow.getCell(5).getStringCellValue();
-                    //                    String boNho = excelRow.getCell(6).getStringCellValue();
-                    //                    MayTinh mt = new MayTinh(maMay, tenMay, soLuong, donGia, boXuLi, ram, "", "", boNho, 1);
-                    //                    listAccExcel.add(mt);
-                    //                    DefaultTableModel table_acc = (DefaultTableModel) tblSanPham.getModel();
-                    //                    table_acc.setRowCount(0);
-                    //                    loadDataToTableSearch(listAccExcel);
-                    //                }
-                //            } catch (FileNotFoundException ex) {
-                //                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-                //            } catch (IOException ex) {
-                //                Logger.getLogger(ProductForm.class.getName()).log(Level.SEVERE, null, ex);
-                //            }
-            //        }
-        //        for (int i = 0; i < listAccExcel.size(); i++) {
-            //            SanPhamDTO spDTO = listAccExcel.get(i);
-            //            if (mayTinh.getMaMay().contains("LP")) {
-                //                Laptop lapNew = new Laptop(0, "", mayTinh.getMaMay(),
-                    //                        mayTinh.getTenMay(), mayTinh.getSoLuong(), mayTinh.getGia(), mayTinh.getTenCpu(),
-                    //                        mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(), mayTinh.getRom(), 1);
-                //                LaptopDAO.getInstance().insert(lapNew);
-                //            } else if (mayTinh.getMaMay().contains("PC")) {
-                //                PC pcNew = new PC("", 0, mayTinh.getMaMay(), mayTinh.getTenMay(), mayTinh.getSoLuong(),
-                    //                        mayTinh.getGia(), mayTinh.getTenCpu(), mayTinh.getRam(), mayTinh.getXuatXu(), mayTinh.getCardManHinh(),
-                    //                        mayTinh.getRom(), mayTinh.getTrangThai());
-                //                PCDAO.getInstance().insert(pcNew);
-                //            } else {
-                //                JOptionPane.showMessageDialog(this, "Mã máy " + mayTinh.getMaMay() + " không phù hợp !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-                //            }
-            //        }
-    }//GEN-LAST:event_btnNhapExcelActionPerformed
 
     private void jComboBoxLuaChonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLuaChonActionPerformed
         // TODO add your handling code here:
@@ -526,14 +458,11 @@ public class loaiSanPhamGUI extends javax.swing.JFrame{
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi;
-    private javax.swing.JButton btnNhapExcel;
-    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JTextField jTextFieldSearch;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTable tbLoaiSanPham;

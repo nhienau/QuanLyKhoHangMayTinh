@@ -1,5 +1,6 @@
 package GUI.Dialog;
 
+import BUS.PhieuXuatBUS;
 import DAO.ChiTietPhieuXuatDAO;
 import DAO.PhieuXuatDAO;
 import DAO.SanPhamDAO;
@@ -11,23 +12,25 @@ import java.text.DecimalFormat;
 import java.sql.Timestamp;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class PhieuXuatPreviewDialog extends javax.swing.JDialog {
-    private DecimalFormat formatter = new DecimalFormat("###,###,###");
+    private final PhieuXuatBUS pxBUS = new PhieuXuatBUS();
+    private final DecimalFormat formatter = new DecimalFormat("###,###,###");
     private NguoiDungDTO user;
-    private PhieuXuatGUI parent;
+    private JInternalFrame parent;
     private XuatHangDialog owner;
     
-    public PhieuXuatPreviewDialog(JDialog parent, boolean modal, NguoiDungDTO user) {
+    public PhieuXuatPreviewDialog(JInternalFrame parentFrame, JDialog parent, boolean modal, NguoiDungDTO user) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
         loadDataToTableProduct();
         setWidthTable();
         labelTongTien.setText(formatter.format(tinhTongTien()) + "đ");
-        
+        this.parent = parentFrame;
         this.user = user;
         labelNguoiTao.setText(user.getHoTen());
         labelMaPhieu.setText(Integer.toString(XuatHangDialog.MaPhieuXuat));
@@ -284,6 +287,12 @@ public class PhieuXuatPreviewDialog extends javax.swing.JDialog {
                         mtdao.updateSoLuongPX(i.getMaSanPham(), mtdao.selectByIdPX(i.getMaSanPham()).getSoLuong() - i.getSoLuong());
                     }
 
+                    if (parent instanceof PhieuXuatGUI) {
+                        PhieuXuatGUI phieuXuatGUI = (PhieuXuatGUI) parent;
+                        phieuXuatGUI.setAllPhieuXuat(pxBUS.getList());
+                        phieuXuatGUI.loadDataToTable(phieuXuatGUI.getAllPhieuXuat());
+                    }
+                    
                     JOptionPane.showMessageDialog(this, "Xuất hàng thành công !");
 
                     this.dispose();

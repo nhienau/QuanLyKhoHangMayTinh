@@ -1,16 +1,29 @@
 package DTO;
 
+import java.time.LocalDateTime;
+
 public class ChiTietTonKhoDTO {
     private int maKho;
+    private int maPhieuNhap;
+    private LocalDateTime thoiGianTao;
     private int maSanPham;
-    private int soLuong;
-    private int giaNhap;
+    private int maNhaCungCap;
+    private String tenNhaCungCap;
+    private int soLuongTonKho;
+    private Long donGia;
+    
+    public ChiTietTonKhoDTO() {
+    }
 
-    public ChiTietTonKhoDTO(int maKho, int maSanPham, int soLuong, int giaNhap) {
+    public ChiTietTonKhoDTO(int maKho, int maPhieuNhap, LocalDateTime thoiGianTao, int maSanPham, int maNhaCungCap, String tenNhaCungCap, int soLuongTonKho, Long donGia) {
         this.maKho = maKho;
+        this.maPhieuNhap = maPhieuNhap;
+        this.thoiGianTao = thoiGianTao;
         this.maSanPham = maSanPham;
-        this.soLuong = soLuong;
-        this.giaNhap = giaNhap;
+        this.maNhaCungCap = maNhaCungCap;
+        this.tenNhaCungCap = tenNhaCungCap;
+        this.soLuongTonKho = soLuongTonKho;
+        this.donGia = donGia;
     }
 
     public int getMaKho() {
@@ -21,6 +34,22 @@ public class ChiTietTonKhoDTO {
         this.maKho = maKho;
     }
 
+    public int getMaPhieuNhap() {
+        return maPhieuNhap;
+    }
+
+    public void setMaPhieuNhap(int maPhieuNhap) {
+        this.maPhieuNhap = maPhieuNhap;
+    }
+
+    public LocalDateTime getThoiGianTao() {
+        return thoiGianTao;
+    }
+
+    public void setThoiGianTao(LocalDateTime thoiGianTao) {
+        this.thoiGianTao = thoiGianTao;
+    }
+
     public int getMaSanPham() {
         return maSanPham;
     }
@@ -29,19 +58,35 @@ public class ChiTietTonKhoDTO {
         this.maSanPham = maSanPham;
     }
 
-    public int getSoLuong() {
-        return soLuong;
+    public int getMaNhaCungCap() {
+        return maNhaCungCap;
     }
 
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
+    public void setMaNhaCungCap(int maNhaCungCap) {
+        this.maNhaCungCap = maNhaCungCap;
     }
 
-    public int getGiaNhap() {
-        return giaNhap;
+    public String getTenNhaCungCap() {
+        return tenNhaCungCap;
     }
 
-    public void setGiaNhap(int giaNhap) {
-        this.giaNhap = giaNhap;
+    public void setTenNhaCungCap(String tenNhaCungCap) {
+        this.tenNhaCungCap = tenNhaCungCap;
+    }
+
+    public int getSoLuongTonKho() {
+        return soLuongTonKho;
+    }
+
+    public void setSoLuongTonKho(int soLuongTonKho) {
+        this.soLuongTonKho = soLuongTonKho;
+    }
+
+    public Long getDonGia() {
+        return donGia;
+    }
+
+    public void setDonGia(Long donGia) {
+        this.donGia = donGia;
     }
 }

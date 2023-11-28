@@ -1,28 +1,35 @@
 package GUI.Dialog;
 
 import BUS.PDFPhieuXuat;
+import BUS.PhieuXuatBUS;
 import DAO.ChiTietPhieuXuatDAO;
 import DAO.SanPhamDAO;
+import DTO.PhieuXuatDTO;
 import static GUI.PhieuXuatGUI.MaPhieuXuat;
 import DTO.SanPhamDTO;
 import GUI.PhieuXuatGUI;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
 public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
+    private final PhieuXuatBUS pxBUS = new PhieuXuatBUS();
     DecimalFormat formatter = new DecimalFormat("###,###,###");
     protected static ArrayList<SanPhamDTO> allProductPX;
     
-    public ChiTietPhieuXuatDialog(JInternalFrame parent, JFrame owner, boolean modal) {
+    public ChiTietPhieuXuatDialog(JInternalFrame parent, JFrame owner, boolean modal, PhieuXuatDTO px) throws SQLException {
         super(owner, modal);
         initComponents();
         setLocationRelativeTo(null);
         allProductPX = SanPhamDAO.getInstance().getlistProduct();
         loadDataToTableProduct();
-        labelNguoiTao.setText("test");
+        labelNguoiTao.setText(pxBUS.getNguoiTao(MaPhieuXuat));
+        labelThoiGianTao.setText(px.getThoiGianTao());
     }
 
     private ChiTietPhieuXuatDialog(JFrame jFrame, boolean b) {
@@ -67,6 +74,8 @@ public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        labelThoiGianTao = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -83,6 +92,10 @@ public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel5.setText("Thời gian:");
+
+        labelThoiGianTao.setText("jLabel7");
 
         jPanel2.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
 
@@ -168,8 +181,13 @@ public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelNguoiTao, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labelMaPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(labelMaPhieu, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(labelNguoiTao, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(103, 103, 103)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelThoiGianTao)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -195,7 +213,9 @@ public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(labelNguoiTao))
+                    .addComponent(labelNguoiTao)
+                    .addComponent(labelThoiGianTao)
+                    .addComponent(jLabel5))
                 .addGap(31, 31, 31)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
                 .addGap(27, 27, 27)
@@ -228,10 +248,14 @@ public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
 
         PDFPhieuXuat pdfphieuxuat = new PDFPhieuXuat();
 
-        //        System.out.println(MaPhieuXuat);
-        //
-        pdfphieuxuat.writePhieuXuat(MaPhieuXuat);
-        //  pdfphieuxuat.writePhieuXuat(4);
+        try {
+            //        System.out.println(MaPhieuXuat);
+            //
+            pdfphieuxuat.writePhieuXuat(MaPhieuXuat);
+            //  pdfphieuxuat.writePhieuXuat(4);
+        } catch (SQLException ex) {
+            Logger.getLogger(ChiTietPhieuXuatDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnXuatPDFActionPerformed
 
     private void btnQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuayLaiActionPerformed
@@ -286,12 +310,14 @@ public class ChiTietPhieuXuatDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelMaPhieu;
     private javax.swing.JLabel labelNguoiTao;
+    private javax.swing.JLabel labelThoiGianTao;
     private javax.swing.JLabel labelTongTien;
     private javax.swing.JTable tblChiTietPhieu;
     // End of variables declaration//GEN-END:variables
