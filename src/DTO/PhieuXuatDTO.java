@@ -6,12 +6,21 @@ public class PhieuXuatDTO {
     private String nguoiTao;
     private int tongTien;
     private int trangThai;
+    private String hoTenNguoiTao;
 
     
     public PhieuXuatDTO() {
 		super();
 	}
-    
+
+    public PhieuXuatDTO(int maPhieuXuat, String thoiGianTao, String nguoiTao, int tongTien, int trangThai, String hoTenNguoiTao) {
+        this.maPhieuXuat = maPhieuXuat;
+        this.thoiGianTao = thoiGianTao;
+        this.nguoiTao = nguoiTao;
+        this.tongTien = tongTien;
+        this.trangThai = trangThai;
+        this.hoTenNguoiTao = hoTenNguoiTao;
+    }
     
     public PhieuXuatDTO(int maPhieuXuat, String thoiGianTao, String nguoiTao, int tongTien, int trangThai) {
         this.maPhieuXuat = maPhieuXuat;
@@ -60,4 +69,13 @@ public class PhieuXuatDTO {
     public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
     }
+
+    public String getHoTenNguoiTao() {
+        return hoTenNguoiTao;
+    }
+
+    public void setHoTenNguoiTao(String hoTenNguoiTao) {
+        this.hoTenNguoiTao = hoTenNguoiTao;
+    }
+    
 }

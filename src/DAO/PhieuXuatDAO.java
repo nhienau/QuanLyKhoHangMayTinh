@@ -129,16 +129,17 @@ public class PhieuXuatDAO {
         ArrayList<PhieuXuatDTO> list = new ArrayList<PhieuXuatDTO>();
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM phieuxuat WHERE trangthai = 1";
+            String sql = "SELECT PX.*, hoten FROM phieuxuat PX, nguoidung ND WHERE PX.nguoitao = ND.taikhoan AND PX.trangthai = 1";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 int maphieuxuat = rs.getInt("maphieuxuat");
                 String thoigiantao = rs.getString("thoigiantao");
+                String hoTenNguoiTao = rs.getString("hoten");
                 String nguoitao = rs.getString("nguoitao");
                 int tongtien = rs.getInt("tongtien");
                 int trangthai = rs.getInt("trangthai");
-                PhieuXuatDTO phieuxuat = new PhieuXuatDTO(maphieuxuat, thoigiantao, nguoitao, tongtien, trangthai);
+                PhieuXuatDTO phieuxuat = new PhieuXuatDTO(maphieuxuat, thoigiantao, nguoitao, tongtien, trangthai, hoTenNguoiTao);
                 list.add(phieuxuat);
             }
             JDBCUtil.closeConnection(con);
