@@ -77,14 +77,17 @@ public class PhieuNhapDAO {
             }
 
             PreparedStatement chiTietPhieuNhapStatement = 
-                    conn.prepareStatement("INSERT INTO chitietphieunhap (maphieunhap, manhacungcap, masanpham, soluongnhap, dongia, soluongtonkho ) VALUES (?, ?, ?, ?, ?, ?)");
+                    conn.prepareStatement("INSERT INTO chitietphieunhap (maphieunhap, manhacungcap, masanpham, soluongnhap, dongia , nguoithem, soluongthucte, soluongtonkho, trangthai ) VALUES (?, ?, ?, ?, ?, ?,?,?,?)");
             for (ChiTietPhieuNhapDTO chiTietPhieuNhap : listChiTietPN) {
                 chiTietPhieuNhapStatement.setInt(1, maPhieuNhap);
                 chiTietPhieuNhapStatement.setInt(2, chiTietPhieuNhap.getMaNhaCungCap());
                 chiTietPhieuNhapStatement.setInt(3, chiTietPhieuNhap.getMaSanPham());
                 chiTietPhieuNhapStatement.setInt(4, chiTietPhieuNhap.getSoLuongNhap());
                 chiTietPhieuNhapStatement.setInt(5, chiTietPhieuNhap.getDonGia());
-                chiTietPhieuNhapStatement.setInt(6, chiTietPhieuNhap.getSoLuongTonKho());
+                chiTietPhieuNhapStatement.setString(6, chiTietPhieuNhap.getNguoiThem());
+                chiTietPhieuNhapStatement.setInt(7, chiTietPhieuNhap.getSoLuongThucTe());
+                chiTietPhieuNhapStatement.setInt(8, chiTietPhieuNhap.getSoLuongTonKho());
+                chiTietPhieuNhapStatement.setInt(9, chiTietPhieuNhap.getTrangThai());
                 chiTietPhieuNhapStatement.executeUpdate();
             }
 
@@ -191,7 +194,10 @@ public class PhieuNhapDAO {
                     int MaKho = rs.getInt("makho");
                     int SoLuongNhap = rs.getInt("soluongnhap");
                     int DonGia = rs.getInt("dongia");
+                    String nguoiThem = rs.getString("nguoithem");
+                    int soLuongThucTe = rs.getInt("soluongthucte");
                     int SoLuongTonKho = rs.getInt("soluongtonkho");
+                    int trangThai = rs.getInt("trangthai");
 
                     ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(
                             MaPhieuNhap, 
@@ -199,7 +205,10 @@ public class PhieuNhapDAO {
                             MaSanPham, 
                             SoLuongNhap, 
                             DonGia, 
-                            SoLuongTonKho);
+                            nguoiThem,
+                            soLuongThucTe,
+                            SoLuongTonKho,
+                            trangThai);
                     dsCTPN.add(ctpn);
             }
 

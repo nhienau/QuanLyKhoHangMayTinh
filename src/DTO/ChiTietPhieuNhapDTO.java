@@ -14,28 +14,37 @@ public class ChiTietPhieuNhapDTO {
     private int maSanPham;
     private int soLuongNhap;
     private int donGia;
+    private String nguoiThem;
+    private int soLuongThucTe;
     private int soLuongTonKho;
     private int maKho;
     private String tenSanPham;
+    private int trangThai ;
     
     public ChiTietPhieuNhapDTO() {
     }
 
-    public ChiTietPhieuNhapDTO(int maPhieuNhap, int maNhaCungCap, int maSanPham, int soLuongNhap, int donGia, int soLuongTonKho ) {
+    public ChiTietPhieuNhapDTO(int maPhieuNhap, int maNhaCungCap, int maSanPham, int soLuongNhap, int donGia,String nguoiThem ,int soLuongThucTe, int soLuongTonKho, int trangThai ) {
         this.maPhieuNhap = maPhieuNhap;
         this.maNhaCungCap = maNhaCungCap;
         this.maSanPham = maSanPham;
         this.soLuongNhap = soLuongNhap;
         this.donGia = donGia;
+        this.nguoiThem = nguoiThem ;
+        this.soLuongThucTe = soLuongThucTe;
         this.soLuongTonKho = soLuongTonKho;
+        this.trangThai = trangThai;
     }
 
-    public ChiTietPhieuNhapDTO(int maNhaCungCap, int maSanPham,  int soLuongNhap, int donGia, int soLuongTonKho) {
+    public ChiTietPhieuNhapDTO(int maNhaCungCap, int maSanPham,  int soLuongNhap, int donGia, String nguoiThem, int soLuongThucTe, int soLuongTonKho, int trangThai) {
         this.maNhaCungCap = maNhaCungCap;
         this.maSanPham = maSanPham;
         this.soLuongNhap = soLuongNhap;
         this.donGia = donGia;
+        this.nguoiThem = nguoiThem;
+        this.soLuongThucTe = soLuongThucTe;
         this.soLuongTonKho = soLuongTonKho;
+        this.trangThai = trangThai;
     }
 
     
@@ -116,6 +125,30 @@ public class ChiTietPhieuNhapDTO {
 
     public void setSoLuongTonKho(int soLuongTonKho) {
         this.soLuongTonKho = soLuongTonKho;
+    }
+
+    public String getNguoiThem() {
+        return nguoiThem;
+    }
+
+    public void setNguoiThem(String nguoiThem) {
+        this.nguoiThem = nguoiThem;
+    }
+
+    public int getSoLuongThucTe() {
+        return soLuongThucTe;
+    }
+
+    public void setSoLuongThucTe(int soLuongThucTe) {
+        this.soLuongThucTe = soLuongThucTe;
+    }
+
+    public int getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(int trangThai) {
+        this.trangThai = trangThai;
     }
     
     
