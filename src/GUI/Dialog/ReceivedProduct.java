@@ -6,16 +6,26 @@ package GUI.Dialog;
 
 import BUS.PhieuNhapBUS;
 import DAO.ChiTietPhieuNhapDAO;
+import DAO.NhaCungCapDAO;
 import DAO.SanPhamDAO;
 import DTO.ChiTietPhieuNhapDTO;
+import DTO.NguoiDungDTO;
+import DTO.NhaCungCapDTO;
 import DTO.PhieuNhapDTO;
+import DTO.SanPhamDTO;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import model.NhaCungCap;
 import view.CTPhieuNhap;
 
 /**
@@ -30,27 +40,19 @@ public class ReceivedProduct extends javax.swing.JFrame{
     PhieuNhapBUS pnBUS = new PhieuNhapBUS();
     DecimalFormat formatter = new DecimalFormat("###, ###, ###");        
     private PhieuNhapDTO pnDTO;
-    public ReceivedProduct(PhieuNhapDTO pn) {
+    private NguoiDungDTO userDTO;
+    public ReceivedProduct(PhieuNhapDTO pn, NguoiDungDTO user) {
+        userDTO = user ;
         pnDTO = pn;
         initComponents();
         
-        modelCTPN = new DefaultTableModel(){
-             boolean[] canEdit = new boolean[]{
-                    false, false, true, false, true
-            };
+        modelCTPN = (DefaultTableModel) tblChiTietPhieu.getModel();
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        };
-       modelCTPN.addColumn("STT");
-       modelCTPN.addColumn("Tên sản phẩm");
+        
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         tblChiTietPhieu.setDefaultRenderer(String.class, renderer);
-        tblChiTietPhieu.getTableHeader().setDefaultRenderer(renderer);
-        tblChiTietPhieu.setDefaultEditor(Object.class, null);
-        tblChiTietPhieu.setEditingColumn(4);
+
         loadTable();
     }
 
@@ -99,19 +101,25 @@ public class ReceivedProduct extends javax.swing.JFrame{
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tblChiTietPhieu.setModel(modelCTPN);
+        tblChiTietPhieu.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Tên sản phẩm", "Nhà cung cấp", "Số lượng nhập", "Số lượng nhận"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblChiTietPhieu.setEditingColumn(4);
+        tblChiTietPhieu.setInheritsPopupMenu(true);
         jScrollPane1.setViewportView(tblChiTietPhieu);
-        if (tblChiTietPhieu.getColumnModel().getColumnCount() > 0) {
-            tblChiTietPhieu.getColumnModel().getColumn(0).setPreferredWidth(1);
-            tblChiTietPhieu.getColumnModel().getColumn(1).setResizable(false);
-            tblChiTietPhieu.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tblChiTietPhieu.getColumnModel().getColumn(2).setResizable(false);
-            tblChiTietPhieu.getColumnModel().getColumn(2).setPreferredWidth(20);
-            tblChiTietPhieu.getColumnModel().getColumn(3).setResizable(false);
-            tblChiTietPhieu.getColumnModel().getColumn(3).setPreferredWidth(10);
-            tblChiTietPhieu.getColumnModel().getColumn(4).setResizable(false);
-            tblChiTietPhieu.getColumnModel().getColumn(4).setPreferredWidth(10);
-        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -140,16 +148,13 @@ public class ReceivedProduct extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-         int confirm = JOptionPane.showConfirmDialog(this,
-                            "Bạn có chắc muốn xác nhận giao hàng thành công cho phiếu nhập hàng này?",
-                            "Xác nhận",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-
-        if(confirm == JOptionPane.YES_OPTION){
-            JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 4)); 
+        try {
+            // TODO add your handling code here:
+            receiving();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReceivedProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_jButton1ActionPerformed
     
     public void loadTable(){
@@ -166,11 +171,13 @@ public class ReceivedProduct extends javax.swing.JFrame{
                 int maSanPham = CTPhieu.get(i).getMaSanPham();
                 String tenSanPham = SanPhamDAO.getInstance().getNameByID(maSanPham);
                 int soLuongDat = CTPhieu.get(i).getSoLuongNhap();
+                int maNCC = CTPhieu.get(i).getMaNhaCungCap();
+                NhaCungCapDTO ncc = NhaCungCapDAO.getInstance().getByID(maNCC);
+                
                 modelCTPN.addRow(new Object[]{
-                    i + 1,  tenSanPham, 
-                    formatter.format(CTPhieu.get(i).getDonGia()) + "đ",
-                    soLuongDat, ""
+                    i + 1,  tenSanPham, ncc.getTenNhaCungCap(),soLuongDat, ""
                 });
+                
             }
             for(int i = 0; i < tblChiTietPhieu.getColumnCount(); i++){
                 tblChiTietPhieu.getColumnModel().getColumn(i).setCellRenderer(renderer);
@@ -178,6 +185,64 @@ public class ReceivedProduct extends javax.swing.JFrame{
         } catch (Exception e) {
         }
     }
+    
+    
+    public void receiving() throws SQLException{
+        int row = tblChiTietPhieu.getRowCount();
+        int kq = 0;
+        for(int i =0 ; i< row ; i++){
+            if(tblChiTietPhieu.getValueAt(i, 4).equals("")){
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ số lượng nhận hàng của từng sản phẩm!");
+                return ;
+            }
+            try {
+                Integer.parseInt(tblChiTietPhieu.getValueAt(i, 5).toString().trim());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng ở dạng số tự nhiên!");
+                return ;
+            }
+            int soLuongNhan = Integer.parseInt(tblChiTietPhieu.getValueAt(i, 4).toString().trim());
+            int soLuongNhap = Integer.parseInt(tblChiTietPhieu.getValueAt(i,3 ).toString().trim());
+            String ten = tblChiTietPhieu.getValueAt(i, 1).toString();
+            if(soLuongNhan < 0 || soLuongNhan > soLuongNhap ){
+                JOptionPane.showMessageDialog(this, "Số lượng nhận của sản phẩm " + ten + " không hợp lệ");
+                return ;
+            }  else {
+                ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO();
+                ctpn.setMaPhieuNhap(pnDTO.getMaPhieuNhap());
+                SanPhamDTO sp = SanPhamDAO.getInstance().selectProductByName(tblChiTietPhieu.getValueAt(i, 1).toString());
+                ctpn.setMaSanPham(sp.getMaSanPham());
+                NhaCungCapDTO ncc = NhaCungCapDAO.getInstance().getNCCByName(tblChiTietPhieu.getValueAt(i, 2).toString());
+                ctpn.setMaNhaCungCap(ncc.getMaNhaCungCap());
+                ctpn.setSoLuongNhap(soLuongNhap);
+                ctpn.setSoLuongThucTe(soLuongNhan);
+
+                if(!ChiTietPhieuNhapDAO.getInstance().updateSoluongThucTe(ctpn) ){
+                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi");
+                    return ;
+                } else {
+                    kq ++ ;
+                }
+            }
+ 
+        }
+        
+        if(kq == row){
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc muốn xác nhận giao hàng thành công cho phiếu nhập hàng này?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+            if(confirm == JOptionPane.YES_OPTION){
+                    pnDTO.setNguoiNhanHang(userDTO.getTaiKhoan());
+                    JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 4));
+            }
+        
+        }
+        
+    }
+       
     /**
      * @param args the command line arguments
      */

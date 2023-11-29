@@ -117,6 +117,7 @@ public class ChiTietCungCapDAO {
             while (rs.next()) {   
                 ChiTietCungCapDTO ccsp = new ChiTietCungCapDTO();
                 ccsp.setMaNhaCungCap(rs.getInt("manhacungcap"));
+                ccsp.setGiaNhap(rs.getInt("gianhap"));
                 list.add(ccsp);
             }
         } catch (Exception e) {

@@ -5,6 +5,7 @@
 package DAO;
 
 import DTO.ChiTietTonKhoDTO;
+import DTO.khoDTO;
 import DTO.tonKhoDTO;
 import com.mysql.cj.jdbc.PreparedStatementWrapper;
 import database.JDBCUtil;
@@ -118,5 +119,103 @@ public class tonKhoDAO {
             throw e;
         }
         return list;
+    }
+    
+    public ArrayList<ChiTietTonKhoDTO> getListOfWareHouse(int masp , int maNCC){
+        ArrayList<ChiTietTonKhoDTO> khoList = new ArrayList<>();
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = """
+                                                        
+                            SELECT DISTINCT K.makho, PN.maphieunhap, PN.thoigiantao, CTPN.masanpham, SP.tensanpham, NCC.manhacungcap, tennhacungcap , CTPN.dongia , soluongtonkho
+                                                        FROM phieunhap PN, chitietphieunhap CTPN, kho K, trangthaiphieunhap TTPN, chitietcungcap CTCC, sanpham SP, nhacungcap NCC
+                                                        WHERE PN.maphieunhap = CTPN.maphieunhap 
+                                                            AND K.makho = PN.makho 
+                                                            AND PN.trangthai = TTPN.matrangthai 
+                                                            AND CTCC.masanpham = CTPN.masanpham 
+                                                            AND CTCC.masanpham = SP.masanpham 
+                                                            AND CTPN.manhacungcap = CTCC.manhacungcap 
+                                                            AND CTCC.manhacungcap = NCC.manhacungcap 
+                                                            AND TTPN.tentrangthai LIKE '%delivered%' 
+                                                            AND soluongtonkho > 0 
+                                                            AND CTPN.masanpham = ? 
+                                                            AND CTCC.manhacungcap = ?
+                                                        ORDER BY PN.thoigiantao ASC
+                        """;
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, masp);
+            stmt.setInt(2, maNCC);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                
+                    ChiTietTonKhoDTO cttk = new ChiTietTonKhoDTO();
+                cttk.setMaKho(rs.getInt("makho"));
+                cttk.setMaPhieuNhap(rs.getInt("maphieunhap"));
+                Timestamp timestamp = rs.getTimestamp("thoigiantao");
+                LocalDateTime thoiGianTao = timestamp.toLocalDateTime();
+                cttk.setMaSanPham(masp);
+                cttk.setMaNhaCungCap(rs.getInt("manhacungcap"));
+                cttk.setTenNhaCungCap(rs.getString("tennhacungcap"));
+                cttk.setSoLuongTonKho(rs.getInt("soluongtonkho"));  
+                    
+                khoList.add(cttk);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return khoList;
+    }
+    
+
+    
+    public int getTonKhoBySPvaNCC(int masp, int mancc, int makho ){
+        int rs = 0;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = """
+                        SELECT DISTINCT  CTPN.masanpham,NCC.manhacungcap, SUM(soluongtonkho) AS 'soluong'
+                        FROM phieunhap PN, chitietphieunhap CTPN, kho K, trangthaiphieunhap TTPN, chitietcungcap CTCC, sanpham SP, nhacungcap NCC
+                        WHERE PN.maphieunhap = CTPN.maphieunhap 
+                              AND K.makho = PN.makho 
+                              AND PN.trangthai = TTPN.matrangthai 
+                              AND CTCC.masanpham = CTPN.masanpham 
+                              AND CTCC.masanpham = SP.masanpham 
+                              AND CTPN.manhacungcap = CTCC.manhacungcap 
+                              AND CTCC.manhacungcap = NCC.manhacungcap 
+                              AND TTPN.tentrangthai LIKE '%delivered%' 
+                              AND soluongtonkho > 0 
+                              AND CTPN.masanpham = ? 
+                              AND CTCC.manhacungcap =?
+                              AND K.makho = ?
+                            GROUP BY CTPN.masanpham , CTCC.manhacungcap  ,K.makho 
+                     """;
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, masp);
+            stmt.setInt(2, mancc);
+            stmt.setInt(3, makho);
+            
+            ResultSet resultSet = stmt.executeQuery();
+           if(resultSet.next()){
+               rs = resultSet.getInt("soluong");
+           }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return rs;
+    }
+    
+    public boolean updateSoLuong(int maphieu , int masanpham , int manhacungcap , int soluong){
+        boolean result = false ;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "UPDATE chitietphieunhap SET soluongtonkho = " + soluong + " WHERE maphieunhap = " + maphieu + " AND masanpham = " + masanpham + " and manhacungcap = " + manhacungcap;
+            Statement stmt = con.createStatement();
+            if(stmt.executeUpdate(sql) > 0){
+                result = true;
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return result;
     }
 }
