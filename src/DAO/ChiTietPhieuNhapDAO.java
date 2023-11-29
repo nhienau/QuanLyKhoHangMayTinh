@@ -70,10 +70,9 @@ public class ChiTietPhieuNhapDAO {
             String sql = "UPDATE chitietphieunhap SET soluongthucte = ?  WHERE maphieunhap = ? and manhacungcap = ? and masanpham = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, ctpn.getSoLuongThucTe());
-            stmt.setInt(2, ctpn.getDonGia());
-            stmt.setInt(3, ctpn.getMaPhieuNhap());
-            stmt.setInt(4, ctpn.getMaNhaCungCap());
-            stmt.setInt(5, ctpn.getMaSanPham());
+            stmt.setInt(2, ctpn.getMaPhieuNhap());
+            stmt.setInt(3, ctpn.getMaNhaCungCap());
+            stmt.setInt(4, ctpn.getMaSanPham());
            
             if(stmt.executeUpdate() >= 1){
                 result = true ;

@@ -196,8 +196,9 @@ public class ReceivedProduct extends javax.swing.JFrame{
                 return ;
             }
             try {
-                Integer.parseInt(tblChiTietPhieu.getValueAt(i, 5).toString().trim());
-            } catch (Exception e) {
+                String value = tblChiTietPhieu.getValueAt(i, 4).toString();
+                Integer.valueOf(value.trim());
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng ở dạng số tự nhiên!");
                 return ;
             }
