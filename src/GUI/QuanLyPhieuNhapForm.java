@@ -28,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DTO.ChiTietPhieuNhapDTO;
+import DTO.NguoiDungDTO;
 import DTO.NhaCungCapDTO;
 import DTO.PhieuNhapDTO;
 import DTO.SanPhamDTO;
@@ -51,14 +52,16 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
     private ChiTietPhieuNhapBUS ctpnBUS = new ChiTietPhieuNhapBUS();
     private PhieuNhapDTO pnDTO;
     private PhieuNhapForm pnForm;
+    private NguoiDungDTO userDTO ;
     DefaultTableCellRenderer renderer;
     DecimalFormat formatter = new DecimalFormat("###, ###, ###");
     /**
      * Creates new form AdminConfirm
      */
-    public QuanLyPhieuNhapForm(PhieuNhapDTO phieuNhap, PhieuNhapForm parent) throws SQLException {
+    public QuanLyPhieuNhapForm(PhieuNhapDTO phieuNhap, PhieuNhapForm parent , NguoiDungDTO user) throws SQLException {
         pnDTO = phieuNhap;
         pnForm = parent;
+        userDTO = user ;
         initComponents();
         this.setLocationRelativeTo(null);
         modelTableChiTietPN = (DefaultTableModel) tblChiTietPN.getModel();
@@ -553,6 +556,7 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
         ArrayList<ChiTietPhieuNhapDTO> dsChiTietPhieuNhap;
         try {
             dsChiTietPhieuNhap = ChiTietPhieuNhapDAO.getInstance().getDetailPhieuNhap(pnDTO.getMaPhieuNhap());
+            phieuNhap.setNguoiXacNhan(userDTO.getTaiKhoan());
             JOptionPane.showMessageDialog(this, pnBUS.xacNhanPhieuNhap(phieuNhap, dsChiTietPhieuNhap));
             dispose();
             pnForm.loadDanhSachPhieuNhap();

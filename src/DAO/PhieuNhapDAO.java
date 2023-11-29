@@ -38,10 +38,12 @@ public class PhieuNhapDAO {
                     Date thoiGianTao = rs.getDate("thoigiantao");
                     int maKho = rs.getInt("makho");
                     String nguoiTao = rs.getString("nguoitao");
+                    String nguoiXacNhan = rs.getString("nguoixacnhan");
+                    String nguoiNhanHang = rs.getString("nguoinhanhang");
                     int tongTien = rs.getInt("tongtien");
                     int status = rs.getInt("trangthai");
 
-                    PhieuNhapDTO phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, tongTien,status);
+                    PhieuNhapDTO phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, nguoiXacNhan, nguoiNhanHang, tongTien,status);
                     dsPhieuNhap.add(phieuNhap);
             }
 
@@ -119,7 +121,7 @@ public class PhieuNhapDAO {
         try {
             conn.setAutoCommit(false);
 
-            String sql1 = "UPDATE phieunhap SET trangthai = 3 WHERE maphieunhap = ?";
+            String sql1 = "UPDATE phieunhap SET trangthai = 3 , nguoixacnhan = '" +phieuNhap.getNguoiXacNhan() + "' WHERE maphieunhap = ?";
             
             try (PreparedStatement pstmt1 = conn.prepareStatement(sql1)) {
                 pstmt1.setInt(1, phieuNhap.getMaPhieuNhap());
@@ -164,10 +166,12 @@ public class PhieuNhapDAO {
                     Date thoiGianTao = rs.getDate("thoigiantao");
                     int maKho = rs.getInt("makho");
                     String nguoiTao = rs.getString("nguoitao");
+                    String nguoiXacNhan = rs.getString("nguoixacnhan");
+                    String nguoiNhanHang = rs.getString("nguoinhanhang");
                     int tongTien = rs.getInt("tongtien");
                     int status = rs.getInt("trangthai");
 
-                    PhieuNhapDTO phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, tongTien, trangThai);
+                    PhieuNhapDTO phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, nguoiXacNhan, nguoiNhanHang, tongTien, trangThai);
                     dsPhieuNhap.add(phieuNhap);
             }
 
@@ -304,10 +308,12 @@ public class PhieuNhapDAO {
                 Date thoiGianTao = rs.getDate("thoigiantao");
                 int maKho = rs.getInt("makho");
                 String nguoiTao = rs.getString("nguoitao");
+                String nguoiXacNhan = rs.getString("nguoixacnhan");
+                String nguoiNhanHang = rs.getString("nguoinhanhang");
                 int tongTien = rs.getInt("tongtien");
                 int trangThai = rs.getInt("trangthai");
 
-                phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, tongTien, trangThai);
+                phieuNhap = new PhieuNhapDTO(maPhieuNhap, thoiGianTao, maKho, nguoiTao, nguoiXacNhan, nguoiNhanHang, tongTien, trangThai);
                 break;
             }
 
@@ -408,4 +414,21 @@ public class PhieuNhapDAO {
          }
          return pnList;
      }
+    
+    public boolean xacNhanPhieuNhap(PhieuNhapDTO pn){
+        boolean result = false;
+        
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String query = "UPDATE phieunhap SET trangthai = 4 , nguoinhanhang = ? WHERE maphieunhap = ?" ;
+            PreparedStatement pstmt = con.prepareStatement(query);
+            int rowsUpdated = pstmt.executeUpdate();
+            if(rowsUpdated > 0){
+                result = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

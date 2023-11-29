@@ -15,17 +15,21 @@ public class PhieuNhapDTO {
     private Date thoiGianTao;
     private int maKho;
     private String nguoiTao;
+    private String nguoiXacNhan ;
+    private String nguoiNhanHang ;
     private int tongTien;
     private int  trangThai;
 
     public PhieuNhapDTO() {
     }
 
-    public PhieuNhapDTO(int maPhieuNhap, Date thoiGianTao, int maKho, String nguoiTao, int tongTien, int trangThai) {
+    public PhieuNhapDTO(int maPhieuNhap, Date thoiGianTao, int maKho, String nguoiTao, String nguoiXacNhan, String nguoiNhanHang, int tongTien, int trangThai) {
         this.maPhieuNhap = maPhieuNhap;
         this.thoiGianTao = thoiGianTao;
         this.maKho = maKho;
         this.nguoiTao = nguoiTao;
+        this.nguoiXacNhan = nguoiXacNhan;
+        this.nguoiNhanHang = nguoiNhanHang;
         this.tongTien = tongTien;
         this.trangThai = trangThai;
     }
@@ -90,6 +94,22 @@ public class PhieuNhapDTO {
 
     public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public String getNguoiXacNhan() {
+        return nguoiXacNhan;
+    }
+
+    public void setNguoiXacNhan(String nguoiXacNhan) {
+        this.nguoiXacNhan = nguoiXacNhan;
+    }
+
+    public String getNguoiNhanHang() {
+        return nguoiNhanHang;
+    }
+
+    public void setNguoiNhanHang(String nguoiNhanHang) {
+        this.nguoiNhanHang = nguoiNhanHang;
     }
     
     

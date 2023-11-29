@@ -148,6 +148,7 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         btnTimGia = new javax.swing.JButton();
         btnThem = new javax.swing.JButton();
         cbbTrangThai = new javax.swing.JComboBox<>();
+        btnLamMoi = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1180, 750));
@@ -283,15 +284,11 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
             .addGroup(pnLocTheoNgayLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(pnLocTheoNgayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(pnLocTheoNgayLayout.createSequentialGroup()
-                        .addGroup(pnLocTheoNgayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(dateChooserStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addContainerGap(12, Short.MAX_VALUE))
-                    .addGroup(pnLocTheoNgayLayout.createSequentialGroup()
-                        .addComponent(dateChooserEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(12, Short.MAX_VALUE))))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dateChooserStart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dateChooserEnd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnLocTheoNgayLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnTimNgay)
@@ -348,7 +345,7 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btnThem.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnThem.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         btnThem.setForeground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
         btnThem.setText("Yêu cầu phiếu nhập");
@@ -365,6 +362,16 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
             }
         });
 
+        btnLamMoi.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        btnLamMoi.setForeground(new java.awt.Color(51, 153, 255));
+        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
+        btnLamMoi.setText("  Làm mới");
+        btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -375,7 +382,9 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
                     .addComponent(pnLocTheoNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
-                        .addComponent(btnThem)))
+                        .addComponent(btnThem)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -398,7 +407,9 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnThem)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnThem)
+                            .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(pnLocTheoNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -518,6 +529,11 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         nh.setVisible(true);
     }//GEN-LAST:event_btnThemActionPerformed
 
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
+        // TODO add your handling code here:
+        loadDanhSachPhieuNhap();
+    }//GEN-LAST:event_btnLamMoiActionPerformed
+
     
     
     public void loadDanhSachPhieuNhap() {
@@ -606,13 +622,13 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
             pn = PhieuNhapDAO.getInstance().layPhieuNhapTheoMa(maPhieu);
             
             if(userDTO.getMaNhomQuyen() == 2){
-                QuanLyPhieuNhapForm ql = new QuanLyPhieuNhapForm(pn, this);
+                QuanLyPhieuNhapForm ql = new QuanLyPhieuNhapForm(pn, this, userDTO);
                 ql.setVisible(true);
                 return ;
             }
         
             if(userDTO.getMaNhomQuyen() == 3){
-                CTPhieuNhap detailGUI = new CTPhieuNhap(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, pn);
+                CTPhieuNhap detailGUI = new CTPhieuNhap(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, pn, userDTO);
                 detailGUI.setVisible(true);
             }
             
@@ -641,6 +657,7 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
     private DefaultTableModel model;
     private DefaultTableCellRenderer renderer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLamMoi;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnTimGia;
     private javax.swing.JButton btnTimNgay;

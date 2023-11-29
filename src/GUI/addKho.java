@@ -171,7 +171,7 @@ public class addKho extends javax.swing.JFrame {
         khoDTO kho = new khoDTO();
         kho.setTenKho(ten);
         kho.setDiaChi(diadiem);
-        if(ten.trim().equals("") || ten.trim().equals("")){
+        if(ten.trim().equals("") || diadiem.trim().equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin kho");
             return ;
         }
