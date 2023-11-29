@@ -210,7 +210,7 @@ public class tonKhoDAO {
             Connection con = JDBCUtil.getConnection();
             String sql = "UPDATE chitietphieunhap SET soluongtonkho = " + soluong + " WHERE maphieunhap = " + maphieu + " AND masanpham = " + masanpham + " and manhacungcap = " + manhacungcap;
             Statement stmt = con.createStatement();
-            if(stmt.executeUpdate(sql) > 0){
+            if(stmt.executeUpdate(sql) >= 1){
                 result = true;
             }
         } catch (Exception e) {

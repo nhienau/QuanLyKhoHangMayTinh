@@ -381,7 +381,7 @@ public class PhanPhoiProduct extends javax.swing.JFrame {
             ChiTietTonKhoDTO cttk = arr.get(i);
             if(cttk.getMaKho() == maKho && cttk.getMaNhaCungCap() == maNCC && cttk.getMaSanPham() == masp){
                 int soLuongUpdate = cttk.getSoLuongTonKho() - soLuongPP;
-                if(tonKhoDAO.getInstance().updateSoLuong(maKho, masp, maNCC, soLuongUpdate)){
+                if(tonKhoDAO.getInstance().updateSoLuong(cttk.getMaPhieuNhap(), masp, maNCC, soLuongUpdate)){
                     JOptionPane.showMessageDialog(this, "Phân phối sản phẩm thành công!");
                     answer = true ;
                 } else {
