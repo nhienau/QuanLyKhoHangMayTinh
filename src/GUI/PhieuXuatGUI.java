@@ -543,6 +543,11 @@ public class PhieuXuatGUI extends javax.swing.JInternalFrame {
         jComboBoxS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã phiếu", "Người tạo" }));
         jPanel3.add(jComboBoxS, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 210, 40));
 
+        jTextFieldSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchActionPerformed(evt);
+            }
+        });
         jTextFieldSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 jTextFieldSearchKeyReleased(evt);
@@ -689,6 +694,10 @@ public class PhieuXuatGUI extends javax.swing.JInternalFrame {
         XuatHangDialog newPhieuXuat = new XuatHangDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, this.user);
         newPhieuXuat.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void jTextFieldSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldSearchActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
