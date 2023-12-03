@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2023 at 03:48 AM
+-- Generation Time: Dec 03, 2023 at 07:23 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -216,7 +216,7 @@ CREATE TABLE `chitietquyen` (
   `manhomquyen` int(11) NOT NULL,
   `machucnang` varchar(50) NOT NULL,
   `hanhdong` varchar(50) NOT NULL,
-  `hanche` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hanche`))
+  `hanche` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -224,52 +224,44 @@ CREATE TABLE `chitietquyen` (
 --
 
 INSERT INTO `chitietquyen` (`manhomquyen`, `machucnang`, `hanhdong`, `hanche`) VALUES
-(1, 'loaisanpham', 'create', NULL),
-(1, 'loaisanpham', 'view', NULL),
-(1, 'nhacungcap', 'view', NULL),
-(1, 'phieunhap', 'view', NULL),
-(1, 'phieuxuat', 'view', NULL),
-(1, 'sanpham', 'view', NULL),
-(1, 'taikhoan', 'create', NULL),
-(1, 'taikhoan', 'delete', NULL),
-(1, 'taikhoan', 'update', NULL),
-(1, 'taikhoan', 'view', NULL),
-(1, 'thongke', 'view', NULL),
-(1, 'tonkho', 'view', '[\"gianhap\"]'),
-(2, 'loaisanpham', 'create', NULL),
-(2, 'loaisanpham', 'delete', NULL),
-(2, 'loaisanpham', 'update', NULL),
-(2, 'loaisanpham', 'view', NULL),
-(2, 'nhacungcap', 'create', NULL),
-(2, 'nhacungcap', 'delete', NULL),
-(2, 'nhacungcap', 'update', NULL),
-(2, 'nhacungcap', 'view', NULL),
-(2, 'phieunhap', 'create', NULL),
-(2, 'phieunhap', 'view', NULL),
-(2, 'phieuxuat', 'create', NULL),
-(2, 'phieuxuat', 'view', NULL),
-(2, 'sanpham', 'create', NULL),
-(2, 'sanpham', 'delete', NULL),
-(2, 'sanpham', 'update', NULL),
-(2, 'sanpham', 'view', NULL),
-(2, 'taikhoan', 'create', NULL),
-(2, 'taikhoan', 'delete', NULL),
-(2, 'taikhoan', 'view', NULL),
-(2, 'thongke', 'view', NULL),
-(2, 'tonkho', 'create', NULL),
-(2, 'tonkho', 'delete', NULL),
-(2, 'tonkho', 'update', NULL),
-(2, 'tonkho', 'view', NULL),
-(3, 'loaisanpham', 'view', NULL),
-(3, 'nhacungcap', 'view', NULL),
+(1, 'taikhoan', 'create', '[]'),
+(1, 'taikhoan', 'delete', '[]'),
+(1, 'taikhoan', 'update', '[]'),
+(1, 'taikhoan', 'view', '[]'),
+(2, 'loaisanpham', 'create', '[]'),
+(2, 'loaisanpham', 'delete', '[]'),
+(2, 'loaisanpham', 'update', '[]'),
+(2, 'loaisanpham', 'view', '[]'),
+(2, 'nhacungcap', 'create', '[]'),
+(2, 'nhacungcap', 'delete', '[]'),
+(2, 'nhacungcap', 'update', '[]'),
+(2, 'nhacungcap', 'view', '[]'),
+(2, 'phieunhap', 'create', '[]'),
+(2, 'phieunhap', 'view', '[]'),
+(2, 'phieuxuat', 'create', '[]'),
+(2, 'phieuxuat', 'view', '[]'),
+(2, 'sanpham', 'create', '[]'),
+(2, 'sanpham', 'delete', '[]'),
+(2, 'sanpham', 'update', '[]'),
+(2, 'sanpham', 'view', '[]'),
+(2, 'taikhoan', 'create', '[]'),
+(2, 'taikhoan', 'delete', '[]'),
+(2, 'taikhoan', 'view', '[]'),
+(2, 'thongke', 'view', '[]'),
+(2, 'tonkho', 'create', '[]'),
+(2, 'tonkho', 'delete', '[]'),
+(2, 'tonkho', 'update', '[]'),
+(2, 'tonkho', 'view', '[]'),
+(3, 'loaisanpham', 'view', '[]'),
+(3, 'nhacungcap', 'view', '[]'),
 (3, 'phieunhap', 'create', '[\"nhacungcap\", \"gianhap\"]'),
-(3, 'phieunhap', 'view', NULL),
-(3, 'sanpham', 'view', NULL),
+(3, 'phieunhap', 'view', '[]'),
+(3, 'sanpham', 'view', '[]'),
 (3, 'tonkho', 'view', '[\"gianhap\"]'),
-(4, 'loaisanpham', 'view', NULL),
-(4, 'phieuxuat', 'create', NULL),
-(4, 'phieuxuat', 'view', NULL),
-(4, 'sanpham', 'view', NULL),
+(4, 'loaisanpham', 'view', '[]'),
+(4, 'phieuxuat', 'create', '[]'),
+(4, 'phieuxuat', 'view', '[]'),
+(4, 'sanpham', 'view', '[]'),
 (4, 'tonkho', 'view', '[\"gianhap\"]');
 
 -- --------------------------------------------------------
@@ -417,6 +409,7 @@ INSERT INTO `nhacungcap` (`manhacungcap`, `tennhacungcap`, `sdt`, `diachi`, `tra
 CREATE TABLE `nhomquyen` (
   `manhomquyen` int(11) NOT NULL,
   `tennhomquyen` varchar(255) NOT NULL,
+  `douutien` smallint(6) NOT NULL DEFAULT 0,
   `trangthai` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -424,12 +417,12 @@ CREATE TABLE `nhomquyen` (
 -- Dumping data for table `nhomquyen`
 --
 
-INSERT INTO `nhomquyen` (`manhomquyen`, `tennhomquyen`, `trangthai`) VALUES
-(1, 'Admin', 1),
-(2, 'Quản lý kho', 1),
-(3, 'Nhân viên nhập hàng', 1),
-(4, 'Nhân viên xuất hàng', 1),
-(5, 'test', 0);
+INSERT INTO `nhomquyen` (`manhomquyen`, `tennhomquyen`, `douutien`, `trangthai`) VALUES
+(1, 'Admin', 2, 1),
+(2, 'Quản lý kho', 1, 1),
+(3, 'Nhân viên nhập hàng', 0, 1),
+(4, 'Nhân viên xuất hàng', 0, 1),
+(5, 'test', 0, 0);
 
 -- --------------------------------------------------------
 
