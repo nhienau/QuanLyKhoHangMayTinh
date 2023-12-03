@@ -157,4 +157,66 @@ public class NguoiDungBUS {
     public int ChangPassword(NguoiDungDTO user, String pass) throws SQLException {
         return ndDAO.changePassword(user, pass);
     }
+    
+    public int getUserPriority(NguoiDungDTO user) throws SQLException {
+        return ndDAO.getUserPriority(user);
+    }
+    
+    public ArrayList<NguoiDungDTO> getUserList(String query, int priority) throws SQLException {
+        return ndDAO.getUserList(query, priority);
+    }
+    
+    public int lockAccount(NguoiDungDTO user) throws SQLException {
+        return ndDAO.lockAccount(user);
+    }
+    
+    public int handleCreateNewUser(NguoiDungDTO user) throws EmptyFieldException, SQLException {
+        if (user.getTaiKhoan().isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập tài khoản", "username");
+        }
+        if (user.getHoTen().isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập họ tên", "fullName");
+        }
+        if (user.getEmail().isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập email", "email");
+        }
+        if (user.getMatKhau().isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập mật khẩu", "password");
+        }
+
+        if (!Validation.isValidUsername(user.getTaiKhoan())) {
+            throw new IllegalArgumentException("Tài khoản không hợp lệ");
+        }
+        
+        boolean existed;
+        try {
+            existed = ndDAO.checkUserAlreadyExisted(user);
+        } catch (SQLException e) {
+            throw e;
+        }
+        if (existed) {
+            throw new IllegalArgumentException("Tài khoản đã tồn tại, vui lòng chọn một tên tài khoản khác");
+        }
+        
+        if (!Validation.isValidVietnameseName(user.getHoTen())) {
+            throw new IllegalArgumentException("Họ tên không được chứa kí tự số");
+        }
+        if (!Validation.isValidEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email không hợp lệ");
+        }
+        if (!Validation.isValidPassword(user.getMatKhau())) {
+            throw new IllegalArgumentException("Mật khẩu phải có 6-32 kí tự, có chứa ít nhất 1 kí tự thường, 1 kí tự hoa, 1 chữ số");
+        }
+        
+        String hashedPassword = BCrypt.hashpw(user.getMatKhau(), BCrypt.gensalt(12));
+        user.setMatKhau(hashedPassword);
+        
+        int result;
+        try {
+            result = ndDAO.createUser(user);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
 }

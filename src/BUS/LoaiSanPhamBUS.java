@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author trant
  */
-//dqưdqưdqưd
+
 public class LoaiSanPhamBUS {
     loaiSanPhamDAO lspDAO = new loaiSanPhamDAO();
     

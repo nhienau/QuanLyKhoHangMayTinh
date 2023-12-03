@@ -24,4 +24,18 @@ public class Validation {
         Matcher matcher = pattern.matcher(otp);
         return matcher.matches();
     }
+    
+    public static boolean isValidVietnameseName(String name) {
+        String regex = "^(?!.*\\d)[\\p{L} '-]{2,50}$";
+    	Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
+    }
+    
+    public static boolean isValidPassword(String password) {
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,32}$";
+    	Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
 }

@@ -1,34 +1,149 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package GUI;
 
-import DAO.PhieuXuatDAO;
-import DAO.TaiKhoanDAO;
+import BUS.ChiTietQuyenBUS;
+import BUS.NguoiDungBUS;
+import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
-//import DTO.TaiKhoanDAO;
+import GUI.Dialog.ThemTaiKhoanDialog;
+import helper.TaiKhoanTableModel;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-/**
- *
- * @author ADMIN
- */
-public class TaiKhoanGUI extends javax.swing.JFrame {
-    private DefaultTableModel tblModel;
-     protected ArrayList<NguoiDungDTO> allNguoiDung;
-    /**
-     * Creates new form TaiKhoanGUI
-     */
+public class TaiKhoanGUI extends javax.swing.JInternalFrame {
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
+    private final NguoiDungBUS ndBUS = new NguoiDungBUS();
+    private TaiKhoanTableModel tableModel;
+    private String query;
+    private int userPriority;
+    private NguoiDungDTO user;
+    
+    public TaiKhoanGUI(NguoiDungDTO user) {
+        initComponents();
+        UIManager.put("Table.showVerticalLines", true);
+        BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
+        ui.setNorthPane(null);
+        tblAccount.setDefaultEditor(Object.class, null);
+        
+        // Authorization
+        javax.swing.JButton[] buttons = {btnAdd, btnDeleteAccount, btnEditAccount};
+        disableAllButtons(buttons);
+        authorizeAction(user);
+        this.user = user;
+        initTable();
+        setQuery("");
+        queryUserPriority(user);
+        getUserList(query, userPriority);
+    }
+    
     public TaiKhoanGUI() {
         initComponents();
+    }
+    
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "taikhoan");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
         
-                tblAccount.setDefaultEditor(Object.class, null);
-        initTable();
-         this.allNguoiDung = TaiKhoanDAO.getInstance().selectAll();
-        loadDataToTable(allNguoiDung);
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnAdd.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("update")) {
+                btnEditAccount.setEnabled(true);
+                continue;
+            }
+            if (ctq.getHanhDong().equals("delete")) {
+                btnDeleteAccount.setEnabled(true);
+                continue;
+            }
+        }
+    }
+    
+    private void initTable() {
+        String[] columnNames = {"Tên đăng nhập", "Họ tên", "Email", "Mã nhóm quyền", "Nhóm quyền", "Độ ưu tiên"};
+        this.tableModel = new TaiKhoanTableModel(new ArrayList<>(), columnNames);
+        tblAccount.setModel(tableModel);
+        int[] columnsToBeHidden = {3, 5};
+        for (int c : columnsToBeHidden) {
+            tblAccount.getColumnModel().getColumn(c).setMinWidth(0);
+            tblAccount.getColumnModel().getColumn(c).setMaxWidth(0);
+            tblAccount.getColumnModel().getColumn(c).setWidth(0);
+            tblAccount.getColumnModel().getColumn(c).setPreferredWidth(0);
+        }
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public int getUserPriority() {
+        return userPriority;
+    }
+
+    public void setUserPriority(int userPriority) {
+        this.userPriority = userPriority;
+    }
+    
+    private void queryUserPriority(NguoiDungDTO user) {
+        int priority = -1;
+        try {
+            priority = ndBUS.getUserPriority(user);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        setUserPriority(priority);
+    }
+    
+    public void getUserList(String query, int priority) {
+        ArrayList<NguoiDungDTO> arr = null;
+        try {
+            arr = ndBUS.getUserList(query, priority);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        tableModel.setData(arr);
+        tableModel.fireTableDataChanged();
     }
 
     /**
@@ -43,18 +158,16 @@ public class TaiKhoanGUI extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnAdd = new javax.swing.JButton();
-        btnDeleteAccount = new javax.swing.JButton();
         btnEditAccount = new javax.swing.JButton();
-        btnResetAccount = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
+        btnDeleteAccount = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        cbxLuachon = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
         btnreset = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAccount = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBorder(null);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -76,19 +189,6 @@ public class TaiKhoanGUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnAdd);
 
-        btnDeleteAccount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
-        btnDeleteAccount.setText("Xoá");
-        btnDeleteAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDeleteAccount.setFocusable(false);
-        btnDeleteAccount.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnDeleteAccount.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDeleteAccount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteAccountActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnDeleteAccount);
-
         btnEditAccount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
         btnEditAccount.setText("Sửa");
         btnEditAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -102,55 +202,31 @@ public class TaiKhoanGUI extends javax.swing.JFrame {
         });
         jToolBar1.add(btnEditAccount);
 
-        btnResetAccount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-update-left-rotation-40.png"))); // NOI18N
-        btnResetAccount.setText("Đặt lại");
-        btnResetAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnResetAccount.setFocusable(false);
-        btnResetAccount.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnResetAccount.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnResetAccount.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteAccount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_delete_40px.png"))); // NOI18N
+        btnDeleteAccount.setText("Khoá");
+        btnDeleteAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteAccount.setFocusable(false);
+        btnDeleteAccount.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDeleteAccount.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteAccount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetAccountActionPerformed(evt);
+                btnDeleteAccountActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnResetAccount);
-        jToolBar1.add(jSeparator1);
+        jToolBar1.add(btnDeleteAccount);
 
-        jPanel2.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 400, 90));
+        jPanel2.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 160, 90));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        cbxLuachon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Tên tài khoản", "Tên đăng nhập", "Vai trò" }));
-        jPanel3.add(cbxLuachon, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 130, 40));
-
-        txtSearch.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                txtSearchInputMethodTextChanged(evt);
-            }
-        });
-        txtSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSearchActionPerformed(evt);
-            }
-        });
-        txtSearch.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                txtSearchPropertyChange(evt);
-            }
-        });
         txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtSearchKeyPressed(evt);
             }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSearchKeyReleased(evt);
-            }
         });
-        jPanel3.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 30, 320, 40));
+        jPanel3.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 380, 40));
 
         btnreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_reset_25px_1.png"))); // NOI18N
         btnreset.setText("Làm mới");
@@ -160,9 +236,9 @@ public class TaiKhoanGUI extends javax.swing.JFrame {
                 btnresetActionPerformed(evt);
             }
         });
-        jPanel3.add(btnreset, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 30, 170, 40));
+        jPanel3.add(btnreset, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 30, 140, 40));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 10, 720, 90));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 10, 550, 90));
 
         jScrollPane1.setBorder(null);
 
@@ -171,305 +247,116 @@ public class TaiKhoanGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Tên tài khoản", "Tên đăng nhập", "Vai trò", "Trạng thái"
+                "Tên đăng nhập", "Họ tên", "Email", "Mã nhóm quyền", "Nhóm quyền", "Độ ưu tiên"
             }
-        ));
-        tblAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tblAccount.setGridColor(new java.awt.Color(204, 204, 204));
         tblAccount.setShowGrid(true);
+        tblAccount.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblAccount);
+        if (tblAccount.getColumnModel().getColumnCount() > 0) {
+            tblAccount.getColumnModel().getColumn(0).setResizable(false);
+            tblAccount.getColumnModel().getColumn(1).setResizable(false);
+            tblAccount.getColumnModel().getColumn(2).setResizable(false);
+            tblAccount.getColumnModel().getColumn(3).setResizable(false);
+            tblAccount.getColumnModel().getColumn(4).setResizable(false);
+            tblAccount.getColumnModel().getColumn(5).setResizable(false);
+        }
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 1160, 620));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 1160, 630));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1180, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1180, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-       public final void initTable() {
-        tblModel = new DefaultTableModel();
-        String[] headerTbl = new String[]{"Ten tai khoan", "Ten dang nhap", "Email", "Vai tro", "Trang thai"};
-        tblModel.setColumnIdentifiers(headerTbl);
-        tblAccount.setModel(tblModel);
-        tblAccount.getColumnModel().getColumn(0).setPreferredWidth(5);
-        
-    }
-    
-      public void loadDataToTable(ArrayList<NguoiDungDTO> arrAcc) {
-        try {
-            tblModel.setRowCount(0);
-            for (var i : arrAcc) {
-     
-                tblModel.addRow(new Object[]{
-                    i.getTaiKhoan(), i.getHoTen(), i.getEmail(), i.getMaNhomQuyen(), i.getTrangThai()
-                });
-            }
-        } catch (Exception e) {
-        }
-
-    }
-      
-      
-      
-    public ArrayList<NguoiDungDTO> searchTatCa(String txtSearch) {
-        ArrayList<NguoiDungDTO> result = new ArrayList<>();
-
-        ArrayList<NguoiDungDTO> armt = TaiKhoanDAO.getInstance().selectAll();
-       System.out.print(armt);
-        for (var acc : armt) {
-     
-//            if (acc.getNguoiTao().toLowerCase().contains(txtSearch.toLowerCase())) {
-//                result.add(acc);
-//            }
-//
-//            if (!text.isEmpty() && isNumeric(text) && phieu.getMaPhieuXuat() == Integer.parseInt(text)) {
-//                result.add(phieu);
-//            }
-        }
-        return result;
-    }
-
-    public ArrayList<NguoiDungDTO> searchMaPhieu(String text) {
-        ArrayList<NguoiDungDTO> result = new ArrayList<>();
-        ArrayList<NguoiDungDTO> armt = TaiKhoanDAO.getInstance().selectAll();
-        for (var phieu : armt) {
-//            if (phieu.getMaPhieuXuat() == Integer.valueOf(text)) {
-//                result.add(phieu);
-//            }
-//            if (!text.isEmpty() && isNumeric(text) && phieu.getMaPhieuXuat() == Integer.parseInt(text)) {
-//                result.add(phieu);
-//            }
-        }
-        return result;
-    }
-
-    public ArrayList<NguoiDungDTO> searchNguoiTao(String text) {
-        ArrayList<NguoiDungDTO> result = new ArrayList<>();
-        ArrayList<NguoiDungDTO> armt = TaiKhoanDAO.getInstance().selectAll();
-        for (var phieu : armt) {
-
-//            if (phieu.getNguoiTao().toLowerCase().contains(text.toLowerCase())) {
-//                result.add(phieu);
-//            }
-
-        }
-        return result;
-    }
-      
-      
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        ThemTaiKhoanGUI a;
-//        a = new ThemTaiKhoanGUI(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-//        a.setVisible(true);
-
+        ThemTaiKhoanDialog cttk = new ThemTaiKhoanDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, userPriority, query);
+        cttk.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAccountActionPerformed
         // TODO add your handling code here:
-//        if (tblAccount.getSelectedRow() == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần xoá !");
-//        } else {
-//            Account select = getAccountSelect();
-//            if (select.getRole().equals("Admin")) {
-//                JOptionPane.showMessageDialog(this, "Không thể xóa tài khoản admin !");
-//            } else {
-//                int checkVl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa tài khoản này ?", "Xác nhận xóa tài khoản", JOptionPane.YES_NO_OPTION);
-//                if (checkVl == JOptionPane.YES_OPTION) {
-//                    try {
-//                        AccountDAO.getInstance().delete(select);
-//                        JOptionPane.showMessageDialog(this, "Xoá thành công tài khoản !");
-//                        loadDataToTable(AccountDAO.getInstance().selectAll());
-//                    } catch (Exception e) {
-//                        JOptionPane.showMessageDialog(this, "Xoá thất bại !");
-//                    }
-//                }
-//            }
-//        }
-
-
-
-
-
-
-//   if (tblAccount.getSelectedRow() == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn tai khoan muốn xoá");
-//        } else {
-//            int output = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xoá tai khoan", "Xác nhận xoá nhà cung cấp", JOptionPane.YES_NO_OPTION);
-//            if (output == JOptionPane.YES_OPTION) {
-//             
-//                  loadDataToTable(allNguoiDung);
-//            }
-//        }
-//   
-   
-   
-      int row = tblAccount.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn thương hiệu cần xóa");
+        int row = tblAccount.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khoá");
             return;
-        } 
-        String tenTaiKhoan= tblAccount.getValueAt(row, 0).toString();
-        TaiKhoanDAO.getInstance().deleteAccount(tenTaiKhoan);
-      System.out.print(allNguoiDung);
-           initComponents();
-               loadDataToTable(allNguoiDung);
-      
-        
+        }
+        int priority = Integer.parseInt(tblAccount.getValueAt(row, 5).toString());
+        if (priority >= userPriority) {
+            JOptionPane.showMessageDialog(this, "Bạn không thể khoá tài khoản này.");
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn khoá tài khoản này?",
+                "Tài khoản",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.NO_OPTION) {
+            return;
+        }
+        String username = tblAccount.getValueAt(row, 0).toString();
+        int result = 0;
+        try {
+            NguoiDungDTO userToBeLocked = new NguoiDungDTO();
+            userToBeLocked.setTaiKhoan(username);
+            result = ndBUS.lockAccount(userToBeLocked);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        if (result <= 0) {
+            JOptionPane.showMessageDialog(TaiKhoanGUI.this, "Có lỗi xảy ra khi khoá tài khoản này, vui lòng thử lại.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        getUserList(query, userPriority);
     }//GEN-LAST:event_btnDeleteAccountActionPerformed
 
     private void btnEditAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditAccountActionPerformed
         // TODO add your handling code here:
-//        if (tblAccount.getSelectedRow() == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần chỉnh sửa !");
-//        } else {
-//            if (getAccountSelect().getRole().equals("Admin")) {
-//                JOptionPane.showMessageDialog(this, "Không thể sửa tài khoản admin tại đây !", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-//            } else {
-//                UpdateAccount u = new UpdateAccount(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled);
-//                u.setVisible(true);
-//            }
-//        }
     }//GEN-LAST:event_btnEditAccountActionPerformed
-
-    private void btnResetAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetAccountActionPerformed
-        // TODO add your handling code here:
-//        if (tblAccount.getSelectedRow() == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần đặt lại mật khẩu !");
-//        } else {
-//            int check = JOptionPane.showConfirmDialog(this, "Bạn có muổn reset tài khoản này ?", "Reset", JOptionPane.YES_NO_OPTION);
-//            if (check == JOptionPane.YES_OPTION) {
-//                String textct = JOptionPane.showInputDialog(this, "Nhập mật khẩu bạn muốn thay đổi: ");
-//                if (textct.equals("")) {
-//                    JOptionPane.showMessageDialog(this, "Không được để trống !");
-//                } else {
-//                    int row = tblAccount.getSelectedRow();
-//                    String userName = tblAccount.getValueAt(row, 1).toString();
-//                    Account accReset = AccountDAO.getInstance().selectById(userName);
-//                    accReset.setPassword(BCrypt.hashpw(textct, BCrypt.gensalt(12)));
-//                    try {
-//                        AccountDAO.getInstance().update(accReset);
-//                        JOptionPane.showMessageDialog(this, "Thay đổi thành công !");
-//                    } catch (Exception e) {
-//                        JOptionPane.showMessageDialog(this, "Thay đổi không thành công !");
-//                    }
-//                    accounts = AccountDAO.getInstance().selectAll();
-//                    loadDataToTable(accounts);
-//                }
-//            }
-//        }
-    }//GEN-LAST:event_btnResetAccountActionPerformed
-
-    private void txtSearchInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtSearchInputMethodTextChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchInputMethodTextChanged
-
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void txtSearchPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtSearchPropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchPropertyChange
-
-    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchKeyPressed
-
-    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
-        // TODO add your handling code here:
-//        String luachon = (String) cbxLuachon.getSelectedItem();
-//        String searchContent = txtSearch.getText();
-//        ArrayList<Account> result = new ArrayList<>();
-//        switch (luachon) {
-//            case "Tất cả":
-//            result = SearchAccount.getInstance().searchTatCaAcc(searchContent);
-//            break;
-//            case "Tên tài khoản":
-//            result = SearchAccount.getInstance().searchFullName(searchContent);
-//            break;
-//            case "Tên đăng nhập":
-//            result = SearchAccount.getInstance().searchUserName(searchContent);
-//            break;
-//            case "Vai trò":
-//            result = SearchAccount.getInstance().searchRole(searchContent);
-//            break;
-//        }
-//        loadDataToTable(result);
-    }//GEN-LAST:event_txtSearchKeyReleased
 
     private void btnresetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnresetActionPerformed
         // TODO add your handling code here:
-//        loadDataToTable(accounts);
         txtSearch.setText("");
-        loadDataToTable(allNguoiDung);
+        setQuery("");
+        getUserList(query, userPriority);
     }//GEN-LAST:event_btnresetActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TaiKhoanGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TaiKhoanGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TaiKhoanGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TaiKhoanGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (txtSearch.getText().trim().toLowerCase().equals(query.toLowerCase()))
+                return;
+            setQuery(txtSearch.getText().trim());
+            getUserList(query, userPriority);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_txtSearchKeyPressed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TaiKhoanGUI().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDeleteAccount;
     private javax.swing.JButton btnEditAccount;
-    private javax.swing.JButton btnResetAccount;
     private javax.swing.JButton btnreset;
-    private javax.swing.JComboBox<String> cbxLuachon;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
     public javax.swing.JTable tblAccount;
     private javax.swing.JTextField txtSearch;
