@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 //import model.Account;
 
 public class NguoiDungDAO {
@@ -109,6 +110,119 @@ public class NguoiDungDAO {
             ps.setString(1, newEmail);
             ps.setString(2, user.getTaiKhoan());
             result = ps.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public int getUserPriority(NguoiDungDTO user) throws SQLException {
+        int priority = -1;
+        String query = "SELECT douutien FROM nguoidung ND, nhomquyen NQ WHERE ND.manhomquyen = NQ.manhomquyen AND taikhoan = ?";
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, user.getTaiKhoan());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                priority = rs.getInt("douutien");
+            }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return priority;
+    }
+    
+    public ArrayList<NguoiDungDTO> getUserList(String query, int priority) throws SQLException {
+        ArrayList<NguoiDungDTO> result = new ArrayList<>();
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("""
+                            SELECT taikhoan, hoten, email, ND.manhomquyen, tennhomquyen, douutien
+                            FROM nguoidung ND, nhomquyen NQ
+                            WHERE ND.manhomquyen = NQ.manhomquyen AND
+                                ND.trangthai = ? AND NQ.trangthai = ? AND
+                                douutien <= ? AND 
+                                (taikhoan LIKE ? OR hoten LIKE ? OR email LIKE ?)
+                            """);
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            ps.setInt(1, 1);
+            ps.setInt(2, 1);
+            ps.setInt(3, priority);
+            ps.setString(4, "%" + query + "%");
+            ps.setString(5, "%" + query + "%");
+            ps.setString(6, "%" + query + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String taiKhoan = rs.getString("taikhoan");
+                String hoTen = rs.getString("hoten");
+                String email = rs.getString("email");
+                int maNhomQuyen = rs.getInt("manhomquyen");
+                String tenNhomQuyen = rs.getString("tennhomquyen");
+                int doUuTien = rs.getInt("douutien");
+                result.add(new NguoiDungDTO(taiKhoan, hoTen, email, maNhomQuyen, tenNhomQuyen, doUuTien));
+            }
+            ps.close();
+            rs.close();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public int lockAccount(NguoiDungDTO user) throws SQLException {
+        int result = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String query = "UPDATE nguoidung SET trangthai = ? WHERE taikhoan = ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, 0);
+            ps.setString(2, user.getTaiKhoan());
+            result = ps.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public int createUser(NguoiDungDTO user) throws SQLException {
+        int result = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String query = "INSERT INTO nguoidung(taikhoan, matkhau, hoten, email, manhomquyen, trangthai) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, user.getTaiKhoan());
+            ps.setString(2, user.getMatKhau());
+            ps.setString(3, user.getHoTen());
+            ps.setString(4, user.getEmail());
+            ps.setInt(5, user.getMaNhomQuyen());
+            ps.setInt(6, user.getTrangThai());
+            result = ps.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public boolean checkUserAlreadyExisted(NguoiDungDTO user) throws SQLException {
+        boolean result = false;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String query = "SELECT taikhoan FROM nguoidung WHERE taikhoan = ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, user.getTaiKhoan());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                result = true;
+            }
             JDBCUtil.closeConnection(conn);
         } catch (SQLException e) {
             throw e;

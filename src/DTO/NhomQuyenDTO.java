@@ -3,11 +3,19 @@ package DTO;
 public class NhomQuyenDTO {
     private int maNhomQuyen;
     private String tenNhomQuyen;
+    private int doUuTien;
     private int trangThai;
 
     public NhomQuyenDTO(int maNhomQuyen, String tenNhomQuyen, int trangThai) {
         this.maNhomQuyen = maNhomQuyen;
         this.tenNhomQuyen = tenNhomQuyen;
+        this.trangThai = trangThai;
+    }
+    
+    public NhomQuyenDTO(int maNhomQuyen, String tenNhomQuyen, int doUuTien, int trangThai) {
+        this.maNhomQuyen = maNhomQuyen;
+        this.tenNhomQuyen = tenNhomQuyen;
+        this.doUuTien = doUuTien;
         this.trangThai = trangThai;
     }
 
@@ -25,6 +33,14 @@ public class NhomQuyenDTO {
 
     public void setTenNhomQuyen(String tenNhomQuyen) {
         this.tenNhomQuyen = tenNhomQuyen;
+    }
+
+    public int getDoUuTien() {
+        return doUuTien;
+    }
+
+    public void setDoUuTien(int doUuTien) {
+        this.doUuTien = doUuTien;
     }
 
     public int getTrangThai() {

@@ -520,9 +520,9 @@ public class MainLayout extends javax.swing.JFrame {
 
     private void TaiKhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaiKhoanMouseClicked
         // TODO add your handling code here:
-        AccountForm accountForm = new AccountForm(user);
+        TaiKhoanGUI tkGUI = new TaiKhoanGUI(user);
         pMainContent.removeAll();
-        pMainContent.add(accountForm).setVisible(true);
+        pMainContent.add(tkGUI).setVisible(true);
     }//GEN-LAST:event_TaiKhoanMouseClicked
 
     private void TaiKhoanMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TaiKhoanMousePressed
