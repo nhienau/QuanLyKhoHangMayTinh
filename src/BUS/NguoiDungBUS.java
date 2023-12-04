@@ -219,4 +219,42 @@ public class NguoiDungBUS {
         }
         return result;
     }
+    
+    public int handleUpdateUser(NguoiDungDTO oldInfo, NguoiDungDTO newInfo) throws EmptyFieldException, SQLException {
+        if (oldInfo.getHoTen().equals(newInfo.getHoTen()) &&
+                oldInfo.getEmail().equals(newInfo.getEmail()) &&
+                newInfo.getMatKhau().isEmpty()) {
+            return -1;
+        }
+        
+        if (newInfo.getHoTen().isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập họ tên", "fullName");
+        }
+        if (newInfo.getEmail().isEmpty()) {
+            throw new EmptyFieldException("Bạn chưa nhập email", "email");
+        }
+        
+        if (!Validation.isValidVietnameseName(newInfo.getHoTen())) {
+            throw new IllegalArgumentException("Họ tên không được chứa kí tự số");
+        }
+        if (!Validation.isValidEmail(newInfo.getEmail())) {
+            throw new IllegalArgumentException("Email không hợp lệ");
+        }
+        if (!(newInfo.getMatKhau().isEmpty()) && !Validation.isValidPassword(newInfo.getMatKhau())) {
+            throw new IllegalArgumentException("Mật khẩu phải có 6-32 kí tự, có chứa ít nhất 1 kí tự thường, 1 kí tự hoa, 1 chữ số");
+        }
+        
+        if (!(newInfo.getMatKhau().isEmpty())) {
+            String hashedPassword = BCrypt.hashpw(newInfo.getMatKhau(), BCrypt.gensalt(12));
+            newInfo.setMatKhau(hashedPassword);
+        }
+        
+        int result = 0;
+        try {
+            result = ndDAO.updateUser(newInfo);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
 }
