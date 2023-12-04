@@ -4,7 +4,8 @@ import BUS.ChiTietQuyenBUS;
 import BUS.NguoiDungBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
-import GUI.Dialog.ThemTaiKhoanDialog;
+import GUI.Dialog.SuaTaiKhoanDialog;
+import GUI.Dialog.TaoTaiKhoanDialog;
 import helper.TaiKhoanTableModel;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -22,6 +23,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
     private String query;
     private int userPriority;
     private NguoiDungDTO user;
+    private ArrayList<NguoiDungDTO> arr = new ArrayList<>();
     
     public TaiKhoanGUI(NguoiDungDTO user) {
         initComponents();
@@ -141,6 +143,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
             e.printStackTrace();
             return;
         }
+        this.arr = arr;
         
         tableModel.setData(arr);
         tableModel.fireTableDataChanged();
@@ -177,7 +180,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
         jToolBar1.setRollover(true);
 
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_add_40px.png"))); // NOI18N
-        btnAdd.setText("Thêm");
+        btnAdd.setText("Tạo");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.setFocusable(false);
         btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -190,7 +193,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
         jToolBar1.add(btnAdd);
 
         btnEditAccount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_edit_40px.png"))); // NOI18N
-        btnEditAccount.setText("Sửa");
+        btnEditAccount.setText("Cập nhật");
         btnEditAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEditAccount.setFocusable(false);
         btnEditAccount.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -215,7 +218,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnDeleteAccount);
 
-        jPanel2.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 160, 90));
+        jPanel2.add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 170, 90));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -281,7 +284,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        ThemTaiKhoanDialog cttk = new ThemTaiKhoanDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, userPriority, query);
+        TaoTaiKhoanDialog cttk = new TaoTaiKhoanDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, userPriority, query);
         cttk.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -329,6 +332,19 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
 
     private void btnEditAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditAccountActionPerformed
         // TODO add your handling code here:
+        int row = tblAccount.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần cập nhật thông tin");
+            return;
+        }
+        int priority = Integer.parseInt(tblAccount.getValueAt(row, 5).toString());
+        if (priority >= userPriority) {
+            JOptionPane.showMessageDialog(this, "Bạn không thể cập nhật thông tin tài khoản này.");
+            return;
+        }
+        NguoiDungDTO userInfo = arr.get(row);
+        SuaTaiKhoanDialog dialog = new SuaTaiKhoanDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, userInfo, userPriority, query);
+        dialog.setVisible(true);
     }//GEN-LAST:event_btnEditAccountActionPerformed
 
     private void btnresetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnresetActionPerformed

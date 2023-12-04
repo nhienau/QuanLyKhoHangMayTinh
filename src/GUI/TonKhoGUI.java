@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import GUI.Dialog.DetailTonKho;
+import GUI.Dialog.XuatKhoDialog;
 import java.util.List;
 
 
@@ -56,6 +57,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnDetail = new javax.swing.JButton();
+        btnXuatKho = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cbbTenKho = new javax.swing.JComboBox<>();
@@ -84,6 +86,19 @@ public class TonKhoGUI extends javax.swing.JDialog  {
             }
         });
         jToolBar1.add(btnDetail);
+
+        btnXuatKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/warehouse.png"))); // NOI18N
+        btnXuatKho.setText("Xuất kho");
+        btnXuatKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnXuatKho.setFocusable(false);
+        btnXuatKho.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnXuatKho.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnXuatKho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXuatKhoActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnXuatKho);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -210,7 +225,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -256,6 +271,11 @@ public class TonKhoGUI extends javax.swing.JDialog  {
             a.setVisible(true);
         }
     }//GEN-LAST:event_btnDetailActionPerformed
+
+    private void btnXuatKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatKhoActionPerformed
+        XuatKhoDialog dialog = new XuatKhoDialog(this, true, allowedActions);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnXuatKhoActionPerformed
 
 
 //    public static void main(String args[]) {
@@ -333,6 +353,7 @@ public class TonKhoGUI extends javax.swing.JDialog  {
     private DefaultTableModel modelTonKho ;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDetail;
+    private javax.swing.JButton btnXuatKho;
     private javax.swing.JComboBox<String> cbbTenKho;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

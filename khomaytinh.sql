@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2023 at 07:23 PM
+-- Generation Time: Dec 04, 2023 at 06:50 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -132,7 +132,7 @@ INSERT INTO `chitietphieunhap` (`maphieunhap`, `manhacungcap`, `masanpham`, `sol
 (7, 6, 4, 10, 21690000, 'baoduy', 10, 0, 1),
 (7, 8, 25, 20, 30790000, 'baoduy', 20, 10, 1),
 (8, 6, 8, 10, 16550000, 'ngoctram', 10, 10, 1),
-(9, 2, 8, 20, 16000000, 'baoduy', 20, 10, 1),
+(9, 2, 8, 20, 16000000, 'baoduy', 20, 0, 1),
 (10, 8, 26, 10, 22890000, 'ngoctram', 10, 0, 1),
 (11, 1, 17, 10, 23090000, 'hoainam', 10, 0, 1),
 (11, 6, 11, 20, 20790000, 'hoainam', 20, 0, 1),
@@ -140,13 +140,15 @@ INSERT INTO `chitietphieunhap` (`maphieunhap`, `manhacungcap`, `masanpham`, `sol
 (12, 7, 14, 10, 34790000, 'thienan', 10, 10, 1),
 (13, 6, 18, 10, 16290000, 'baoduy', 10, 10, 1),
 (13, 7, 7, 10, 14200000, 'baoduy', 10, 10, 1),
-(13, 7, 14, 10, 34790000, 'baoduy', 10, 10, 1),
+(13, 7, 14, 10, 34790000, 'baoduy', 10, 0, 1),
 (14, 5, 7, 10, 14200000, 'thienan', 10, 10, 1),
 (15, 4, 17, 10, 24090000, 'ngoctram', 10, 10, 1),
 (15, 5, 7, 20, 14200000, 'ngoctram', 20, 0, 1),
 (16, 2, 13, 10, 32590000, 'thuyduyen', 10, 10, 1),
 (16, 8, 21, 10, 19790000, 'thuyduyen', 10, 10, 1),
-(17, 7, 14, 10, 34790000, 'thienan', 10, 10, 1);
+(17, 7, 14, 10, 34790000, 'thienan', 10, 10, 1),
+(18, 8, 2, 10, 9150000, 'thienan', 8, 10, 1),
+(19, 5, 7, 10, 14200000, 'nvnhap', 0, 10, 1);
 
 --
 -- Triggers `chitietphieunhap`
@@ -204,7 +206,10 @@ INSERT INTO `chitietphieuxuat` (`maphieuxuat`, `masanpham`, `soluong`, `dongia`)
 (14, 17, 9, 27490000),
 (15, 14, 1, 40490000),
 (16, 14, 1, 40490000),
-(17, 14, 1, 40490000);
+(17, 14, 1, 40490000),
+(18, 8, 10, 18490000),
+(19, 14, 7, 40490000),
+(20, 14, 10, 40490000);
 
 -- --------------------------------------------------------
 
@@ -462,7 +467,9 @@ INSERT INTO `phieunhap` (`maphieunhap`, `thoigiantao`, `makho`, `nguoitao`, `ngu
 (14, '2023-10-25 00:18:24', 1, 'thienan', 'thienan', 'thienan', 142000000, 4),
 (15, '2023-10-25 00:18:24', 4, 'ngoctram', 'ngoctram', 'ngoctram', 524900000, 4),
 (16, '2023-10-25 00:18:24', 2, 'thuyduyen', 'thuyduyen', 'thuyduyen', 523800000, 4),
-(17, '2023-11-25 00:39:57', 1, 'thienan', 'thienan', 'thienan', 347900000, 4);
+(17, '2023-11-25 00:39:57', 1, 'thienan', 'thienan', 'thienan', 347900000, 4),
+(18, '2023-12-04 00:00:00', 3, 'thienan', NULL, NULL, 9150000, 4),
+(19, '2023-12-04 00:00:00', 1, 'nvnhap', 'thienan', NULL, 14200000, 3);
 
 -- --------------------------------------------------------
 
@@ -499,7 +506,10 @@ INSERT INTO `phieuxuat` (`maphieuxuat`, `thoigiantao`, `nguoitao`, `tongtien`, `
 (14, '2023-11-21 23:23:32', 'hoainam', 247410000, 1),
 (15, '2023-11-27 09:33:05', 'thienan', 40490000, 1),
 (16, '2023-11-27 09:42:39', 'thienan', 40490000, 1),
-(17, '2023-11-27 09:47:27', 'ngoctram', 40490000, 1);
+(17, '2023-11-27 09:47:27', 'ngoctram', 40490000, 1),
+(18, '2023-12-05 00:34:24', 'trunganh', 184900000, 1),
+(19, '2023-12-05 00:35:14', 'baoduy', 283430000, 1),
+(20, '2023-12-05 00:44:02', 'thienan', 404900000, 1);
 
 -- --------------------------------------------------------
 
@@ -512,7 +522,6 @@ CREATE TABLE `sanpham` (
   `maloaisanpham` int(11) NOT NULL,
   `tensanpham` varchar(255) NOT NULL,
   `soluong` int(11) NOT NULL DEFAULT 0,
-  `gianhap` bigint(20) NOT NULL,
   `giaxuat` bigint(20) NOT NULL,
   `cpu` varchar(255) DEFAULT NULL,
   `ram` varchar(255) DEFAULT NULL,
@@ -530,34 +539,34 @@ CREATE TABLE `sanpham` (
 -- Dumping data for table `sanpham`
 --
 
-INSERT INTO `sanpham` (`masanpham`, `maloaisanpham`, `tensanpham`, `soluong`, `gianhap`, `giaxuat`, `cpu`, `ram`, `vga`, `ocung`, `manhinh`, `pin`, `trongluong`, `mausac`, `os`, `trangthai`) VALUES
-(1, 1, 'Lenovo Ideapad Slim 5 Light 14ABR8 82XS002JVN', 0, 15150000, 16890000, 'AMD Ryzen™ 7 7730U (8 Cores / 16 Threads, 2.0 to 4.5GHz, 4MB L2 / 16MB L3)', '16GB Onboard DDR4 3200MHz', 'AMD Radeon™ Graphics', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 100% sRGB', 'Integrated 47Wh', 1.17, 'Cloud Grey', 'Windows 11 Home', 1),
-(2, 2, 'MSI Modern 14 C11M 011VN', 0, 8750000, 9990000, 'Intel Core i3-1115G4 (up to 4.1Ghz, 6MB)', '8GB DDR4 3200Mhz Onboard (Không nâng cấp)', 'Intel® UHD Graphics', '512GB NVMe PCIe Gen 3x4 SSD (1 Slot)', '14.0\" FHD (1920x1080), IPS-Level , 45% NTSC', '3 cell, 39Whr', 1.3, 'Đen', 'Windows 11 Home', 1),
-(3, 3, 'Asus Vivobook Pro 15 OLED M6500QC MA002W', 0, 19290000, 21490000, 'AMD Ryzen 5-5600H up to 4.2GHz 19MB, 6 nhân, 12 luồng', '16GB (Onboard) DDR4 3200MHz (không nâng cấp)', 'NVIDIA GeForce RTX 3050 4GB GDDR6', '512GB SSD M.2 PCIE G3X2', '15.6-inch 2.8K (2880 x 1620) OLED 16:9 aspect ratio, 120Hz refresh rate, 600nits peak brightness, 100% DCI-P3 color gamut, VESA CERTIFIED Display HDR True Black 600, PANTONE Validated, Glossy display, 70% less harmful blue light', '70WHrs, 3S1P, 3-cell Li-ion', 1.8, 'Bạc', 'Windows 11 Home', 1),
-(4, 2, 'MSI Katana 15 B13VEK 1205VN', 0, 21990000, 24490000, 'Intel Core i5-13420H (3.40GHz~4.60GHz) 8 Cores 12 Threads, 12 MB Intel® Smart Cache', '8GB (1 x 8GB) DDR5 5200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 4050 Laptop GPU 6GB GDDR6 + MUX Switch', '512GB NVMe PCIe Gen 4 SSD (2 slots)', '15.6\" FHD (1920x1080), 144Hz, IPS-Level, 45% NSTC', '3 cell, 53.5Whr', 2.25, 'Đen', 'Windows 11 Home', 1),
-(5, 4, 'Acer Predator Helios 300 PH315 55 76KG', 0, 29990000, 33990000, 'Intel® Core™ i7-12700H (up to 4.7Ghz, 24MB cache)', '16GB DDR5 4800Mhz (2x8GB) (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '512GB NVMe PCIe Gen3x4 SSD (2 slot)', '15.6 inch QHD (2560 x1440) IPS 165Hz, DCI-P3 100%, 5ms, 300nits, SlimBezel', '4 cell, 90Whr', 2.4, 'Đen', 'Windows 11 Home', 1),
-(6, 8, 'LG Gram 2023 16Z90R GAH76A5', 0, 39500000, 44490000, 'Intel Core i7-1360P (12 Cores: 4P + 8E, P: 2.2 up to 5.0 GHz / E: 1.6 up to 3.7 GHz) 18 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '16 inch WQXGA (2560x1600), 16:10, IPS 60Hz, DCI-P3 99%, LGD, 350 nits, Anti-Glare', '80WHr', 1.199, 'Xám', 'Windows 11 Home', 1),
-(7, 3, 'Asus VivoBook 14 OLED M1405YA KM047W', 0, 13450000, 14890000, 'Ryzen™ 5 7530U Mobile Processor (6-core/12-thread, 16MB cache, up to 4.3 GHz max boost)', '8GB Onboard DDR4 3200MHz (1 x Sodimm Slot, up to 24GB Ram)', 'AMD Radeon™ Graphics', '512GB M.2 NVMe™ PCIe® 3.0 SSD (1 slot, support M.2 2280 PCIe 3.0x4)', '14\" 2.8K (2880 x 1800) OLED 16:10, 90Hz 0.2ms, 600nits, 100% DCI-P3, Glossy display, Screen-to-body ratio: 86%, PANTONE Validated, VESA CERTIFIED Display HDR True Black 600', '50WHrs, 3S1P, 3-cell Li-ion', 1.6, 'Cool Silver', 'Windows 11 Home', 1),
-(8, 3, 'Asus VivoBook 15X OLED S3504VA L1226W', 0, 16500000, 18490000, 'Intel® Core™ i5-1340P Processor 1.9 GHz (12MB Cache, up to 4.6 GHz, 12 cores, 16 Threads)', '16GB (8GB Onboard + 8GB Sodimm) DDR4 3200MHz', 'Intel Iris Xe Graphics (with dual channel memory)', '512GB M.2 NVMe™ PCIe® 4.0 SSD', '15.6\" FHD (1920 x 1080) OLED 16:9 aspect ratio, 60Hz 0.2ms, 550nits HDR peak brightness, 100% DCI-P3, Glossy display, Screen-to-body ratio: 85%, PANTONE Validated, VESA CERTIFIED Display HDR True Black 500', '50WHrs, 3S1P, 3-cell Li-ion', 1.7, 'Cool Silver', 'Windows 11 Home', 1),
-(9, 7, 'Dell Inspiron 15 3520 N5I5122W1 Black', 0, 14190000, 15990000, 'Intel(R) Core(TM) i5-1235U Processor (12MB Cache, up to 4.4 GHz)', '1 x 8GB DDR4 2666MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'Intel Iris Xe Graphics (with dual channel memory); Intel® UHD Graphics', '256GB SSD NVMe PCIe (1 Slot)', '15.6 Inch FHD (1920 x 1080),120Hz, Anti- Glare LED Backlit Narrow Border Display', '3-cell Li-ion, 41 Wh', 1.9, 'Carbon Black', 'Windows 11 Home + Office Home&Student', 1),
-(10, 7, 'Dell Vostro 3520 V5I3614W1 Gray', 0, 11100000, 12490000, 'Intel Core i3 - 1215U (Up to 4.4 Ghz, 12Mb)', '8GB (8x1) DDR4 2666MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'Intel UHD Graphics', '256GB SSD M.2 PCIE', '15.6 inch FHD (1920 x 1080) 120Hz 250 nits WVA Anti- Glare LED Backlit Narrow Border Display', '3 Cell 41WHr', 1.66, 'Đen', 'Windows 11 Home + Office Home & Student 2021', 1),
-(11, 1, 'Lenovo ThinkPad E14 21E300E3VN', 0, 21290000, 23990000, 'Intel® Core™ i7-1255U, 10 Cores (2P + 8E) / 12 Threads, P-core 1.7 / 4.7GHz, E-core 1.2 / 3.5GHz, 12MB', '8GB Soldered DDR4-3200 (Trống 1 slot Sodimm, nâng cấp tối đa 40GB)', 'Intel Iris Xe Graphics (with dual channel memory); Intel® UHD Graphics (with single channel memory)', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe® Opal 2.0 (Còn trống 1 Slot M.2 2242 PCIe 3.0 x4)', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 45% NTSC', '45Whr battery', 1.64, 'Black', 'Windows 11 Home', 1),
-(12, 3, 'ASUS ProArt Studiobook 16 OLED H7600ZM L2079W', 0, 49990000, 57990000, 'Intel Core i9-12900H 2.5GHz up to 5.0GHz 24MB', '32GB (16x2) DDR5 4800MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA® GeForce® RTX™ 3060 6GB GDDR6', '1TB M.2 NVMe™ PCIe® 4.0 Performance SSD (2 slots M.2 2280 PCIe 4.0x4)', '16\" 4K (3840 x 2400) OLED 16:10, 0.2ms response time, 550nits, 100% DCI-P3, PANTONE Validated, Glossy display, 70% less harmful blue light', '4 Cell 90WHrs', 2.4, 'Mineral Black Aluminum', 'Windows 11 Home', 1),
-(13, 8, 'LG Gram Style 14Z90RS GAH54A5', 0, 32190000, 35990000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '14 inch WQXGA+ 2K8 (2880 x 1800), 16:10, OLED 90Hz 0.2ms, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '72 Wh Li-Ion, Thời lượng pin lên đến 15 giờ (Video playback)', 0.999, 'Trắng', 'Windows 11 Home', 1),
-(14, 8, 'LG Gram Ultra Slim 15Z90RT GAH55A5', 7, 36290000, 40490000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '15.6 inch FHD (1920*1080), 16:9, OLED 60Hz, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '60 Wh Li-Ion', 0.99, 'Đen', 'Windows 11 Home', 1),
-(15, 1, 'Lenovo Ideapad Gaming 3 15IAH7 82S9006YVN', 0, 16990000, 18990000, 'Intel Core i5-12500H, 12C (4P + 8E) / 16T, P-core 2.5 / 4.5GHz, E-core 1.8 / 3.3GHz, 18MB', '1 x 8GB DDR4 3200MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Boost Clock 1740MHz, TGP 85W', '512GB SSD M.2 2242 PCIe 4.0x4 NVMe (2 Slots)', '15.6\" FHD (1920x1080) IPS 250nits Anti-glare, 120Hz, 45% NTSC, DC dimmer', 'Integrated 60Wh', 2.315, 'Onyx Grey', 'Windows 11 Home', 1),
-(16, 3, 'ASUS TUF F15 FX507ZC4 HN074W', 0, 17790000, 19990000, 'Intel® Core™ i5-12500H Processor 2.5 GHz (18M Cache, up to 4.5 GHz, 12 cores: 4 P-cores and 8 E-cores)', '8GB DDR4 3200MHz (2x SO-DIMM socket, up to 32GB RAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Up to 1790MHz* at 95W (1740MHz Boost Clock+50MHz OC, 80W+15W Dynamic Boost) + MUX Switch + Optimus', '512GB SSD M.2 PCIE G3X2 (Còn trống 1 khe SSD M.2 PCIE)', '15.6\" FHD (1920 x 1080) IPS, 144Hz, Wide View, 250nits, Narrow Bezel, Non-Glare with 45% NTSC, 62.5% sRGB', '4 Cell 56WHr', 2.2, 'Jaeger Grey', 'Windows 11 Home', 1),
-(17, 4, 'Acer Nitro 5 Tiger AN515 58 50D2', 0, 24590000, 27490000, 'Intel Core i5-12500H 3.3GHz up to 4.5GHz 18MB', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX™ 3060 6GB GDDR6', '512GB PCIe NVMe SED SSD (Còn trống 1 khe SSD M.2 PCIE và 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS, 165Hz, Acer ComfyView LED-backlit TFT LCD, SlimBezel, 100% sRGB', '4 Cell 57.5WHr', 2.5, 'Obsidian Black', 'Windows 11 Home', 1),
-(18, 2, 'MSI GF63 12UC 887VN', 0, 17790000, 19890000, 'Intel Core i7-12650H 3.5GHz up to 4.70GHz 24MB, 10 nhân, 16 luồng', '8GB (8x1) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'Nvidia Geforce RTX 3050 4GB GDDR6', '512GB NVMe PCIe Gen 4x4 SSD ( Còn trống 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS 144Hz, Thin Bezel, 45%NTSC', '3 Cell 52.4 WHr', 1.86, 'Đen', 'Windows 11 Home', 1),
-(19, 4, 'Acer Aspire 7 A715 42G R05G', 0, 13390000, 14990000, 'AMD Ryzen 5 – 5500U (6 nhân 12 luồng)', '8GB DDR4 (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce GTX 1650 4GB GDDR6', '512GB PCIe® NVMe™ M.2 SSD', '15.6\" FHD (1920 x 1080) IPS, Anti-Glare, 144Hz', '4 Cell 48Whr', 2.1, 'Đen, Có đèn bàn phím', 'Windows 11 Home', 1),
-(20, 7, 'Dell Alienware M15 R6 P109F001CBL', 0, 39990000, 44990000, 'Intel Core i7-11800H 2.3GHz up to 4.6GHz 24MB', '32GB (16x2) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '1TB SSD M.2 PCIe', '15.6 inch QHD (2560 x 1440) 240Hz, 2ms, with ComfortView plus, NVIDIA G-SYNC and Advanced Optimus, WVA Display', '6 Cell 86WHr', 2.69, 'Dark Side of the Moon', 'Windows 11 Home + Office Home & Student', 1),
-(21, 6, 'Gigabyte G5 MF F2PH333SH', 0, 19590000, 21890000, 'Intel Core i5-12450H 3.3GHz up to 4.4GHz, 8 Cores 12 Threads, 12MB Cache', '8GB (1x8GB) DDR4-3200Mhz (2 khe ram, nâng cấp tối đa 64GB RAM)', 'Nvidia Geforce RTX 4050 6GB GDDR6', '512GB SSD M.2 PCIE G4X4 (2 khe M.2, Còn trống 1 khe SSD M.2 PCIE G3x4)', '15.6 inch FHD (1920x1080), 144Hz, IPS-level, Thin Bezel, 45% NTSC', '4 Cell 54Whrs', 1.9, 'Đen', 'Windows 11 Home', 1),
-(22, 5, 'HP Pavilion 15 eg3091TU 8C5L2PA', 0, 20490000, 22990000, 'Intel® Core™ i7-1355U (up to 5.0 GHz with Intel® Turbo Boost Technology, 12 MB L3 cache, 10 cores, 12 threads)', '16GB (2 x 8) DDR4 3200MHz (Còn 1 slot SO-DIMM, nâng cấp tối đa 16GB)', 'Intel® Iris® Xe Graphics', '512GB SSD M.2 NVMe™ PCIe® 3.0 (1 Slot, nâng cấp tối đa 1TB)', '15.6\" diagonal, FHD (1920 x 1080), IPS, micro-edge, anti-glare, 250 nits, 45% NTSC', '41WHrs, 3S1P, 3-cell Li-ion', 1.74, 'Warm Gold', 'Windows 11 Home', 1),
-(23, 5, 'HP Omen 16 b0127TX 4Y0W7PA', 0, 38990000, 45990000, 'Intel Core i7-11800H (8 nhân, 16 luồng)', '16GB (2x8GB) DDR4 3200Mhz (2 khe, max 64GB RAM)', 'NVIDIA® GeForce RTX 3060 (6GB GDDR4)', '1TB SSD M.2 PCIE + 32GB Intel Optane memory', '16.1\"  QHD (2560 x 1440), 165 Hz 3 ms, IPS, 300 nits, 100% sRGB', '4 Cell 70WHr Li-ion polymer', 2.3, 'Shadow Black', 'Windows 10 Home', 1),
-(24, 5, 'HP VICTUS 16 e0177AX 4R0U9PA', 0, 15190000, 16990000, 'AMD Ryzen 5 5600H', '8GB (2x4GB) DDR4 3200Mhz (2 khe, max 64GB RAM)', 'NVIDIA® GeForce GTX™ 1650 Laptop GPU', '512GB SSD M.2 PCIE (2x M.2 SATA/NVMe)', '16.1\" FHD (1920 x 1080) IPS, 144Hz', '4 Cell 70WHr Li-ion polymer', 2.46, 'Mica Silver', 'Windows 11 Home', 1),
-(25, 6, 'Gigabyte AORUS 15 XE4 73VNB14GH', 0, 30390000, 35990000, 'Intel Core i7-12700H 3.6GHz up to 4.9GHz 25MB', '16GB (8x2) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 3070Ti 8GB GDDR6 Boost Clock 1485 MHz / Maximum Graphics Power 130 W', '1TB SSD M.2 PCIE G4X4 (2 Slots)', '15.6\" QHD (2560x1440) IPS-level Anti-glare Display LCD (165Hz, 72% NTSC)', '4 Cell 99 WHrs', 2.4, 'Black', 'Windows 11 Home', 1),
-(26, 1, 'Lenovo Legion 5 15ARH7H 82RE0036VN', 0, 23890000, 27990000, 'AMD Ryzen 7 6800H (8C / 16T, 3.2 / 4.7GHz, 4MB L2 / 16MB L3)', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 Ti 4GB GDDR6, Boost Clock 1695MHz, TGP 95W', '512GB SSD M.2 2280 PCIe 4.0x4 NVMe (2 slots)', '15.6\" FHD (1920x1080) IPS 300nits Anti-glare, 165Hz, 100% sRGB, Dolby Vision, FreeSync, G-SYNC, DC dimmer', '4Cell, 80WHrs', 2.35, 'Storm Grey', 'Windows 11 Home', 1),
-(27, 1, 'Lenovo Legion Y9000X IAH7', 0, 24790000, 28990000, 'Intel Core i7-12700H (24MB Cache, 3.50GHZ up to 4.70 GHz, 14 cores 20 Threads)', '16GB DDR5 4800Mhz', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '512GB M.2 2280 NVMe SSD', '16\" WQXGA 2K IPS 165Hz 100% sRGB 518 nits', '4 Cells, 80Wh', 2.1, 'Đen', 'Windows 11 bản quyền', 1);
+INSERT INTO `sanpham` (`masanpham`, `maloaisanpham`, `tensanpham`, `soluong`, `giaxuat`, `cpu`, `ram`, `vga`, `ocung`, `manhinh`, `pin`, `trongluong`, `mausac`, `os`, `trangthai`) VALUES
+(1, 1, 'Lenovo Ideapad Slim 5 Light 14ABR8 82XS002JVN', 0, 16890000, 'AMD Ryzen™ 7 7730U (8 Cores / 16 Threads, 2.0 to 4.5GHz, 4MB L2 / 16MB L3)', '16GB Onboard DDR4 3200MHz', 'AMD Radeon™ Graphics', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 100% sRGB', 'Integrated 47Wh', 1.17, 'Cloud Grey', 'Windows 11 Home', 1),
+(2, 2, 'MSI Modern 14 C11M 011VN', 0, 9990000, 'Intel Core i3-1115G4 (up to 4.1Ghz, 6MB)', '8GB DDR4 3200Mhz Onboard (Không nâng cấp)', 'Intel® UHD Graphics', '512GB NVMe PCIe Gen 3x4 SSD (1 Slot)', '14.0\" FHD (1920x1080), IPS-Level , 45% NTSC', '3 cell, 39Whr', 1.3, 'Đen', 'Windows 11 Home', 1),
+(3, 3, 'Asus Vivobook Pro 15 OLED M6500QC MA002W', 0, 21490000, 'AMD Ryzen 5-5600H up to 4.2GHz 19MB, 6 nhân, 12 luồng', '16GB (Onboard) DDR4 3200MHz (không nâng cấp)', 'NVIDIA GeForce RTX 3050 4GB GDDR6', '512GB SSD M.2 PCIE G3X2', '15.6-inch 2.8K (2880 x 1620) OLED 16:9 aspect ratio, 120Hz refresh rate, 600nits peak brightness, 100% DCI-P3 color gamut, VESA CERTIFIED Display HDR True Black 600, PANTONE Validated, Glossy display, 70% less harmful blue light', '70WHrs, 3S1P, 3-cell Li-ion', 1.8, 'Bạc', 'Windows 11 Home', 1),
+(4, 2, 'MSI Katana 15 B13VEK 1205VN', 0, 24490000, 'Intel Core i5-13420H (3.40GHz~4.60GHz) 8 Cores 12 Threads, 12 MB Intel® Smart Cache', '8GB (1 x 8GB) DDR5 5200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 4050 Laptop GPU 6GB GDDR6 + MUX Switch', '512GB NVMe PCIe Gen 4 SSD (2 slots)', '15.6\" FHD (1920x1080), 144Hz, IPS-Level, 45% NSTC', '3 cell, 53.5Whr', 2.25, 'Đen', 'Windows 11 Home', 1),
+(5, 4, 'Acer Predator Helios 300 PH315 55 76KG', 0, 33990000, 'Intel® Core™ i7-12700H (up to 4.7Ghz, 24MB cache)', '16GB DDR5 4800Mhz (2x8GB) (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '512GB NVMe PCIe Gen3x4 SSD (2 slot)', '15.6 inch QHD (2560 x1440) IPS 165Hz, DCI-P3 100%, 5ms, 300nits, SlimBezel', '4 cell, 90Whr', 2.4, 'Đen', 'Windows 11 Home', 1),
+(6, 8, 'LG Gram 2023 16Z90R GAH76A5', 0, 44490000, 'Intel Core i7-1360P (12 Cores: 4P + 8E, P: 2.2 up to 5.0 GHz / E: 1.6 up to 3.7 GHz) 18 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '16 inch WQXGA (2560x1600), 16:10, IPS 60Hz, DCI-P3 99%, LGD, 350 nits, Anti-Glare', '80WHr', 1.199, 'Xám', 'Windows 11 Home', 1),
+(7, 3, 'Asus VivoBook 14 OLED M1405YA KM047W', 0, 14890000, 'Ryzen™ 5 7530U Mobile Processor (6-core/12-thread, 16MB cache, up to 4.3 GHz max boost)', '8GB Onboard DDR4 3200MHz (1 x Sodimm Slot, up to 24GB Ram)', 'AMD Radeon™ Graphics', '512GB M.2 NVMe™ PCIe® 3.0 SSD (1 slot, support M.2 2280 PCIe 3.0x4)', '14\" 2.8K (2880 x 1800) OLED 16:10, 90Hz 0.2ms, 600nits, 100% DCI-P3, Glossy display, Screen-to-body ratio: 86%, PANTONE Validated, VESA CERTIFIED Display HDR True Black 600', '50WHrs, 3S1P, 3-cell Li-ion', 1.6, 'Cool Silver', 'Windows 11 Home', 1),
+(8, 3, 'Asus VivoBook 15X OLED S3504VA L1226W', 0, 18490000, 'Intel® Core™ i5-1340P Processor 1.9 GHz (12MB Cache, up to 4.6 GHz, 12 cores, 16 Threads)', '16GB (8GB Onboard + 8GB Sodimm) DDR4 3200MHz', 'Intel Iris Xe Graphics (with dual channel memory)', '512GB M.2 NVMe™ PCIe® 4.0 SSD', '15.6\" FHD (1920 x 1080) OLED 16:9 aspect ratio, 60Hz 0.2ms, 550nits HDR peak brightness, 100% DCI-P3, Glossy display, Screen-to-body ratio: 85%, PANTONE Validated, VESA CERTIFIED Display HDR True Black 500', '50WHrs, 3S1P, 3-cell Li-ion', 1.7, 'Cool Silver', 'Windows 11 Home', 1),
+(9, 7, 'Dell Inspiron 15 3520 N5I5122W1 Black', 0, 15990000, 'Intel(R) Core(TM) i5-1235U Processor (12MB Cache, up to 4.4 GHz)', '1 x 8GB DDR4 2666MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'Intel Iris Xe Graphics (with dual channel memory); Intel® UHD Graphics', '256GB SSD NVMe PCIe (1 Slot)', '15.6 Inch FHD (1920 x 1080),120Hz, Anti- Glare LED Backlit Narrow Border Display', '3-cell Li-ion, 41 Wh', 1.9, 'Carbon Black', 'Windows 11 Home + Office Home&Student', 1),
+(10, 7, 'Dell Vostro 3520 V5I3614W1 Gray', 0, 12490000, 'Intel Core i3 - 1215U (Up to 4.4 Ghz, 12Mb)', '8GB (8x1) DDR4 2666MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'Intel UHD Graphics', '256GB SSD M.2 PCIE', '15.6 inch FHD (1920 x 1080) 120Hz 250 nits WVA Anti- Glare LED Backlit Narrow Border Display', '3 Cell 41WHr', 1.66, 'Đen', 'Windows 11 Home + Office Home & Student 2021', 1),
+(11, 1, 'Lenovo ThinkPad E14 21E300E3VN', 0, 23990000, 'Intel® Core™ i7-1255U, 10 Cores (2P + 8E) / 12 Threads, P-core 1.7 / 4.7GHz, E-core 1.2 / 3.5GHz, 12MB', '8GB Soldered DDR4-3200 (Trống 1 slot Sodimm, nâng cấp tối đa 40GB)', 'Intel Iris Xe Graphics (with dual channel memory); Intel® UHD Graphics (with single channel memory)', '512GB SSD M.2 2242 PCIe® 4.0x4 NVMe® Opal 2.0 (Còn trống 1 Slot M.2 2242 PCIe 3.0 x4)', '14\" FHD (1920x1080) IPS 300nits Anti-glare, 45% NTSC', '45Whr battery', 1.64, 'Black', 'Windows 11 Home', 1),
+(12, 3, 'ASUS ProArt Studiobook 16 OLED H7600ZM L2079W', 0, 57990000, 'Intel Core i9-12900H 2.5GHz up to 5.0GHz 24MB', '32GB (16x2) DDR5 4800MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA® GeForce® RTX™ 3060 6GB GDDR6', '1TB M.2 NVMe™ PCIe® 4.0 Performance SSD (2 slots M.2 2280 PCIe 4.0x4)', '16\" 4K (3840 x 2400) OLED 16:10, 0.2ms response time, 550nits, 100% DCI-P3, PANTONE Validated, Glossy display, 70% less harmful blue light', '4 Cell 90WHrs', 2.4, 'Mineral Black Aluminum', 'Windows 11 Home', 1),
+(13, 8, 'LG Gram Style 14Z90RS GAH54A5', 0, 35990000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '14 inch WQXGA+ 2K8 (2880 x 1800), 16:10, OLED 90Hz 0.2ms, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '72 Wh Li-Ion, Thời lượng pin lên đến 15 giờ (Video playback)', 0.999, 'Trắng', 'Windows 11 Home', 1),
+(14, 8, 'LG Gram Ultra Slim 15Z90RT GAH55A5', 0, 40490000, 'Intel Core i5-1340P (12 Cores: 4P + 8E, P: 1.9 up to 4.6 GHz / E: 1.4 up to 3.4 GHz) 12 MB Cache', '16GB LPDDR5 6000MHz (Dual Channel, Onboard, không nâng cấp)', 'Intel Iris Xe Graphics', '512GB PCIe NVMe M.2 SSD (2 slot, còn trống 1 khe M.2)', '15.6 inch FHD (1920*1080), 16:9, OLED 60Hz, DCI-P3 100%, LGD, 500 nits, Anti-Glare Flow Refrection', '60 Wh Li-Ion', 0.99, 'Đen', 'Windows 11 Home', 1),
+(15, 1, 'Lenovo Ideapad Gaming 3 15IAH7 82S9006YVN', 0, 18990000, 'Intel Core i5-12500H, 12C (4P + 8E) / 16T, P-core 2.5 / 4.5GHz, E-core 1.8 / 3.3GHz, 18MB', '1 x 8GB DDR4 3200MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Boost Clock 1740MHz, TGP 85W', '512GB SSD M.2 2242 PCIe 4.0x4 NVMe (2 Slots)', '15.6\" FHD (1920x1080) IPS 250nits Anti-glare, 120Hz, 45% NTSC, DC dimmer', 'Integrated 60Wh', 2.315, 'Onyx Grey', 'Windows 11 Home', 1),
+(16, 3, 'ASUS TUF F15 FX507ZC4 HN074W', 0, 19990000, 'Intel® Core™ i5-12500H Processor 2.5 GHz (18M Cache, up to 4.5 GHz, 12 cores: 4 P-cores and 8 E-cores)', '8GB DDR4 3200MHz (2x SO-DIMM socket, up to 32GB RAM)', 'NVIDIA GeForce RTX 3050 4GB GDDR6, Up to 1790MHz* at 95W (1740MHz Boost Clock+50MHz OC, 80W+15W Dynamic Boost) + MUX Switch + Optimus', '512GB SSD M.2 PCIE G3X2 (Còn trống 1 khe SSD M.2 PCIE)', '15.6\" FHD (1920 x 1080) IPS, 144Hz, Wide View, 250nits, Narrow Bezel, Non-Glare with 45% NTSC, 62.5% sRGB', '4 Cell 56WHr', 2.2, 'Jaeger Grey', 'Windows 11 Home', 1),
+(17, 4, 'Acer Nitro 5 Tiger AN515 58 50D2', 0, 27490000, 'Intel Core i5-12500H 3.3GHz up to 4.5GHz 18MB', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce RTX™ 3060 6GB GDDR6', '512GB PCIe NVMe SED SSD (Còn trống 1 khe SSD M.2 PCIE và 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS, 165Hz, Acer ComfyView LED-backlit TFT LCD, SlimBezel, 100% sRGB', '4 Cell 57.5WHr', 2.5, 'Obsidian Black', 'Windows 11 Home', 1),
+(18, 2, 'MSI GF63 12UC 887VN', 0, 19890000, 'Intel Core i7-12650H 3.5GHz up to 4.70GHz 24MB, 10 nhân, 16 luồng', '8GB (8x1) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'Nvidia Geforce RTX 3050 4GB GDDR6', '512GB NVMe PCIe Gen 4x4 SSD ( Còn trống 1 khe 2.5\" SATA)', '15.6\" FHD (1920 x 1080) IPS 144Hz, Thin Bezel, 45%NTSC', '3 Cell 52.4 WHr', 1.86, 'Đen', 'Windows 11 Home', 1),
+(19, 4, 'Acer Aspire 7 A715 42G R05G', 0, 14990000, 'AMD Ryzen 5 – 5500U (6 nhân 12 luồng)', '8GB DDR4 (2x SO-DIMM socket, up to 32GB SDRAM)', 'NVIDIA GeForce GTX 1650 4GB GDDR6', '512GB PCIe® NVMe™ M.2 SSD', '15.6\" FHD (1920 x 1080) IPS, Anti-Glare, 144Hz', '4 Cell 48Whr', 2.1, 'Đen, Có đèn bàn phím', 'Windows 11 Home', 1),
+(20, 7, 'Dell Alienware M15 R6 P109F001CBL', 0, 44990000, 'Intel Core i7-11800H 2.3GHz up to 4.6GHz 24MB', '32GB (16x2) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '1TB SSD M.2 PCIe', '15.6 inch QHD (2560 x 1440) 240Hz, 2ms, with ComfortView plus, NVIDIA G-SYNC and Advanced Optimus, WVA Display', '6 Cell 86WHr', 2.69, 'Dark Side of the Moon', 'Windows 11 Home + Office Home & Student', 1),
+(21, 6, 'Gigabyte G5 MF F2PH333SH', 0, 21890000, 'Intel Core i5-12450H 3.3GHz up to 4.4GHz, 8 Cores 12 Threads, 12MB Cache', '8GB (1x8GB) DDR4-3200Mhz (2 khe ram, nâng cấp tối đa 64GB RAM)', 'Nvidia Geforce RTX 4050 6GB GDDR6', '512GB SSD M.2 PCIE G4X4 (2 khe M.2, Còn trống 1 khe SSD M.2 PCIE G3x4)', '15.6 inch FHD (1920x1080), 144Hz, IPS-level, Thin Bezel, 45% NTSC', '4 Cell 54Whrs', 1.9, 'Đen', 'Windows 11 Home', 1),
+(22, 5, 'HP Pavilion 15 eg3091TU 8C5L2PA', 0, 22990000, 'Intel® Core™ i7-1355U (up to 5.0 GHz with Intel® Turbo Boost Technology, 12 MB L3 cache, 10 cores, 12 threads)', '16GB (2 x 8) DDR4 3200MHz (Còn 1 slot SO-DIMM, nâng cấp tối đa 16GB)', 'Intel® Iris® Xe Graphics', '512GB SSD M.2 NVMe™ PCIe® 3.0 (1 Slot, nâng cấp tối đa 1TB)', '15.6\" diagonal, FHD (1920 x 1080), IPS, micro-edge, anti-glare, 250 nits, 45% NTSC', '41WHrs, 3S1P, 3-cell Li-ion', 1.74, 'Warm Gold', 'Windows 11 Home', 1),
+(23, 5, 'HP Omen 16 b0127TX 4Y0W7PA', 0, 45990000, 'Intel Core i7-11800H (8 nhân, 16 luồng)', '16GB (2x8GB) DDR4 3200Mhz (2 khe, max 64GB RAM)', 'NVIDIA® GeForce RTX 3060 (6GB GDDR4)', '1TB SSD M.2 PCIE + 32GB Intel Optane memory', '16.1\"  QHD (2560 x 1440), 165 Hz 3 ms, IPS, 300 nits, 100% sRGB', '4 Cell 70WHr Li-ion polymer', 2.3, 'Shadow Black', 'Windows 10 Home', 1),
+(24, 5, 'HP VICTUS 16 e0177AX 4R0U9PA', 0, 16990000, 'AMD Ryzen 5 5600H', '8GB (2x4GB) DDR4 3200Mhz (2 khe, max 64GB RAM)', 'NVIDIA® GeForce GTX™ 1650 Laptop GPU', '512GB SSD M.2 PCIE (2x M.2 SATA/NVMe)', '16.1\" FHD (1920 x 1080) IPS, 144Hz', '4 Cell 70WHr Li-ion polymer', 2.46, 'Mica Silver', 'Windows 11 Home', 1),
+(25, 6, 'Gigabyte AORUS 15 XE4 73VNB14GH', 0, 35990000, 'Intel Core i7-12700H 3.6GHz up to 4.9GHz 25MB', '16GB (8x2) DDR4 3200MHz (2x SO-DIMM socket, up to 64GB SDRAM)', 'NVIDIA GeForce RTX 3070Ti 8GB GDDR6 Boost Clock 1485 MHz / Maximum Graphics Power 130 W', '1TB SSD M.2 PCIE G4X4 (2 Slots)', '15.6\" QHD (2560x1440) IPS-level Anti-glare Display LCD (165Hz, 72% NTSC)', '4 Cell 99 WHrs', 2.4, 'Black', 'Windows 11 Home', 1),
+(26, 1, 'Lenovo Legion 5 15ARH7H 82RE0036VN', 0, 27990000, 'AMD Ryzen 7 6800H (8C / 16T, 3.2 / 4.7GHz, 4MB L2 / 16MB L3)', '16GB (8x2) DDR5 4800MHz (2x SO-DIMM socket, up to 16GB SDRAM)', 'NVIDIA GeForce RTX 3050 Ti 4GB GDDR6, Boost Clock 1695MHz, TGP 95W', '512GB SSD M.2 2280 PCIe 4.0x4 NVMe (2 slots)', '15.6\" FHD (1920x1080) IPS 300nits Anti-glare, 165Hz, 100% sRGB, Dolby Vision, FreeSync, G-SYNC, DC dimmer', '4Cell, 80WHrs', 2.35, 'Storm Grey', 'Windows 11 Home', 1),
+(27, 1, 'Lenovo Legion Y9000X IAH7', 0, 28990000, 'Intel Core i7-12700H (24MB Cache, 3.50GHZ up to 4.70 GHz, 14 cores 20 Threads)', '16GB DDR5 4800Mhz', 'NVIDIA GeForce RTX 3060 6GB GDDR6', '512GB M.2 2280 NVMe SSD', '16\" WQXGA 2K IPS 165Hz 100% sRGB 518 nits', '4 Cells, 80Wh', 2.1, 'Đen', 'Windows 11 bản quyền', 1);
 
 -- --------------------------------------------------------
 
@@ -714,19 +723,19 @@ ALTER TABLE `nhomquyen`
 -- AUTO_INCREMENT for table `phieunhap`
 --
 ALTER TABLE `phieunhap`
-  MODIFY `maphieunhap` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `maphieunhap` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `phieuxuat`
 --
 ALTER TABLE `phieuxuat`
-  MODIFY `maphieuxuat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `maphieuxuat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `sanpham`
 --
 ALTER TABLE `sanpham`
-  MODIFY `masanpham` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `masanpham` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `trangthaiphieunhap`

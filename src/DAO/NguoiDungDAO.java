@@ -229,4 +229,30 @@ public class NguoiDungDAO {
         }
         return result;
     }
+    
+    public int updateUser(NguoiDungDTO user) throws SQLException {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("UPDATE nguoidung SET hoten = ?, email = ?");
+        if (!user.getMatKhau().isEmpty()) {
+            queryBuilder.append(", matkhau = ?");
+        }
+        queryBuilder.append(" WHERE taikhoan = ?");
+        int result = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(queryBuilder.toString());
+            int paramIndex = 1;
+            ps.setString(paramIndex++, user.getHoTen());
+            ps.setString(paramIndex++, user.getEmail());
+            if (!user.getMatKhau().isEmpty()) {
+                ps.setString(paramIndex++, user.getMatKhau());
+            }
+            ps.setString(paramIndex, user.getTaiKhoan());
+            result = ps.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
 }

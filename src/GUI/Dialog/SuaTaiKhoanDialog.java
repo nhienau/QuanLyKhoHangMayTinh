@@ -14,27 +14,29 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
-public class ThemTaiKhoanDialog extends javax.swing.JDialog {
+public class SuaTaiKhoanDialog extends javax.swing.JDialog {
     private final NhomQuyenBUS nqBUS = new NhomQuyenBUS();
     private final NguoiDungBUS ndBUS = new NguoiDungBUS();
     private ArrayList<NhomQuyenDTO> listRole;
     private int userPriority;
     private JInternalFrame parent;
     private String query;
+    private NguoiDungDTO initialUserInfo;
     
-    public ThemTaiKhoanDialog(java.awt.Frame parent, boolean modal) {
+    public SuaTaiKhoanDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
     
-    public ThemTaiKhoanDialog(JInternalFrame parent, JFrame owner, boolean modal, int userPriority, String query) {
+    public SuaTaiKhoanDialog(JInternalFrame parent, JFrame owner, boolean modal, NguoiDungDTO userInfo, int userPriority, String query) {
         super(owner, modal);
         initComponents();
         setLocationRelativeTo(null);
         this.parent = parent;
         this.userPriority = userPriority;
         this.query = query;
-        getListRoleBelowPriority(userPriority);
+        this.initialUserInfo = userInfo;
+        displayUserInfo(userInfo);
     }
 
     public ArrayList<NhomQuyenDTO> getListRole() {
@@ -45,48 +47,25 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
         this.listRole = listRole;
     }
     
-    private void getListRoleBelowPriority(int priority) {
-        ArrayList<NhomQuyenDTO> arr = null;
-        try {
-            arr = nqBUS.getListRoleBelowPriority(priority);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(ThemTaiKhoanDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(ThemTaiKhoanDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return;
-        }
-        setListRole(arr);
-
-        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel<>();
-        for (NhomQuyenDTO nq : arr) {
-            comboBoxModel.addElement(nq.getTenNhomQuyen());
-        }
-        vaitro.setModel(comboBoxModel);
-        vaitro.setSelectedIndex(0);
+    private void displayUserInfo(NguoiDungDTO user) {
+        txtUsername.setText(user.getTaiKhoan());
+        txtFullName.setText(user.getHoTen());
+        txtEmail.setText(user.getEmail());
+        txtVaiTro.setText(user.getTenNhomQuyen());
     }
     
-    private void clearAllInput() {
-        txtUsername.setText("");
-        txtFullName.setText("");
-        txtEmail.setText("");
-        txtPassword.setText("");
-    }
-    
-    private void handleAdd() {
+    private void handleUpdate() {
         String taiKhoan = txtUsername.getText();
         String hoTen = txtFullName.getText().trim();
         String email = txtEmail.getText().trim();
-        int maNhomQuyen = listRole.get(vaitro.getSelectedIndex()).getMaNhomQuyen();
+        int maNhomQuyen = initialUserInfo.getMaNhomQuyen();
         String matKhau = new String(txtPassword.getPassword());
         NguoiDungDTO newUser = new NguoiDungDTO(taiKhoan, matKhau, hoTen, email, maNhomQuyen, 1);
         int result;
         try {
-            result = ndBUS.handleCreateNewUser(newUser);
+            result = ndBUS.handleUpdateUser(initialUserInfo, newUser);
         } catch (EmptyFieldException e) {
-            JOptionPane.showMessageDialog(ThemTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
             if (e.getFieldName().equalsIgnoreCase("username")) {
                 txtUsername.requestFocus();
             } else if (e.getFieldName().equalsIgnoreCase("fullName")) {
@@ -98,27 +77,31 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
             }
             return;
         } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(ThemTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
             return;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(ThemTaiKhoanDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(ThemTaiKhoanDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
-
-        if (result > 0) {
-            clearAllInput();
-            if (parent instanceof TaiKhoanGUI) {
-                TaiKhoanGUI taiKhoanGUI = (TaiKhoanGUI) parent;
-                taiKhoanGUI.getUserList(query, userPriority);
-            }
-            JOptionPane.showMessageDialog(this, "Tạo tài khoản mới thành công");
-        } else {
-            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra trong quá trình tạo tài khoản, vui lòng thử lại.");
+        
+        switch (result) {
+            case -1:
+                return;
+            case 0:
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra trong quá trình cập nhật thông tin, vui lòng thử lại.");
+                break;
+            default:
+                txtPassword.setText("");
+                if (parent instanceof TaiKhoanGUI) {
+                    TaiKhoanGUI taiKhoanGUI = (TaiKhoanGUI) parent;
+                    taiKhoanGUI.getUserList(query, userPriority);
+                }
+                JOptionPane.showMessageDialog(this, "Cập nhật thông tin tài khoản thành công");
         }
     }
 
@@ -143,12 +126,12 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         jLabel5 = new javax.swing.JLabel();
-        vaitro = new javax.swing.JComboBox<>();
-        btnAdd = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        txtVaiTro = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Tạo tài khoản");
+        setTitle("Cập nhật thông tin tài khoản");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -158,16 +141,16 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
 
         lblHeading.setFont(new java.awt.Font("SF Pro Display", 1, 24)); // NOI18N
         lblHeading.setForeground(new java.awt.Color(255, 255, 255));
-        lblHeading.setText("TẠO TÀI KHOẢN");
+        lblHeading.setText("CẬP NHẬT THÔNG TIN");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
+                .addGap(62, 62, 62)
                 .addComponent(lblHeading)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,6 +166,7 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
         jLabel2.setText("Tên tài khoản");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 100, -1));
 
+        txtUsername.setEnabled(false);
         txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtUsernameKeyPressed(evt);
@@ -227,21 +211,18 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
         jLabel5.setText("Vai trò");
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 420, 50, -1));
 
-        vaitro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel1.add(vaitro, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 298, 38));
-
-        btnAdd.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        btnAdd.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd.setText("Tạo");
-        btnAdd.setBorder(null);
-        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        btnUpdate.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Cập nhật");
+        btnUpdate.setBorder(null);
+        btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 510, 140, 38));
+        jPanel1.add(btnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 510, 140, 38));
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jButton2.setText("Huỷ");
@@ -252,6 +233,14 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
             }
         });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 510, 140, 38));
+
+        txtVaiTro.setEnabled(false);
+        txtVaiTro.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtVaiTroKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtVaiTro, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 300, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -267,10 +256,10 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
-        handleAdd();
-    }//GEN-LAST:event_btnAddActionPerformed
+        handleUpdate();
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -280,30 +269,34 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
     private void txtUsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            handleAdd();
+            handleUpdate();
         }
     }//GEN-LAST:event_txtUsernameKeyPressed
 
     private void txtFullNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFullNameKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            handleAdd();
+            handleUpdate();
         }
     }//GEN-LAST:event_txtFullNameKeyPressed
 
     private void txtEmailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            handleAdd();
+            handleUpdate();
         }
     }//GEN-LAST:event_txtEmailKeyPressed
 
     private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            handleAdd();
+            handleUpdate();
         }
     }//GEN-LAST:event_txtPasswordKeyPressed
+
+    private void txtVaiTroKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVaiTroKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtVaiTroKeyPressed
 
     /**
      * @param args the command line arguments
@@ -322,14 +315,26 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ThemTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ThemTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ThemTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ThemTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -338,7 +343,7 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ThemTaiKhoanDialog dialog = new ThemTaiKhoanDialog(new javax.swing.JFrame(), true);
+                SuaTaiKhoanDialog dialog = new SuaTaiKhoanDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -351,7 +356,7 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -365,6 +370,6 @@ public class ThemTaiKhoanDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtFullName;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
-    private javax.swing.JComboBox<String> vaitro;
+    private javax.swing.JTextField txtVaiTro;
     // End of variables declaration//GEN-END:variables
 }
