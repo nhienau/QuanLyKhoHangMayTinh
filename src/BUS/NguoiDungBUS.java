@@ -137,6 +137,9 @@ public class NguoiDungBUS {
         if (confirmNewPassword.isEmpty()) {
             throw new EmptyFieldException("Bạn chưa nhập xác nhận mật khẩu mới", "confirmNewPassword");
         }
+        if (!Validation.isValidPassword(newPassword) || !Validation.isValidPassword(confirmNewPassword)) {
+            throw new IllegalArgumentException("Mật khẩu phải có 6-32 kí tự, có chứa ít nhất 1 kí tự thường, 1 kí tự hoa, 1 chữ số");
+        }
         if (!newPassword.equals(confirmNewPassword)) {
             throw new IllegalArgumentException("Mật khẩu không chính xác, vui lòng thử lại");
         }
