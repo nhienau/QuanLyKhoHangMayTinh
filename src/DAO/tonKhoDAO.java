@@ -5,6 +5,7 @@
 package DAO;
 
 import DTO.ChiTietTonKhoDTO;
+import DTO.SanPhamTonKhoDTO;
 import DTO.khoDTO;
 import DTO.tonKhoDTO;
 import com.mysql.cj.jdbc.PreparedStatementWrapper;
@@ -215,6 +216,103 @@ public class tonKhoDAO {
             }
         } catch (Exception e) {
             System.out.println(e);
+        }
+        return result;
+    }
+    
+    public ArrayList<SanPhamTonKhoDTO> getInventoryProduct(String productName) throws SQLException {
+        ArrayList<SanPhamTonKhoDTO> result = new ArrayList<>();
+        String query = """
+                        WITH temp_table AS (
+                            SELECT DISTINCT K.makho, PN.maphieunhap, CTPN.masanpham, SP.tensanpham, SP.soluong, soluongtonkho
+                            FROM phieunhap PN, chitietphieunhap CTPN, kho K, trangthaiphieunhap TTPN, chitietcungcap CTCC, sanpham SP
+                            WHERE PN.maphieunhap = CTPN.maphieunhap AND K.makho = PN.makho AND PN.trangthai = TTPN.matrangthai 
+                                AND CTCC.masanpham = CTPN.masanpham AND CTCC.masanpham = SP.masanpham 
+                                AND TTPN.tentrangthai LIKE '%delivered%' AND soluongtonkho > 0 AND tensanpham LIKE ?
+                        )
+                        SELECT masanpham, tensanpham, SUM(soluongtonkho) AS soluongtonkho, soluong AS soluongdaxuat
+                        FROM temp_table
+                        GROUP BY masanpham
+                        ORDER BY tensanpham
+                       """;
+        try {
+            Connection con = JDBCUtil.getConnection();
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, "%" + productName + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int maSanPham = rs.getInt("masanpham");
+                String tenSanPham = rs.getString("tensanpham");
+                int soLuongTonKho = rs.getInt("soluongtonkho");
+                int soLuongDaXuat = rs.getInt("soluongdaxuat");
+                result.add(new SanPhamTonKhoDTO(maSanPham, tenSanPham, soLuongTonKho, soLuongDaXuat));
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+        return result;
+    }
+    
+    public ArrayList<ChiTietTonKhoDTO> getInventoryProductDetail(int productId, boolean restrictGiaNhap) throws SQLException {
+        ArrayList<ChiTietTonKhoDTO> list = new ArrayList<>();
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT DISTINCT K.makho, tenkho, PN.maphieunhap, PN.thoigiantao, NCC.manhacungcap, tennhacungcap");
+        
+        if (!restrictGiaNhap) {
+            queryBuilder.append(", CTPN.dongia");
+        }
+        
+        queryBuilder.append("""
+                            , soluongtonkho
+                            FROM phieunhap PN, chitietphieunhap CTPN, kho K, trangthaiphieunhap TTPN, chitietcungcap CTCC, sanpham SP, nhacungcap NCC
+                            WHERE PN.maphieunhap = CTPN.maphieunhap AND K.makho = PN.makho AND 
+                                PN.trangthai = TTPN.matrangthai AND CTCC.masanpham = CTPN.masanpham AND 
+                                CTCC.masanpham = SP.masanpham AND CTPN.manhacungcap = CTCC.manhacungcap AND 
+                                CTCC.manhacungcap = NCC.manhacungcap AND TTPN.tentrangthai LIKE '%delivered%' AND 
+                                soluongtonkho > 0 AND CTPN.masanpham = ?
+                            ORDER BY PN.thoigiantao DESC
+                            """);
+        try {
+            Connection con = JDBCUtil.getConnection();
+            PreparedStatement ps = con.prepareStatement(queryBuilder.toString());
+            ps.setInt(1, productId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                ChiTietTonKhoDTO cttk = new ChiTietTonKhoDTO();
+                cttk.setMaKho(rs.getInt("makho"));
+                cttk.setTenKho(rs.getString("tenkho"));
+                cttk.setMaPhieuNhap(rs.getInt("maphieunhap"));
+                Timestamp timestamp = rs.getTimestamp("thoigiantao");
+                LocalDateTime thoiGianTao = timestamp.toLocalDateTime();
+                cttk.setThoiGianTao(thoiGianTao);
+                cttk.setMaSanPham(productId);
+                cttk.setMaNhaCungCap(rs.getInt("manhacungcap"));
+                cttk.setTenNhaCungCap(rs.getString("tennhacungcap"));
+                cttk.setSoLuongTonKho(rs.getInt("soluongtonkho"));
+                cttk.setDonGia(restrictGiaNhap ? -1 : rs.getLong("dongia"));             
+                list.add(cttk);
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+        return list;
+    }
+    
+    public int updateXuatKho(ChiTietTonKhoDTO product, int quantity) throws SQLException {
+        int result = 0;
+        String query = "UPDATE chitietphieunhap SET soluongtonkho = soluongtonkho - ? WHERE maphieunhap = ? AND manhacungcap = ? AND masanpham = ?";
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, quantity);
+            ps.setInt(2, product.getMaPhieuNhap());
+            ps.setInt(3, product.getMaNhaCungCap());
+            ps.setInt(4, product.getMaSanPham());
+            result = ps.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            throw e;
         }
         return result;
     }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class ChiTietTonKhoDTO {
     private int maKho;
+    private String tenKho;
     private int maPhieuNhap;
     private LocalDateTime thoiGianTao;
     private int maSanPham;
@@ -26,12 +27,32 @@ public class ChiTietTonKhoDTO {
         this.donGia = donGia;
     }
 
+    public ChiTietTonKhoDTO(int maKho, String tenKho, int maPhieuNhap, LocalDateTime thoiGianTao, int maSanPham, int maNhaCungCap, String tenNhaCungCap, int soLuongTonKho, Long donGia) {
+        this.maKho = maKho;
+        this.tenKho = tenKho;
+        this.maPhieuNhap = maPhieuNhap;
+        this.thoiGianTao = thoiGianTao;
+        this.maSanPham = maSanPham;
+        this.maNhaCungCap = maNhaCungCap;
+        this.tenNhaCungCap = tenNhaCungCap;
+        this.soLuongTonKho = soLuongTonKho;
+        this.donGia = donGia;
+    }
+    
     public int getMaKho() {
         return maKho;
     }
 
     public void setMaKho(int maKho) {
         this.maKho = maKho;
+    }
+
+    public String getTenKho() {
+        return tenKho;
+    }
+
+    public void setTenKho(String tenKho) {
+        this.tenKho = tenKho;
     }
 
     public int getMaPhieuNhap() {
