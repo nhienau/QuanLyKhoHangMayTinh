@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
-public class SuaTaiKhoanDialog extends javax.swing.JDialog {
+public class CapNhatTaiKhoanDialog extends javax.swing.JDialog {
     private final NhomQuyenBUS nqBUS = new NhomQuyenBUS();
     private final NguoiDungBUS ndBUS = new NguoiDungBUS();
     private ArrayList<NhomQuyenDTO> listRole;
@@ -23,12 +23,12 @@ public class SuaTaiKhoanDialog extends javax.swing.JDialog {
     private String query;
     private NguoiDungDTO initialUserInfo;
     
-    public SuaTaiKhoanDialog(java.awt.Frame parent, boolean modal) {
+    public CapNhatTaiKhoanDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
     
-    public SuaTaiKhoanDialog(JInternalFrame parent, JFrame owner, boolean modal, NguoiDungDTO userInfo, int userPriority, String query) {
+    public CapNhatTaiKhoanDialog(JInternalFrame parent, JFrame owner, boolean modal, NguoiDungDTO userInfo, int userPriority, String query) {
         super(owner, modal);
         initComponents();
         setLocationRelativeTo(null);
@@ -65,7 +65,7 @@ public class SuaTaiKhoanDialog extends javax.swing.JDialog {
         try {
             result = ndBUS.handleUpdateUser(initialUserInfo, newUser);
         } catch (EmptyFieldException e) {
-            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(CapNhatTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
             if (e.getFieldName().equalsIgnoreCase("username")) {
                 txtUsername.requestFocus();
             } else if (e.getFieldName().equalsIgnoreCase("fullName")) {
@@ -77,14 +77,14 @@ public class SuaTaiKhoanDialog extends javax.swing.JDialog {
             }
             return;
         } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(CapNhatTaiKhoanDialog.this, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
             return;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(CapNhatTaiKhoanDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(SuaTaiKhoanDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(CapNhatTaiKhoanDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
@@ -315,14 +315,30 @@ public class SuaTaiKhoanDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CapNhatTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CapNhatTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CapNhatTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SuaTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CapNhatTaiKhoanDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -343,7 +359,7 @@ public class SuaTaiKhoanDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SuaTaiKhoanDialog dialog = new SuaTaiKhoanDialog(new javax.swing.JFrame(), true);
+                CapNhatTaiKhoanDialog dialog = new CapNhatTaiKhoanDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

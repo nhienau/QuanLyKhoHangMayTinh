@@ -10,29 +10,19 @@ import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
 import DTO.SanPhamDTO;
 import DAO.SanPhamDAO;
-import GUI.loaiSanPhamGUI;
 import BUS.SearchProduct;
-import DAO.loaiSanPhamDAO;
 import GUI.Dialog.ActiveProduct;
-import OldDAO.LaptopDAO;
-import OldDAO.MayTinhDAO;
-import OldDAO.PCDAO;
 import java.awt.Desktop;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -41,16 +31,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import model.Account;
-import model.MayTinh;
-import model.PC;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -217,7 +197,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnThuongHieu = new javax.swing.JButton();
-        btnPhanPhoi = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
@@ -298,19 +277,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
             }
         });
         jToolBar1.add(btnThuongHieu);
-
-        btnPhanPhoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-update-left-rotation-40.png"))); // NOI18N
-        btnPhanPhoi.setText("Phân phối");
-        btnPhanPhoi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPhanPhoi.setFocusable(false);
-        btnPhanPhoi.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnPhanPhoi.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnPhanPhoi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPhanPhoiActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnPhanPhoi);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -498,12 +464,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tblSanPhamAncestorAdded
 
-    private void btnPhanPhoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhanPhoiActionPerformed
-        // TODO add your handling code here:
-        PhanPhoiProduct pp = new PhanPhoiProduct(allowedActions);
-        pp.setVisible(true);
-    }//GEN-LAST:event_btnPhanPhoiActionPerformed
-
     public ArrayList<SanPhamDTO> searchFn(String luaChon, String content) {
         ArrayList<SanPhamDTO> result = new ArrayList<>();
         SearchProduct searchPr = new SearchProduct();
@@ -621,7 +581,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi;
-    private javax.swing.JButton btnPhanPhoi;
     private javax.swing.JButton btnThuongHieu;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;

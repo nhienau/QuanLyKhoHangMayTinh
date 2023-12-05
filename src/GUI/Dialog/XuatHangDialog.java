@@ -495,13 +495,10 @@ public class XuatHangDialog extends javax.swing.JDialog {
 
                 // Tao doi tuong phieu nhap
                 PhieuXuatDTO pn = new PhieuXuatDTO(MaPhieuXuat, sqlTimestamp.toString(), user.getTaiKhoan(), (int) tinhTongTien(), 1);
-                //txtNguoiTao.getText()
                 try {
                     PhieuXuatDAO.getInstance().insert(pn);
-                    SanPhamDAO mtdao = SanPhamDAO.getInstance();
                     for (var i : CTPhieuXuat) {
                         ChiTietPhieuXuatDAO.getInstance().insert(i);
-                        mtdao.updateSoLuongPX(i.getMaSanPham(), mtdao.selectByIdPX(i.getMaSanPham()).getSoLuong() - i.getSoLuong());
                     }
 
                     JOptionPane.showMessageDialog(this, "Xuất hàng thành công !");

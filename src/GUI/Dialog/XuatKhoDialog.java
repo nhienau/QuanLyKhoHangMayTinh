@@ -163,20 +163,23 @@ public class XuatKhoDialog extends javax.swing.JDialog {
         }
     }
     
-    private void getInventoryProductDetail(int productId, boolean restrictGiaNhap) {
+    private ArrayList<ChiTietTonKhoDTO> getInventoryProductDetail(int productId, boolean restrictGiaNhap) {
         ArrayList<ChiTietTonKhoDTO> arr = new ArrayList<>();
         try {
             arr = tkBUS.getInventoryProductDetail(productId, restrictGiaNhap);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(XuatKhoDialog.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            return;
+            return arr;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(XuatKhoDialog.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            return;
+            return arr;
         }
-        this.arrTonKho = arr;
+        return arr;
+    }
+    
+    private void showDataToTableTonKho(ArrayList<ChiTietTonKhoDTO> arr) {
         tmTonKho.setData(arr);
         tmTonKho.fireTableDataChanged();
         
@@ -412,7 +415,8 @@ public class XuatKhoDialog extends javax.swing.JDialog {
         }
         setSelectedProduct(arrSanPham.get(tableProduct.getSelectedRow()));
         lblProductName.setText(selectedProduct.getTenSanPham());
-        getInventoryProductDetail(selectedProduct.getMaSanPham(), restrictGiaNhap);
+        arrTonKho = getInventoryProductDetail(selectedProduct.getMaSanPham(), restrictGiaNhap);
+        showDataToTableTonKho(arrTonKho);
         
         CardLayout layout = (CardLayout) pContainer.getLayout();
         layout.next(pContainer);
@@ -466,7 +470,12 @@ public class XuatKhoDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(XuatKhoDialog.this, "Có lỗi xảy ra trong quá trình xuất kho, vui lòng thử lại.");
                 break;
             case 1:
-                getInventoryProductDetail(selectedProduct.getMaSanPham(), restrictGiaNhap);
+                arrTonKho = getInventoryProductDetail(selectedProduct.getMaSanPham(), restrictGiaNhap);
+                if (arrTonKho.isEmpty()) {
+                    btnBackActionPerformed(null);
+                } else {
+                    showDataToTableTonKho(arrTonKho);
+                }
                 JOptionPane.showMessageDialog(XuatKhoDialog.this, "Xuất kho thành công");
         }
     }//GEN-LAST:event_btnXuatKhoActionPerformed

@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.Date;
 import DTO.PhieuNhapDTO;
 import DTO.ChiTietCungCapDTO;
+import DTO.NguoiDungDTO;
 /**
  *
  * @author DELL
@@ -276,12 +277,16 @@ public class PhieuNhapDAO {
         return listPN;
     }
     
-    public boolean capNhatPhieuNhap(int maPhieuNhap, int trangThai) {
+    public boolean capNhatPhieuNhap(int maPhieuNhap, int trangThai, NguoiDungDTO nguoiXacNhan) {
         boolean result = false;
         Connection con = JDBCUtil.getConnection();
         try {
-            String query = "UPDATE phieunhap SET trangthai = " + trangThai + " WHERE maphieunhap = " +maPhieuNhap;
+            String query = "UPDATE phieunhap SET trangthai = ?, nguoixacnhan = ? WHERE maphieunhap = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, trangThai);
+            String username = nguoiXacNhan == null ? null : nguoiXacNhan.getTaiKhoan();
+            pstmt.setString(2, username);
+            pstmt.setInt(3, maPhieuNhap);
             int rowsUpdated = pstmt.executeUpdate();
             if(rowsUpdated > 0){
                 result = true;
@@ -415,19 +420,55 @@ public class PhieuNhapDAO {
          return pnList;
      }
     
-    public boolean xacNhanPhieuNhap(PhieuNhapDTO pn){
+    public boolean xacNhanNhanHang(PhieuNhapDTO pn) {
         boolean result = false;
         
         try {
             Connection con = JDBCUtil.getConnection();
-            String query = "UPDATE phieunhap SET trangthai = 4 , nguoinhanhang = ? WHERE maphieunhap = ?" ;
+            String query = "UPDATE phieunhap SET trangthai = ?, nguoinhanhang = ? WHERE maphieunhap = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, 4);
+            pstmt.setString(2, pn.getNguoiNhanHang());
+            pstmt.setInt(3, pn.getMaPhieuNhap());
             int rowsUpdated = pstmt.executeUpdate();
             if(rowsUpdated > 0){
                 result = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public int updateTongTien(int maPhieuNhap) throws SQLException {
+        int result = 0;
+        Long tongTien = 0L;
+        StringBuilder priceQuery = new StringBuilder();
+        priceQuery.append("""
+                            WITH temp_table AS (
+                                SELECT soluongthucte, dongia
+                                FROM chitietphieunhap
+                                WHERE maphieunhap = ?
+                            )
+                            SELECT SUM(soluongthucte * dongia) AS sotien FROM temp_table
+                            """);
+        String updateQuery = "UPDATE phieunhap SET tongtien = ? WHERE maphieunhap = ?";
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(priceQuery.toString());
+            ps.setInt(1, maPhieuNhap);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                tongTien = rs.getLong("sotien");
+            }
+            rs.close();
+            ps = conn.prepareStatement(updateQuery);
+            ps.setLong(1, tongTien);
+            ps.setInt(2, maPhieuNhap);
+            result = ps.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            throw e;
         }
         return result;
     }

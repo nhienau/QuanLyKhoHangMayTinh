@@ -40,7 +40,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
-import view.CTPhieuNhap;
+import GUI.Dialog.CTPhieuNhap;
 
 /**
  *

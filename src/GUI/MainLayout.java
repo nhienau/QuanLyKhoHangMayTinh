@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import view.AccountForm;
 
 public class MainLayout extends javax.swing.JFrame {
     private Color DefaultColor, ClickedColor;
@@ -36,7 +35,7 @@ public class MainLayout extends javax.swing.JFrame {
         this.user = user;
         this.permission = permission;
         this.permissionInfo = permissionInfo;
-        javax.swing.JPanel[] panels = {SanPham, NhaCungCap, PhieuXuat, TonKho, TaiKhoan, ThongKe};
+        javax.swing.JPanel[] panels = {Kho, NhaCungCap, PhieuNhap, PhieuXuat, SanPham, TaiKhoan, ThongKe};
         hideAllControllers(panels);
         authorize(panels, permission);
         lblFullName.setText(user.getHoTen());
@@ -74,13 +73,17 @@ public class MainLayout extends javax.swing.JFrame {
                 NhaCungCapMouseClicked(null);
                 NhaCungCapMousePressed(null);
                 break;
+            case "phieunhap":
+                PhieuNhapMouseClicked(null);
+                PhieuNhapMousePressed(null);
+                break;
             case "phieuxuat":
                 PhieuXuatMouseClicked(null);
                 PhieuXuatMousePressed(null);
                 break;
-            case "tonkho":
-                TonKhoMouseClicked(null);
-                TonKhoMousePressed(null);
+            case "kho":
+                KhoMouseClicked(null);
+                KhoMousePressed(null);
                 break;
             case "taikhoan":
                 TaiKhoanMouseClicked(null);
@@ -96,7 +99,7 @@ public class MainLayout extends javax.swing.JFrame {
     }
     
     private void resetBackgroundAllPanels() {
-        javax.swing.JPanel[] panels = {NhaCungCap, NhapHang, PhieuXuat, SanPham, TaiKhoan, ThongKe, TonKho};
+        javax.swing.JPanel[] panels = {Kho, NhaCungCap, PhieuNhap, PhieuXuat, SanPham, TaiKhoan, ThongKe};
         for (javax.swing.JPanel panel : panels) {
             panel.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         }
@@ -118,9 +121,11 @@ public class MainLayout extends javax.swing.JFrame {
         pRole = new javax.swing.JPanel();
         lblRole = new javax.swing.JLabel();
         pNav = new javax.swing.JPanel();
+        Kho = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
         NhaCungCap = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        NhapHang = new javax.swing.JPanel();
+        PhieuNhap = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         PhieuXuat = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -130,8 +135,6 @@ public class MainLayout extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         ThongKe = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        TonKho = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
         pSettings = new javax.swing.JPanel();
         Account = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
@@ -185,6 +188,30 @@ public class MainLayout extends javax.swing.JFrame {
         pNav.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         pNav.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 0, 0));
 
+        Kho.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        Kho.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        Kho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Kho.setMinimumSize(new java.awt.Dimension(240, 36));
+        Kho.setName("kho"); // NOI18N
+        Kho.setPreferredSize(new java.awt.Dimension(240, 36));
+        Kho.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                KhoMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                KhoMousePressed(evt);
+            }
+        });
+        Kho.setLayout(new java.awt.BorderLayout());
+
+        jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
+        jLabel10.setText("Kho");
+        Kho.add(jLabel10, java.awt.BorderLayout.CENTER);
+
+        pNav.add(Kho);
+
         NhaCungCap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         NhaCungCap.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
         NhaCungCap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -209,29 +236,29 @@ public class MainLayout extends javax.swing.JFrame {
 
         pNav.add(NhaCungCap);
 
-        NhapHang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        NhapHang.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
-        NhapHang.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        NhapHang.setMinimumSize(new java.awt.Dimension(240, 36));
-        NhapHang.setName("nhaphang"); // NOI18N
-        NhapHang.setPreferredSize(new java.awt.Dimension(240, 36));
-        NhapHang.addMouseListener(new java.awt.event.MouseAdapter() {
+        PhieuNhap.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
+        PhieuNhap.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
+        PhieuNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        PhieuNhap.setMinimumSize(new java.awt.Dimension(240, 36));
+        PhieuNhap.setName("phieunhap"); // NOI18N
+        PhieuNhap.setPreferredSize(new java.awt.Dimension(240, 36));
+        PhieuNhap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                NhapHangMouseClicked(evt);
+                PhieuNhapMouseClicked(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                NhapHangMousePressed(evt);
+                PhieuNhapMousePressed(evt);
             }
         });
-        NhapHang.setLayout(new java.awt.BorderLayout());
+        PhieuNhap.setLayout(new java.awt.BorderLayout());
 
         jLabel2.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_import_25px.png"))); // NOI18N
-        jLabel2.setText("Nhập hàng");
-        NhapHang.add(jLabel2, java.awt.BorderLayout.CENTER);
+        jLabel2.setText("Phiếu nhập");
+        PhieuNhap.add(jLabel2, java.awt.BorderLayout.CENTER);
 
-        pNav.add(NhapHang);
+        pNav.add(PhieuNhap);
 
         PhieuXuat.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
         PhieuXuat.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
@@ -331,30 +358,6 @@ public class MainLayout extends javax.swing.JFrame {
 
         pNav.add(ThongKe);
 
-        TonKho.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
-        TonKho.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 24, 1, 1));
-        TonKho.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        TonKho.setMinimumSize(new java.awt.Dimension(240, 36));
-        TonKho.setName("tonkho"); // NOI18N
-        TonKho.setPreferredSize(new java.awt.Dimension(240, 36));
-        TonKho.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TonKhoMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                TonKhoMousePressed(evt);
-            }
-        });
-        TonKho.setLayout(new java.awt.BorderLayout());
-
-        jLabel10.setFont(new java.awt.Font("SF Pro Display", 1, 18)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-warehouse-25.png"))); // NOI18N
-        jLabel10.setText("Kho");
-        TonKho.add(jLabel10, java.awt.BorderLayout.CENTER);
-
-        pNav.add(TonKho);
-
         pSidebar.add(pNav, java.awt.BorderLayout.CENTER);
 
         pSettings.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Green"));
@@ -441,11 +444,11 @@ public class MainLayout extends javax.swing.JFrame {
         NhaCungCap.setBackground(ClickedColor);
     }//GEN-LAST:event_NhaCungCapMousePressed
 
-    private void NhapHangMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMousePressed
+    private void PhieuNhapMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMousePressed
         // TODO add your handling code here:
         resetBackgroundAllPanels();
-        NhapHang.setBackground(ClickedColor);
-    }//GEN-LAST:event_NhapHangMousePressed
+        PhieuNhap.setBackground(ClickedColor);
+    }//GEN-LAST:event_PhieuNhapMousePressed
 
     private void PhieuXuatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMousePressed
         // TODO add your handling code here:
@@ -460,11 +463,11 @@ public class MainLayout extends javax.swing.JFrame {
         pMainContent.add(productForm).setVisible(true);
     }//GEN-LAST:event_SanPhamMouseClicked
 
-    private void TonKhoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMousePressed
+    private void KhoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_KhoMousePressed
         // TODO add your handling code here:
         resetBackgroundAllPanels();
-        TonKho.setBackground(ClickedColor);
-    }//GEN-LAST:event_TonKhoMousePressed
+        Kho.setBackground(ClickedColor);
+    }//GEN-LAST:event_KhoMousePressed
 
     private void DangXuatMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DangXuatMousePressed
         // TODO add your handling code here:
@@ -478,19 +481,19 @@ public class MainLayout extends javax.swing.JFrame {
         pMainContent.add(nhaCungCapForm).setVisible(true);
     }//GEN-LAST:event_NhaCungCapMouseClicked
 
-    private void TonKhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TonKhoMouseClicked
+    private void KhoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_KhoMouseClicked
         // TODO add your handling code here:
         khoGUI khoForm = new khoGUI(user);
         pMainContent.removeAll();
         pMainContent.add(khoForm).setVisible(true);
-    }//GEN-LAST:event_TonKhoMouseClicked
+    }//GEN-LAST:event_KhoMouseClicked
 
-    private void NhapHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NhapHangMouseClicked
+    private void PhieuNhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuNhapMouseClicked
         // TODO add your handling code here:
         PhieuNhapForm pnForm = new PhieuNhapForm(user);
         pMainContent.removeAll();
         pMainContent.add(pnForm).setVisible(true);
-    }//GEN-LAST:event_NhapHangMouseClicked
+    }//GEN-LAST:event_PhieuNhapMouseClicked
 
     private void PhieuXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PhieuXuatMouseClicked
         // TODO add your handling code here:
@@ -604,13 +607,13 @@ public class MainLayout extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Account;
     private javax.swing.JPanel DangXuat;
+    private javax.swing.JPanel Kho;
     private javax.swing.JPanel NhaCungCap;
-    private javax.swing.JPanel NhapHang;
+    private javax.swing.JPanel PhieuNhap;
     private javax.swing.JPanel PhieuXuat;
     private javax.swing.JPanel SanPham;
     private javax.swing.JPanel TaiKhoan;
     private javax.swing.JPanel ThongKe;
-    private javax.swing.JPanel TonKho;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;

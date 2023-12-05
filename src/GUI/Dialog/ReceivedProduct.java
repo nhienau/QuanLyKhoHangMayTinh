@@ -19,14 +19,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import model.NhaCungCap;
-import view.CTPhieuNhap;
 
 /**
  *
@@ -237,7 +232,8 @@ public class ReceivedProduct extends javax.swing.JFrame{
 
             if(confirm == JOptionPane.YES_OPTION){
                     pnDTO.setNguoiNhanHang(userDTO.getTaiKhoan());
-                    JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 4));
+                    JOptionPane.showMessageDialog(this, pnBUS.xacNhanNhanHang(pnDTO));
+                    pnBUS.updateTongTien(pnDTO.getMaPhieuNhap());
             }
         
         }

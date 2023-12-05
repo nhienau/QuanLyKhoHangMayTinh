@@ -30,6 +30,8 @@ public class khoGUI extends javax.swing.JInternalFrame {
     private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
     private NguoiDungDTO user;
+    private List<ChiTietQuyenDTO> tonKhoAllowedActions = new ArrayList<>();
+    
     /**
      * Creates new form khoGUI
      */
@@ -42,9 +44,10 @@ public class khoGUI extends javax.swing.JInternalFrame {
         moreInit();
         loadDataWareHouse();
         this.user = user;
-        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit};
+        javax.swing.JButton[] buttons = {btnAdd, btnDelete, btnEdit, btnTonKho};
         disableAllButtons(buttons);
         authorizeAction(user);
+        authorizeTonKho(user);
     }
     
     private void disableAllButtons(javax.swing.JButton[] buttons) {
@@ -57,7 +60,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
         // Get all allowed actions in this functionality
         List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
         try {
-            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "kho");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -83,6 +86,29 @@ public class khoGUI extends javax.swing.JInternalFrame {
             }
         }
         this.allowedActions = allowedActions;
+    }
+    
+    private void authorizeTonKho(NguoiDungDTO user) {
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "tonkho");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(khoGUI.this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("view")) {
+                btnTonKho.setEnabled(true);
+                break;
+            }
+        }
+        this.tonKhoAllowedActions = allowedActions;        
     }
 
     /**
@@ -351,7 +377,7 @@ public class khoGUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnTonKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTonKhoActionPerformed
-        TonKhoGUI tonkho = new TonKhoGUI(user, allowedActions);
+        TonKhoGUI tonkho = new TonKhoGUI(user, tonKhoAllowedActions);
         tonkho.setVisible(true);
     }//GEN-LAST:event_btnTonKhoActionPerformed
 

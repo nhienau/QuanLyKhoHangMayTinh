@@ -6,9 +6,7 @@ package DAO;
 
 import DTO.ChiTietTonKhoDTO;
 import DTO.SanPhamTonKhoDTO;
-import DTO.khoDTO;
 import DTO.tonKhoDTO;
-import com.mysql.cj.jdbc.PreparedStatementWrapper;
 import database.JDBCUtil;
 import java.sql.Statement;
 import java.sql.Connection;

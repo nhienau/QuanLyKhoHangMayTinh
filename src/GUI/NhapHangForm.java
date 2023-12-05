@@ -626,7 +626,7 @@ public class NhapHangForm extends javax.swing.JDialog {
             int maKhoSelected = kho.getMaKho();
 
             PhieuNhapDAO phieuNhapDao = new PhieuNhapDAO();
-            ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(maNhaCungCap,maSanPham,soLuong, donGia, userDTO.getTaiKhoan(), 0 , soLuong, 1);
+            ChiTietPhieuNhapDTO ctpn = new ChiTietPhieuNhapDTO(maNhaCungCap,maSanPham,soLuong, donGia, userDTO.getTaiKhoan(), 0 , 0, 1);
             ctpn.setMaKho(maKhoSelected);
             if(listCTPNCurrent.size() == 0){
                 listCTPNCurrent.add(ctpn);
@@ -862,7 +862,7 @@ public class NhapHangForm extends javax.swing.JDialog {
                 if(listCTPNCurrent.get(j).getMaKho() == inventory.get(i)){
                     ChiTietPhieuNhapDTO ctpn = listCTPNCurrent.get(j);
                     ctpnList.add(ctpn);
-                    tongTien += ctpn.getDonGia();
+                    tongTien += ctpn.getDonGia() * ctpn.getSoLuongNhap();
                 }
             }
             
@@ -898,14 +898,14 @@ public class NhapHangForm extends javax.swing.JDialog {
                 if(listCTPNCurrent.get(j).getMaKho() == inventory.get(i)){
                     ChiTietPhieuNhapDTO ctpn = listCTPNCurrent.get(j);
                     ctpnList.add(ctpn);
-                    tongTien += ctpn.getDonGia();
+                    tongTien += ctpn.getDonGia() * ctpn.getSoLuongNhap();
                 }
             }
             
             PhieuNhapDTO phieuNhap = new PhieuNhapDTO(sqlDate, inventory.get(i), userDTO.getTaiKhoan(), tongTien, 1);
 
             int maPhieuNhap = PhieuNhapDAO.luuPhieuNhapPending(phieuNhap, listCTPNCurrent);
-            if(PhieuNhapDAO.getInstance().capNhatPhieuNhap(maPhieuNhap, 3) != true){
+            if(PhieuNhapDAO.getInstance().capNhatPhieuNhap(maPhieuNhap, 3, userDTO) != true){
                 result ++;
             }
         }

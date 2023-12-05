@@ -2,31 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package view;
+package GUI.Dialog;
 
 import BUS.PhieuNhapBUS;
 import DAO.ChiTietPhieuNhapDAO;
 import DAO.NguoiDungDAO;
-import DAO.PhieuNhapDAO;
 import DAO.SanPhamDAO;
 import DAO.khoDAO;
 import DTO.ChiTietPhieuNhapDTO;
 import DTO.NguoiDungDTO;
 import DTO.PhieuNhapDTO;
 import GUI.Dialog.ReceivedProduct;
-import helper.WritePDF;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import model.ChiTietPhieu;
-import model.PhieuNhap;
 
 /**
  *
@@ -141,7 +135,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
         txtMaPhieu = new javax.swing.JLabel();
         labelNguoiTao = new javax.swing.JLabel();
         labelThoiGianTao = new javax.swing.JLabel();
-        exportPDF = new javax.swing.JButton();
         btnNhanHang = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtKho = new javax.swing.JLabel();
@@ -202,14 +195,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
 
         labelThoiGianTao.setText("jLabel7");
 
-        exportPDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_pdf_25px.png"))); // NOI18N
-        exportPDF.setText("Xuất PDF");
-        exportPDF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportPDFActionPerformed(evt);
-            }
-        });
-
         btnNhanHang.setText("Nhận hàng");
         btnNhanHang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -249,9 +234,8 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                     .addGroup(panelLayout.createSequentialGroup()
                         .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(panelLayout.createSequentialGroup()
-                                .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(47, 47, 47)
-                                .addComponent(exportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1))
                         .addGap(21, 21, 21))))
         );
@@ -274,11 +258,9 @@ public class CTPhieuNhap extends javax.swing.JDialog {
                     .addComponent(txtKho, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(exportPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addComponent(btnNhanHang, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -297,12 +279,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void exportPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportPDFActionPerformed
-        // TODO add your handling code here:
-        WritePDF writepdf = new WritePDF();
-       // writepdf.writePhieuNhap(String.valueOf(this.parent.getPhieuNhapSelect().getMaPhieuNhap()));
-    }//GEN-LAST:event_exportPDFActionPerformed
 
     private void btnNhanHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanHangActionPerformed
         // TODO add your handling code here:
@@ -346,7 +322,6 @@ public class CTPhieuNhap extends javax.swing.JDialog {
     private DefaultTableModel modelCTPN;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNhanHang;
-    private javax.swing.JButton exportPDF;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
