@@ -43,6 +43,24 @@ public class TonKhoGUI extends javax.swing.JDialog  {
         loadComboboxTenKho();
         this.user = user;
         this.allowedActions = allowedActions;
+        javax.swing.JButton[] buttons = {btnXuatKho};
+        disableAllButtons(buttons);
+        authorizeAction(allowedActions);
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(List<ChiTietQuyenDTO> allowedActions) {
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("update")) {
+                btnXuatKho.setEnabled(true);
+                break;
+            }
+        }
     }
     
     /**
