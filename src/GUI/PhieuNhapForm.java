@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import BUS.ChiTietQuyenBUS;
 import DAO.PhieuNhapDAO;
 import DAO.khoDAO;
 import java.awt.BorderLayout;
@@ -23,6 +24,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import DTO.ChiTietPhieuNhapDTO;
+import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
 import DTO.PhieuNhapDTO;
 import DTO.khoDTO;
@@ -41,13 +43,14 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import GUI.Dialog.CTPhieuNhap;
+import java.util.List;
 
 /**
  *
  * @author DELL
  */
 public class PhieuNhapForm extends javax.swing.JInternalFrame {
-
+    private final ChiTietQuyenBUS ctqBUS = new ChiTietQuyenBUS();
     private Date dateStart;
     private Date dateEnd;
     public NguoiDungDTO userDTO;
@@ -71,6 +74,9 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
         BasicInternalFrameUI ui = (BasicInternalFrameUI) this.getUI();
         ui.setNorthPane(null);
         userDTO = user;
+        javax.swing.JButton[] buttons = {btnThem};
+        disableAllButtons(buttons);
+        authorizeAction(user);
         TitledBorder titledBorderNgay = BorderFactory.createTitledBorder(
             BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK),
             "Lọc theo ngày",
@@ -116,6 +122,35 @@ public class PhieuNhapForm extends javax.swing.JInternalFrame {
             }
         });
         
+    }
+    
+    private void disableAllButtons(javax.swing.JButton[] buttons) {
+        for (javax.swing.JButton btn : buttons) {
+            btn.setEnabled(false);
+        }
+    }
+    
+    private void authorizeAction(NguoiDungDTO user) {
+        // Get all allowed actions in this functionality
+        List<ChiTietQuyenDTO> allowedActions = new ArrayList<>();
+        try {
+            allowedActions = ctqBUS.getAllowedActions(user.getMaNhomQuyen(), "phieunhap");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi không xác định", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        for (ChiTietQuyenDTO ctq : allowedActions) {
+            if (ctq.getHanhDong().equals("create")) {
+                btnThem.setEnabled(true);
+                continue;
+            }
+        }
     }
 
     /**
