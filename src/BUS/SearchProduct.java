@@ -3,9 +3,7 @@ package BUS;
 import DAO.SanPhamDAO;
 import DAO.loaiSanPhamDAO;
 import DTO.SanPhamDTO;
-import OldDAO.MayTinhDAO;
 import java.util.ArrayList;
-import model.MayTinh;
 
 /**
  *
@@ -202,28 +200,6 @@ public class SearchProduct {
             
         }
         return result;
-    }
-
-
-    public MayTinh searchId(String text) {
-        SanPhamDTO result = new SanPhamDTO();
-        ArrayList<MayTinh> allsp = MayTinhDAO.getInstance().selectAll();
-        for (var sp : allsp) {
-            if (String.valueOf(sp.getMaMay()).toLowerCase().contains(text.toLowerCase())) {
-                return sp;
-            }
-        }
-        return null;
-    }
-        public SanPhamDTO searchMaSanPham(int text) {
-        SanPhamDTO result = new SanPhamDTO();
-        ArrayList<SanPhamDTO> allsp = SanPhamDAO.getInstance().getlistProduct();
-        for (var sp : allsp) {
-            if (String.valueOf(sp.getMaSanPham()).toLowerCase().contains(String.valueOf(text).toLowerCase())) {
-                return sp;
-            }
-        }
-        return null;
     }
     
     public ArrayList<SanPhamDTO> searchThuongHieu(String text) {

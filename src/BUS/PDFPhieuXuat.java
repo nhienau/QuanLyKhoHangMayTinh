@@ -5,13 +5,9 @@
 package BUS;
 
 import DAO.ChiTietPhieuXuatDAO;
-import DAO.SanPhamDAO;
 import DAO.PhieuXuatDAO;
 import DTO.ChiTietPhieuXuatDTO;
 import DTO.PhieuXuatDTO;
-import DTO.SanPhamDTO;
-import GUI.PhieuXuatGUI;
-import OldDAO.AccountDAO;
 
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -22,10 +18,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.TabSettings;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 import java.awt.Desktop;
 import java.awt.FileDialog;
 import java.awt.Point;
@@ -38,13 +32,10 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *

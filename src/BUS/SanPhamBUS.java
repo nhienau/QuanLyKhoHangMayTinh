@@ -3,7 +3,6 @@ package BUS;
 import DTO.SanPhamDTO;
 import DAO.SanPhamDAO;
 import java.util.ArrayList;
-import org.apache.poi.util.LocaleID;
 
 public class SanPhamBUS {
     SanPhamDAO spDAO = new SanPhamDAO();
