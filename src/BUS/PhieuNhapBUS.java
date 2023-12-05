@@ -6,7 +6,9 @@ package BUS;
 
 import DAO.PhieuNhapDAO;
 import DTO.ChiTietPhieuNhapDTO;
+import DTO.NguoiDungDTO;
 import DTO.PhieuNhapDTO;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -17,8 +19,8 @@ public class PhieuNhapBUS {
     PhieuNhapDAO pnDAO = new PhieuNhapDAO();
     
     
-    public String capNhatPhieuNhap( int maPhieuNhap,int trangThai){
-        if(pnDAO.getInstance().capNhatPhieuNhap(maPhieuNhap, trangThai))
+    public String capNhatPhieuNhap( int maPhieuNhap,int trangThai, NguoiDungDTO nguoiXacNhan){
+        if(pnDAO.getInstance().capNhatPhieuNhap(maPhieuNhap, trangThai, nguoiXacNhan))
             return "Cập nhật phiếu nhập hàng thành công!";
         return "Cập nhật phiếu nhập hàng thất bại!";
     }
@@ -27,5 +29,13 @@ public class PhieuNhapBUS {
         if(pnDAO.xacNhanPhieuNhap(phieuNhap, listChiTietPN) == 1)
             return "Xác nhận phiếu nhập thành công!";
         return "Xác nhận phiếu nhập thất bại!";
+    }
+    
+    public boolean xacNhanNhanHang(PhieuNhapDTO pn) {
+        return pnDAO.xacNhanNhanHang(pn);
+    }
+    
+    public int updateTongTien(int maPhieuNhap) throws SQLException {
+        return pnDAO.updateTongTien(maPhieuNhap);
     }
 }

@@ -217,7 +217,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         btnDetail = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnThuongHieu = new javax.swing.JButton();
-        btnPhanPhoi = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jComboBoxLuaChon = new javax.swing.JComboBox<>();
         jTextFieldSearch = new javax.swing.JTextField();
@@ -298,19 +297,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
             }
         });
         jToolBar1.add(btnThuongHieu);
-
-        btnPhanPhoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-update-left-rotation-40.png"))); // NOI18N
-        btnPhanPhoi.setText("Phân phối");
-        btnPhanPhoi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPhanPhoi.setFocusable(false);
-        btnPhanPhoi.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnPhanPhoi.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnPhanPhoi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPhanPhoiActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnPhanPhoi);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -498,12 +484,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tblSanPhamAncestorAdded
 
-    private void btnPhanPhoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhanPhoiActionPerformed
-        // TODO add your handling code here:
-        PhanPhoiProduct pp = new PhanPhoiProduct(allowedActions);
-        pp.setVisible(true);
-    }//GEN-LAST:event_btnPhanPhoiActionPerformed
-
     public ArrayList<SanPhamDTO> searchFn(String luaChon, String content) {
         ArrayList<SanPhamDTO> result = new ArrayList<>();
         SearchProduct searchPr = new SearchProduct();
@@ -621,7 +601,6 @@ public class ProductForm extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLamMoi;
-    private javax.swing.JButton btnPhanPhoi;
     private javax.swing.JButton btnThuongHieu;
     private javax.swing.JComboBox<String> jComboBoxLuaChon;
     private javax.swing.JPanel jPanel1;

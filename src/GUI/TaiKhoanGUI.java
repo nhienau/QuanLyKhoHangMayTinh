@@ -4,7 +4,7 @@ import BUS.ChiTietQuyenBUS;
 import BUS.NguoiDungBUS;
 import DTO.ChiTietQuyenDTO;
 import DTO.NguoiDungDTO;
-import GUI.Dialog.SuaTaiKhoanDialog;
+import GUI.Dialog.CapNhatTaiKhoanDialog;
 import GUI.Dialog.TaoTaiKhoanDialog;
 import helper.TaiKhoanTableModel;
 import java.awt.event.KeyEvent;
@@ -343,7 +343,7 @@ public class TaiKhoanGUI extends javax.swing.JInternalFrame {
             return;
         }
         NguoiDungDTO userInfo = arr.get(row);
-        SuaTaiKhoanDialog dialog = new SuaTaiKhoanDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, userInfo, userPriority, query);
+        CapNhatTaiKhoanDialog dialog = new CapNhatTaiKhoanDialog(this, (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this), rootPaneCheckingEnabled, userInfo, userPriority, query);
         dialog.setVisible(true);
     }//GEN-LAST:event_btnEditAccountActionPerformed
 

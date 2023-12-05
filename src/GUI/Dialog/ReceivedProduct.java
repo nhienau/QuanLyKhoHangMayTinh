@@ -237,7 +237,8 @@ public class ReceivedProduct extends javax.swing.JFrame{
 
             if(confirm == JOptionPane.YES_OPTION){
                     pnDTO.setNguoiNhanHang(userDTO.getTaiKhoan());
-                    JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 4));
+                    JOptionPane.showMessageDialog(this, pnBUS.xacNhanNhanHang(pnDTO));
+                    pnBUS.updateTongTien(pnDTO.getMaPhieuNhap());
             }
         
         }

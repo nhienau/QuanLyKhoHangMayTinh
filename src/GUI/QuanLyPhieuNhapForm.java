@@ -569,7 +569,7 @@ public class QuanLyPhieuNhapForm extends javax.swing.JFrame {
 
     private void btnXoaPhieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaPhieuActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 2));
+        JOptionPane.showMessageDialog(this, pnBUS.capNhatPhieuNhap(pnDTO.getMaPhieuNhap(), 2, null));
         dispose();
         pnForm.loadDanhSachPhieuNhap();
     }//GEN-LAST:event_btnXoaPhieuActionPerformed
