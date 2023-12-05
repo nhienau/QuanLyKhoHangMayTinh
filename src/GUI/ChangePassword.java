@@ -6,15 +6,8 @@ package GUI;
 
 import BUS.NguoiDungBUS;
 import DTO.NguoiDungDTO;
-import com.formdev.flatlaf.FlatLightLaf;
 import helper.BCrypt;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.table.DefaultTableModel;
-//import view.AccountForm;
-//import model.Account;
-//import OldDAO.AccountDAO;
 import DAO.NguoiDungDAO;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -69,8 +62,8 @@ public class ChangePassword extends javax.swing.JDialog {
         this.user = user;
         tenTaiKhoan.setText(user.getTaiKhoan());
         hoten.setText(user.getHoTen());
+        email.setText(user.getEmail());
         
-        // setText...
     }
 
 //    ChangePassword() {
@@ -166,7 +159,7 @@ public class ChangePassword extends javax.swing.JDialog {
             }
         });
 
-        jLabel7.setText("username");
+        jLabel7.setText("Tài khoản");
 
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
         panel.setLayout(panelLayout);
@@ -356,7 +349,9 @@ public class ChangePassword extends javax.swing.JDialog {
 //            }
 //        }
 
-        String emailAccount = email.getText();
+        String emailAccount = email.getText().trim();
+        if (emailAccount.equals(user.getEmail()))
+            return;
         if(emailAccount.equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
         } else {
