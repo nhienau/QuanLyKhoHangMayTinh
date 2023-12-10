@@ -358,7 +358,8 @@ public class ChangePassword extends javax.swing.JDialog {
             if (isValid(emailAccount)) {
                     user.setEmail(emailAccount);
                 try {
-                    data.changeEmail(user, emailAccount);
+//                    data.changeEmail(user, emailAccount);
+                    bus.ChangEmail(user, emailAccount);
                 } catch (SQLException ex) {
                     Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
                 }

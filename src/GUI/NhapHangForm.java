@@ -607,6 +607,16 @@ public class NhapHangForm extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn kho");
             return;
         }
+        try{
+            Integer.parseInt(txtSoLuong.getText());
+        } catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ");
+        }
+        
+        if(Integer.parseInt(txtSoLuong.getText()) <= 0 ) {
+            JOptionPane.showMessageDialog(this, "Số lượng phải lớn hơn 0");
+            return ;
+        }
 
         try {
             DefaultTableModel modelChiTietPN = (DefaultTableModel) tblChiTietPN.getModel();
